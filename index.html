@@ -3,151 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#0B2A5B">
 <title>CRM Dealer Motor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <style>
-/* ===================== TAMPILAN ===================== */
+/* =====================================================================
+   TAMPILAN "SHOWROOM" — biru tua dealer, terang & kontras untuk di luar ruangan
+   ===================================================================== */
 :root{
-  --ink:#0f172a; --ink2:#334155; --muted:#64748b; --faint:#94a3b8;
-  --line:#e2e8f0; --line2:#f1f5f9; --bg:#f8fafc; --card:#ffffff;
-  --blue:#2563eb; --blue-bg:#eff6ff; --green:#15803d; --green-bg:#dcfce7;
-  --amber:#b45309; --amber-bg:#fef3c7; --red:#b91c1c; --red-bg:#fee2e2;
-  --indigo:#4338ca; --indigo-bg:#e0e7ff; --sky:#0369a1; --sky-bg:#e0f2fe;
-  --gray-bg:#f1f5f9; --r:16px;
+  --navy:#0B2A5B; --navy-2:#163F80; --navy-3:#E6ECF6; --navy-ink:#081F45;
+  --ink:#121A2A; --ink2:#3D4759; --muted:#667185; --faint:#98A2B3;
+  --line:#DCE2EB; --line2:#EDF1F6; --bg:#EEF2F7; --card:#FFFFFF;
+  --hot:#D3342A; --hot-bg:#FCE9E7; --warm:#C77700; --warm-bg:#FDF1DC; --cold:#47719E; --cold-bg:#E7EEF6;
+  --ok:#137A48; --ok-bg:#E1F3E9; --wa:#128C4A;
+  --r-sheet:18px; --r-ctl:12px;
+  --display:'Archivo',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body{font-family:var(--display);font-stretch:100%;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 button,input,select,textarea{font:inherit;color:inherit}
-a{color:var(--blue);text-decoration:none}
+a{color:var(--navy-2);text-decoration:none}
 .hidden{display:none!important}
+:focus-visible{outline:3px solid #7FA6E8;outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* layout */
+/* ---------- tipografi ---------- */
+h1{font-size:28px;font-weight:800;font-stretch:118%;letter-spacing:-.4px;line-height:1.1}
+h2{font-size:18px;font-weight:750;font-stretch:112%;letter-spacing:-.1px}
+h3{font-size:15px;font-weight:700;font-stretch:108%}
+.sub{color:var(--muted);font-size:13px}
+.num{font-stretch:125%;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+
+/* ---------- kerangka ---------- */
 .shell{min-height:100vh}
 .side{display:none}
-.top{position:sticky;top:0;z-index:20;height:56px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.3px}
-.logo{width:32px;height:32px;border-radius:10px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
-.main{padding:16px 16px 96px;max-width:1100px;margin:0 auto}
-.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
-.bnav button{flex:1;border:0;background:none;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--faint);cursor:pointer}
-.bnav button .ic{font-size:19px;line-height:1.2}
-.bnav button.on{color:var(--ink)}
-@media(min-width:900px){
-  .side{display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;width:232px;background:#fff;border-right:1px solid var(--line);padding:16px 12px;z-index:25}
-  .side .brand{padding:4px 8px 18px}
-  .side nav{display:flex;flex-direction:column;gap:4px}
-  .side nav button{border:0;background:none;text-align:left;padding:10px 12px;border-radius:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;gap:10px;align-items:center}
-  .side nav button:hover{background:var(--bg)}
-  .side nav button.on{background:var(--ink);color:#fff}
-  .side .who{margin-top:auto;padding:12px;border-top:1px solid var(--line2);font-size:12px;color:var(--muted)}
-  .top{margin-left:232px}
+.top{position:sticky;top:0;z-index:20;height:58px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:#fff}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-stretch:118%;letter-spacing:-.2px;font-size:16px}
+.logo{width:34px;height:34px;border-radius:10px;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center}
+.logo svg{width:22px;height:22px}
+.top .who-top{display:flex;align-items:center;gap:8px;font-size:13px;color:#C9D6EE}
+.top .who-top b{color:#fff;font-weight:650}
+.role{border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:650;color:#fff}
+.main{padding:18px 16px 104px;max-width:1080px;margin:0 auto}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.bnav button{flex:1;border:0;background:none;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:650;color:var(--muted);cursor:pointer;border-radius:12px}
+.bnav button svg{width:22px;height:22px}
+.bnav button.on{color:var(--navy)}
+.bnav button.on .ico{background:var(--navy-3)}
+.bnav .ico{width:52px;height:28px;border-radius:999px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+@media(min-width:920px){
+  .side{display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;width:244px;background:var(--navy);color:#fff;padding:18px 14px;z-index:25}
+  .side .brand{padding:2px 8px 26px}
+  .side nav{display:flex;flex-direction:column;gap:2px}
+  .side nav button{border:0;background:none;color:#C9D6EE;text-align:left;padding:11px 12px;border-radius:12px;font-weight:600;cursor:pointer;display:flex;gap:12px;align-items:center;font-size:14.5px}
+  .side nav button svg{width:20px;height:20px;opacity:.85}
+  .side nav button:hover{background:rgba(255,255,255,.07);color:#fff}
+  .side nav button.on{background:#fff;color:var(--navy)}
+  .side nav button.on svg{opacity:1}
+  .side .who{margin-top:auto;padding:14px 12px 4px;border-top:1px solid rgba(255,255,255,.14);font-size:12.5px;color:#9FB2D6}
+  .side .who b{display:block;color:#fff;font-size:14px;font-weight:650}
+  .top{margin-left:244px;background:transparent;color:var(--ink);border-bottom:1px solid var(--line);background:rgba(238,242,247,.92);backdrop-filter:blur(10px)}
   .top .brand{visibility:hidden}
-  .main{margin-left:232px;padding:24px 28px 40px}
+  .top .who-top{color:var(--muted)}.top .who-top b{color:var(--ink)}
+  .top .role{color:var(--navy);border-color:var(--line);background:#fff}
+  .main{margin-left:244px;padding:28px 32px 48px}
   .bnav{display:none}
 }
 
-/* komponen */
-h1{font-size:22px;font-weight:800;letter-spacing:-.5px}
-h2{font-size:16px;font-weight:800;letter-spacing:-.2px}
-h3{font-size:14px;font-weight:700}
-.sub{color:var(--muted);font-size:12.5px}
-.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+/* ---------- komponen dasar ---------- */
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sheet);padding:16px}
 .stack{display:flex;flex-direction:column;gap:10px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .between{justify-content:space-between}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-@media(min-width:700px){.grid4{grid-template-columns:repeat(4,1fr)}}
-.mt{margin-top:14px}.mt2{margin-top:22px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px}
-.stat b{display:block;font-size:24px;font-weight:800;letter-spacing:-.5px}
-.stat span{font-size:11.5px;color:var(--muted);font-weight:600}
-.btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
-.btn:hover{border-color:#cbd5e1}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.pri{background:var(--ink);border-color:var(--ink);color:#fff}
-.btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn.green{background:var(--green);border-color:var(--green);color:#fff}
-.btn.danger{color:var(--red);border-color:#fecaca}
-.btn.sm{padding:6px 12px;font-size:12px}
-.btn.full{width:100%;padding:12px}
-.wa{background:#16a34a;border-color:#16a34a;color:#fff}
-.fab{position:fixed;right:18px;bottom:84px;z-index:19;border:0;border-radius:999px;background:var(--ink);color:#fff;padding:14px 20px;font-weight:700;box-shadow:0 10px 24px rgba(15,23,42,.25);cursor:pointer}
-@media(min-width:900px){.fab{bottom:28px;right:28px}}
-.field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:12px;font-weight:600;color:var(--ink2)}
-.inp{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:14px}
-.inp:focus{outline:none;border-color:var(--ink);background:#fff}
-textarea.inp{min-height:70px;resize:vertical}
-.chk{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
-.chk input{width:18px;height:18px;accent-color:var(--ink)}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+@media(min-width:720px){.grid4{grid-template-columns:repeat(4,1fr)}}
+.mt{margin-top:14px}.mt2{margin-top:26px}
+.sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:26px 2px 10px}
+.sec-title .sub{font-size:13px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-size:26px;font-stretch:125%;font-weight:800;letter-spacing:-.6px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+
+.btn{border:1px solid var(--line);background:#fff;border-radius:var(--r-ctl);padding:10px 16px;font-weight:650;font-size:14px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:7px;color:var(--ink);min-height:42px}
+.btn:hover{border-color:#B8C3D3}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.42;cursor:not-allowed;transform:none}
+.btn svg{width:18px;height:18px}
+.btn.pri{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.pri:hover{background:var(--navy-2)}
+.btn.blue{background:var(--navy-2);border-color:var(--navy-2);color:#fff}
+.btn.green{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.danger{color:var(--hot);border-color:#F0C4C0}
+.btn.sm{padding:6px 12px;font-size:13px;min-height:34px;border-radius:10px}
+.btn.full{width:100%;padding:13px;font-size:15px}
+.btn.wa,a.wa{background:var(--wa);border-color:var(--wa);color:#fff}
+.fab{position:fixed;right:16px;bottom:88px;z-index:19;border:0;border-radius:16px;background:var(--navy);color:#fff;padding:15px 20px;font-weight:750;font-size:15px;font-stretch:110%;box-shadow:0 10px 24px rgba(11,42,91,.32);cursor:pointer;display:flex;align-items:center;gap:8px}
+.fab svg{width:20px;height:20px}
+@media(min-width:920px){.fab{bottom:28px;right:32px}}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:650;color:var(--ink2)}
+.inp{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:var(--r-ctl);background:#F7F9FC;font-size:15px;min-height:46px}
+.inp:focus{outline:none;border-color:var(--navy-2);background:#fff;box-shadow:0 0 0 4px rgba(22,63,128,.12)}
+textarea.inp{min-height:76px;resize:vertical}
+select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23667185' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+.chk{display:flex;align-items:center;gap:9px;font-size:14px;cursor:pointer;min-height:36px}
+.chk input{width:20px;height:20px;accent-color:var(--navy)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer}
-.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
-.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}
-.p-gray{background:var(--gray-bg);color:var(--ink2)}.p-blue{background:var(--blue-bg);color:var(--blue)}
-.p-green{background:var(--green-bg);color:var(--green)}.p-amber{background:var(--amber-bg);color:var(--amber)}
-.p-red{background:var(--red-bg);color:var(--red)}.p-indigo{background:var(--indigo-bg);color:var(--indigo)}
-.p-sky{background:var(--sky-bg);color:var(--sky)}
-.item{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer}
-.item:hover{border-color:#cbd5e1}
-.av{width:40px;height:40px;flex:none;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:650;white-space:nowrap;cursor:pointer;color:var(--ink2);min-height:36px}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip svg{width:16px;height:16px;vertical-align:-3px;margin-right:6px}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:7px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap;line-height:1.5}
+.p-gray{background:#EEF1F5;color:var(--ink2)}.p-blue{background:var(--navy-3);color:var(--navy-2)}
+.p-green{background:var(--ok-bg);color:var(--ok)}.p-amber{background:var(--warm-bg);color:var(--warm)}
+.p-red{background:var(--hot-bg);color:var(--hot)}.p-indigo{background:#E8E6FA;color:#4537A8}
+.p-sky{background:var(--cold-bg);color:var(--cold)}
+
+/* ---------- daftar berbaris (satu lembar) ---------- */
+.list{background:#fff;border:1px solid var(--line);border-radius:var(--r-sheet);overflow:hidden}
+.list > .item{border-radius:0;border:0;border-bottom:1px solid var(--line2)}
+.list > .item:last-child{border-bottom:0}
+.list > .empty{border:0;border-radius:0}
+.item{background:#fff;border:1px solid var(--line);border-radius:var(--r-sheet);padding:12px 14px;display:flex;gap:13px;align-items:center;cursor:pointer;min-height:72px}
+.item:hover{background:#F8FAFD}
 .item .mid{flex:1;min-width:0}
-.item .nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item .meta{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.empty{text-align:center;color:var(--faint);padding:28px 12px;border:1px dashed var(--line);border-radius:var(--r);background:#fff}
-.note{font-size:12px;background:var(--blue-bg);color:#1e3a8a;border-radius:12px;padding:10px 12px;line-height:1.5}
-.warn{font-size:12px;background:var(--amber-bg);color:#78350f;border-radius:12px;padding:10px 12px;line-height:1.5}
-.bad{font-size:12px;background:var(--red-bg);color:#7f1d1d;border-radius:12px;padding:10px 12px;line-height:1.5}
-.ok{font-size:12px;background:var(--green-bg);color:#14532d;border-radius:12px;padding:10px 12px;line-height:1.5}
-.sec{border-top:1px solid var(--line2);padding-top:16px;margin-top:16px}
+.item .nm{font-weight:700;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .meta{font-size:13px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.item .right{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.item .when{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.item .when.late{color:var(--hot);font-weight:700}
+.wa-dot{width:36px;height:36px;border-radius:11px;background:var(--wa);color:#fff;display:flex;align-items:center;justify-content:center}
+.wa-dot svg{width:19px;height:19px}
+.av{width:44px;height:44px;flex:none;border-radius:13px;background:var(--navy-3);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-stretch:120%}
+.av svg{width:22px;height:22px}
+.empty{text-align:center;color:var(--muted);padding:30px 14px;border:1.5px dashed var(--line);border-radius:var(--r-sheet);background:#fff;font-size:14px}
+
+/* ---------- spidometer skor (ciri khas) ---------- */
+.gauge{flex:none;position:relative;display:block}
+.gauge svg{display:block}
+.gauge b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-stretch:125%;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.4px;color:var(--ink)}
+
+/* ---------- indikator gigi (tahap) ---------- */
+.gear{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.gear div{border-radius:9px;background:#EEF1F5;color:var(--faint);padding:7px 2px 6px;text-align:center}
+.gear div b{display:block;font-size:17px;font-stretch:125%;font-weight:800;line-height:1}
+.gear div span{display:block;font-size:10.5px;font-weight:650;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gear div.done{background:var(--navy-3);color:var(--navy-2)}
+.gear div.cur{background:var(--navy);color:#fff}
+.gear.lost div.done,.gear.lost div.cur{background:#F1F2F4;color:#8A93A3}
+
+/* ---------- Hari Ini: pita instrumen ---------- */
+.hero{background:var(--navy);color:#fff;border-radius:22px;padding:18px 18px 16px;position:relative;overflow:hidden}
+.hero h1{color:#fff}
+.hero .sub{color:#B9C8E4}
+.lamps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.lamp{background:rgba(255,255,255,.08);border-radius:14px;padding:10px 10px 9px;display:flex;flex-direction:column;gap:2px;border:1px solid rgba(255,255,255,.08);cursor:default;text-align:left;color:#fff}
+.lamp b{font-size:26px;font-stretch:125%;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.lamp span{font-size:12px;color:#B9C8E4;font-weight:600;display:flex;align-items:center;gap:6px}
+.lamp i{width:8px;height:8px;border-radius:50%;background:#5E7BB0;flex:none}
+.lamp.alert i{background:#FF6B5E;box-shadow:0 0 0 3px rgba(255,107,94,.25)}
+.lamp.hot i{background:#FF8A3D;box-shadow:0 0 0 3px rgba(255,138,61,.25)}
+.lamp.go i{background:#5BD08B}
+button.lamp{cursor:pointer}
+@media(max-width:420px){.lamps{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- kotak pesan ---------- */
+.note,.warn,.bad,.ok{font-size:13.5px;border-radius:12px;padding:11px 13px;line-height:1.5}
+.note{background:var(--navy-3);color:#173766}
+.warn{background:var(--warm-bg);color:#6B4100}
+.bad{background:var(--hot-bg);color:#7D1C16}
+.ok{background:var(--ok-bg);color:#0D5132}
+
+/* ---------- detail ---------- */
+.sec{border-top:1px solid var(--line2);padding-top:18px;margin-top:18px}
 .sec>h3{margin-bottom:10px}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}
-.kv dt{color:var(--muted)}.kv dd{font-weight:600;text-align:right}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.kv dt{color:var(--muted)}.kv dd{font-weight:650;text-align:right;font-variant-numeric:tabular-nums}
+.kv dd.big{font-size:18px;font-stretch:118%;font-weight:800}
 .steps{display:flex;gap:4px}
 .steps div{flex:1;height:6px;border-radius:99px;background:var(--line)}
-.steps div.on{background:var(--ink)}
-.steps-l{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);margin-top:5px;font-weight:600}
-.checklist{display:flex;flex-direction:column;gap:6px;font-size:13px}
-.checklist div{display:flex;gap:8px;align-items:flex-start}
-.tl{display:flex;flex-direction:column;gap:0}
-.tl .ev{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2);font-size:13px}
+.steps div.on{background:var(--navy)}
+.steps-l{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;font-weight:650}
+.checklist{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.checklist div{display:flex;gap:10px;align-items:center}
+.checklist .c{width:22px;height:22px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line);background:#fff}
+.checklist .c.y{background:var(--ok);border-color:var(--ok);color:#fff}
+.checklist .c svg{width:14px;height:14px}
+.tl{display:flex;flex-direction:column}
+.tl .ev{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:14px}
 .tl .ev:last-child{border-bottom:0}
-.tl .dot{width:28px;height:28px;flex:none;border-radius:9px;background:var(--gray-bg);display:flex;align-items:center;justify-content:center;font-size:14px}
+.tl .dot{width:32px;height:32px;flex:none;border-radius:10px;background:var(--navy-3);color:var(--navy);display:flex;align-items:center;justify-content:center}
+.tl .dot svg{width:17px;height:17px}
 .bar{height:8px;border-radius:99px;background:var(--line2);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--ink);border-radius:99px}
-table.t{width:100%;border-collapse:collapse;font-size:13px}
-table.t th{text-align:left;font-size:11px;color:var(--muted);font-weight:700;padding:8px 6px;border-bottom:1px solid var(--line)}
-table.t td{padding:9px 6px;border-bottom:1px solid var(--line2)}
+.bar i{display:block;height:100%;background:var(--navy);border-radius:99px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12.5px;color:var(--muted);font-weight:650;padding:9px 8px;border-bottom:1.5px solid var(--line)}
+table.t td{padding:11px 8px;border-bottom:1px solid var(--line2)}
 table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 .scrollx{overflow-x:auto}
 
-/* panel detail (drawer) */
-.sheet{position:fixed;inset:0;z-index:40;background:rgba(15,23,42,.45);display:flex;justify-content:flex-end}
-.panel{background:#fff;width:100%;max-width:600px;height:100%;overflow-y:auto;display:flex;flex-direction:column;animation:slide .18s ease-out}
-@keyframes slide{from{transform:translateX(30px);opacity:.6}to{transform:none;opacity:1}}
-.panel-h{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px}
-.panel-h .x{border:0;background:var(--gray-bg);width:34px;height:34px;border-radius:10px;font-size:16px;cursor:pointer;flex:none}
+/* panel detail */
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(8,31,69,.42);display:flex;justify-content:flex-end}
+.panel{background:var(--bg);width:100%;max-width:620px;height:100%;overflow-y:auto;display:flex;flex-direction:column;animation:slide .2s ease-out}
+@keyframes slide{from{transform:translateX(26px);opacity:.5}to{transform:none;opacity:1}}
+.panel-h{position:sticky;top:0;z-index:2;background:var(--navy);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:12px;min-height:62px}
+.panel-h .x{border:0;background:rgba(255,255,255,.12);color:#fff;width:38px;height:38px;border-radius:11px;font-size:17px;cursor:pointer;flex:none}
 .panel-h .t{flex:1;min-width:0}
-.panel-h .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.panel-b{padding:16px 16px 40px}
-.modal{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.5);display:flex;align-items:flex-end;justify-content:center;padding:0}
-.modal .box{background:#fff;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px 24px}
-@media(min-width:600px){.modal{align-items:center;padding:16px}.modal .box{border-radius:20px}}
+.panel-h .t b{display:block;font-size:17px;font-stretch:115%;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel-h .t .sub{color:#B9C8E4;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel-b{padding:14px 14px 48px}
+.panel-b > .blk{background:#fff;border:1px solid var(--line);border-radius:var(--r-sheet);padding:16px;margin-bottom:12px}
+.panel-b > .blk.sec{margin-top:0;border-top:1px solid var(--line)}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(8,31,69,.5);display:flex;align-items:flex-end;justify-content:center}
+.modal .box{background:#fff;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:20px 16px 26px}
+@media(min-width:600px){.modal{align-items:center;padding:16px}.modal .box{border-radius:22px}}
 
-/* layar login */
-.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(900px 500px at 0% -10%,#dbeafe,transparent 60%),radial-gradient(700px 400px at 100% 0%,#fef3c7,transparent 55%),var(--bg)}
-.login{width:100%;max-width:400px}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;padding:11px 16px;border-radius:12px;font-size:13px;font-weight:600;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.2)}
-.toast.err{background:#b91c1c}
-@media(min-width:900px){.toast{bottom:30px}}
-.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+/* layar masuk */
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--navy)}
+.login{width:100%;max-width:410px;border:0}
+.login-hd{color:#fff;margin-bottom:18px;max-width:410px;width:100%}
+.login-hd h1{color:#fff;font-size:34px;margin-top:20px}
+.login-hd p{color:#B9C8E4;margin-top:6px}
+.center-col{display:flex;flex-direction:column;align-items:center;width:100%}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:600;max-width:calc(100% - 32px);box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.toast.err{background:#A3241C}
+@media(min-width:920px){.toast{bottom:30px}}
+.spin{display:inline-block;width:18px;height:18px;border:2.5px solid var(--line);border-top-color:var(--navy);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+.btn .spin{border-color:rgba(255,255,255,.35);border-top-color:#fff}
+.btn:not(.pri):not(.green):not(.wa) .spin{border-color:var(--line);border-top-color:var(--navy)}
 @keyframes sp{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -164,8 +255,8 @@ table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 //     menanyakan alamat & kunci saat pertama dibuka di tiap perangkat.
 //  2) JANGAN pernah memasang "secret key" / "service_role" di sini.
 // =====================================================================
-   const SUPABASE_URL = 'https://ddbkyqnfimriiuefuzmy.supabase.co';
-   const SUPABASE_ANON_KEY = 'sb_publishable_UKePExVkvjhUre43wulMCA_7rWZHaj8';   // publishable key
+const SUPABASE_URL = '';
+const SUPABASE_ANON_KEY = '';   // publishable key
 
 // ---------------------------------------------------------------------
 // Label tampilan
@@ -191,6 +282,60 @@ const WARNA_SUHU = { HOT: 'p-red', WARM: 'p-amber', COLD: 'p-sky' };
 const WARNA_ORDER = { SPK: 'p-blue', SIAP_KIRIM: 'p-amber', TERKIRIM: 'p-indigo', SELESAI: 'p-green', BATAL: 'p-gray' };
 const WARNA_KREDIT = { DIAJUKAN: 'p-blue', SURVEI: 'p-amber', APPROVED: 'p-green', DITOLAK: 'p-red', BATAL: 'p-gray' };
 const AKTIF = ['BARU', 'DIHUBUNGI', 'PROSPEK', 'NEGOSIASI'];
+
+// Ikon garis sederhana (24x24)
+const IC = {
+  home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/>',
+  box: '<path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="m3 7.5 9 4.5 9-4.5M12 12v9"/>',
+  trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+  chart: '<path d="M4 20V11M10 20V5M16 20v-6M2.5 20h19"/>',
+  menu: '<path d="M4 6.5h16M4 12h16M4 17.5h16"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  chat: '<path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.6L3.5 20.5l1.4-4.4a8.5 8.5 0 1 1 15.6-4.6z"/>',
+  phone: '<path d="M5 3.5h3.5l2 5-2.4 1.5a11 11 0 0 0 5.9 5.9l1.5-2.4 5 2V19a2 2 0 0 1-2 2A16.5 16.5 0 0 1 3 5.5a2 2 0 0 1 2-2z"/>',
+  store: '<path d="M3.5 9 5 4h14l1.5 5"/><path d="M3.5 9h17v1.5a3 3 0 0 1-5.7 1.3 3 3 0 0 1-5.6 0 3 3 0 0 1-5.7-1.3z"/><path d="M5 13.5V20h14v-6.5M10 20v-4h4v4"/>',
+  moto: '<circle cx="5.5" cy="16.5" r="3.5"/><circle cx="18.5" cy="16.5" r="3.5"/><path d="M5.5 16.5 9.5 9h4.5l4.5 7.5M13 9l1.8-3H18M8 12.5h6"/>',
+  doc: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 7.5h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/>',
+  note: '<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7"/>',
+  spark: '<path d="M12 3v5M12 16v5M3 12h5M16 12h5"/>',
+  back: '<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/>',
+  logo: '<path d="M4.5 16.5a7.5 7.5 0 1 1 15 0"/><path d="m12 16.5 4.2-4.6"/><circle cx="12" cy="16.5" r="1.4" fill="currentColor"/>',
+};
+const ico = (n, w = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n] || ''}</svg>`;
+const IKON_JENIS = { TELEPON: 'phone', WHATSAPP: 'chat', KUNJUNGAN_DEALER: 'store', KUNJUNGAN_RUMAH: 'home', TEST_RIDE: 'moto',
+  PENAWARAN: 'doc', SIMULASI_KREDIT: 'calc', CATATAN: 'note', SISTEM: 'gear' };
+const LABEL_SUHU = { HOT: 'Hot', WARM: 'Warm', COLD: 'Cold' };
+
+// Spidometer skor: busur 270°, zona merah 70–100, jarum pada ukuran besar
+function gauge(skor, suhu, size = 48) {
+  const v = Math.max(0, Math.min(100, Number(skor) || 0));
+  const big = size >= 80, sw = big ? 8 : 4.5, cx = size / 2, r = cx - sw / 2 - 1;
+  const C = 2 * Math.PI * r, arc = C * 0.75;
+  const warna = { HOT: 'var(--hot)', WARM: 'var(--warm)', COLD: 'var(--cold)' }[suhu] || 'var(--cold)';
+  const sudut = (135 + 2.7 * v) * Math.PI / 180;
+  const jarum = big ? `<line x1="${cx}" y1="${cx}" x2="${(cx + Math.cos(sudut) * (r - 13)).toFixed(1)}" y2="${(cx + Math.sin(sudut) * (r - 13)).toFixed(1)}" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/><circle cx="${cx}" cy="${cx}" r="4" fill="var(--ink)"/>` : '';
+  const ticks = big ? [0, 25, 50, 75, 100].map((t) => { const a = (135 + 2.7 * t) * Math.PI / 180; return `<line x1="${(cx + Math.cos(a) * (r - sw)).toFixed(1)}" y1="${(cx + Math.sin(a) * (r - sw)).toFixed(1)}" x2="${(cx + Math.cos(a) * (r - sw - 5)).toFixed(1)}" y2="${(cx + Math.sin(a) * (r - sw - 5)).toFixed(1)}" stroke="#B8C3D3" stroke-width="1.5"/>`; }).join('') : '';
+  return `<span class="gauge" style="width:${size}px;height:${size}px" role="img" aria-label="Skor ${v}, ${LABEL_SUHU[suhu] || ''}">
+    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <g transform="rotate(135 ${cx} ${cx})" fill="none" stroke-width="${sw}">
+        <circle cx="${cx}" cy="${cx}" r="${r}" stroke="#E3E8EF" stroke-dasharray="${arc} ${C}" stroke-linecap="round"/>
+        <circle cx="${cx}" cy="${cx}" r="${r}" stroke="#F6CFCB" stroke-dasharray="${arc * 0.3} ${C}" stroke-dashoffset="${-arc * 0.7}"/>
+        ${v > 0 ? `<circle cx="${cx}" cy="${cx}" r="${r}" stroke="${warna}" stroke-dasharray="${arc * v / 100} ${C}" stroke-linecap="round"/>` : ''}
+      </g>${ticks}${jarum}
+    </svg>${big ? '' : `<b style="font-size:${Math.round(size * 0.3)}px">${v}</b>`}</span>`;
+}
+// Indikator gigi 1–5 untuk tahap lead
+function gigi(l) {
+  const urut = ['BARU', 'DIHUBUNGI', 'PROSPEK', 'NEGOSIASI', 'DEAL'];
+  const idx = urut.indexOf(l.tahap === 'LOST' ? l.tahap_tertinggi : l.tahap);
+  return `<div class="gear${l.tahap === 'LOST' ? ' lost' : ''}">${urut.map((t, i) =>
+    `<div class="${i < idx ? 'done' : i === idx ? 'cur' : ''}"><b>${i + 1}</b><span>${L.tahap[t]}</span></div>`).join('')}</div>`;
+}
+const centang = (ya) => `<span class="c${ya ? ' y' : ''}">${ya ? ico('check', 3) : ''}</span>`;
 
 // Pesan error database -> bahasa yang mudah dimengerti
 const PESAN_CONSTRAINT = {
@@ -297,14 +442,14 @@ const isAdmin = () => S.me && S.me.peran === 'ADMIN';
 const namaOrang = (id) => (S.orang.find((p) => p.id === id) || {}).nama || '-';
 
 function layarKoneksi() {
-  $('#root').innerHTML = `<div class="center"><div class="login card stack" style="padding:24px">
-    <div class="brand"><div class="logo">🏍️</div><span>CRM Dealer Motor</span></div>
-    <h2>Hubungkan ke Supabase</h2>
-    <p class="sub">Salin dari Supabase: tombol <b>Connect</b> atau <b>Settings → API Keys</b>. Cukup sekali di perangkat ini.</p>
-    <div class="field"><label>Project URL</label><input id="kUrl" class="inp" placeholder="https://xxxx.supabase.co"></div>
-    <div class="field"><label>Publishable key</label><textarea id="kKey" class="inp" placeholder="sb_publishable_..."></textarea></div>
-    <button class="btn pri full" onclick="simpanKoneksi(this)">Simpan & lanjut</button>
-    <p class="sub">Jangan gunakan <b>secret key</b> atau <b>service_role</b>.</p></div></div>`;
+  $('#root').innerHTML = `<div class="center"><div class="center-col">
+    <div class="login-hd"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer Motor</span></div>
+      <h1>Hubungkan ke database</h1><p>Cukup sekali di perangkat ini.</p></div>
+    <div class="login card stack" style="padding:22px">
+      <div class="field"><label>Project URL</label><input id="kUrl" class="inp" placeholder="https://xxxx.supabase.co"></div>
+      <div class="field"><label>Publishable key</label><textarea id="kKey" class="inp" placeholder="sb_publishable_..."></textarea></div>
+      <button class="btn pri full" onclick="simpanKoneksi(this)">Simpan & lanjut</button>
+      <p class="sub">Salin dari Supabase lewat tombol Connect atau Settings → API Keys. Jangan gunakan secret key.</p></div></div></div>`;
 }
 function simpanKoneksi() {
   const url = val('kUrl').replace(/\/+$/, ''), key = val('kKey');
@@ -327,14 +472,15 @@ async function mulai(cfg) {
 }
 
 function layarLogin() {
-  $('#root').innerHTML = `<div class="center"><form class="login card stack" style="padding:24px" onsubmit="event.preventDefault();masuk(this.querySelector('button'))">
-    <div class="brand"><div class="logo">🏍️</div><span>CRM Dealer Motor</span></div>
-    <div><h1>Masuk</h1><p class="sub">Gunakan email & kata sandi dari admin dealer.</p></div>
-    <div class="field"><label>Email</label><input id="lgEmail" class="inp" type="email" autocomplete="username" required></div>
-    <div class="field"><label>Kata sandi</label><input id="lgPass" class="inp" type="password" autocomplete="current-password" required></div>
-    <button class="btn pri full" type="submit">Masuk</button>
-    ${S.cfg && !S.cfg.tetap ? '<button type="button" class="btn sm" style="align-self:center" onclick="gantiKoneksi()">Ganti koneksi</button>' : ''}
-  </form></div>`;
+  $('#root').innerHTML = `<div class="center"><div class="center-col">
+    <div class="login-hd"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer Motor</span></div>
+      <h1>Masuk</h1><p>Gunakan email dan kata sandi dari admin dealer.</p></div>
+    <form class="login card stack" style="padding:22px" onsubmit="event.preventDefault();masuk(this.querySelector('button'))">
+      <div class="field"><label>Email</label><input id="lgEmail" class="inp" type="email" autocomplete="username" required></div>
+      <div class="field"><label>Kata sandi</label><input id="lgPass" class="inp" type="password" autocomplete="current-password" required></div>
+      <button class="btn pri full" type="submit">Masuk</button>
+      ${S.cfg && !S.cfg.tetap ? '<button type="button" class="btn sm" style="align-self:center" onclick="gantiKoneksi()">Ganti koneksi</button>' : ''}
+    </form></div></div>`;
 }
 async function masuk(btn) {
   await aman(async () => {
@@ -379,19 +525,19 @@ const opsiTipe = (sel, kosong = 'Pilih tipe motor') => `<option value="">${koson
 // ---------------------------------------------------------------------
 function menu() {
   return isAdmin()
-    ? [['hari', '🏠', 'Hari Ini'], ['leads', '👥', 'Leads'], ['order', '📦', 'Order'], ['laporan', '📊', 'Laporan'], ['lain', '☰', 'Lainnya']]
-    : [['hari', '🏠', 'Hari Ini'], ['leads', '👥', 'Leads'], ['order', '📦', 'Order'], ['tim', '🏆', 'Tim'], ['lain', '☰', 'Lainnya']];
+    ? [['hari', 'home', 'Hari Ini'], ['leads', 'users', 'Leads'], ['order', 'box', 'Order'], ['laporan', 'chart', 'Laporan'], ['lain', 'menu', 'Lainnya']]
+    : [['hari', 'home', 'Hari Ini'], ['leads', 'users', 'Leads'], ['order', 'box', 'Order'], ['tim', 'trophy', 'Tim'], ['lain', 'menu', 'Lainnya']];
 }
 function gambarShell() {
-  const m = menu();
+  const m = menu(), peran = isAdmin() ? 'Admin' : 'Sales';
   $('#root').innerHTML = `<div class="shell">
-    <aside class="side"><div class="brand"><div class="logo">🏍️</div><span>CRM Dealer</span></div>
-      <nav>${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')"><span>${i}</span>${t}</button>`).join('')}</nav>
-      <div class="who"><b style="color:var(--ink)">${esc(S.me.nama)}</b><br>${S.me.peran === 'ADMIN' ? 'Admin' : 'Sales'}</div></aside>
-    <header class="top"><div class="brand"><div class="logo">🏍️</div><span>CRM Dealer</span></div>
-      <div class="row"><span class="sub">${esc(S.me.nama)}</span><span class="pill ${isAdmin() ? 'p-indigo' : 'p-blue'}">${isAdmin() ? 'Admin' : 'Sales'}</span></div></header>
+    <aside class="side"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer</span></div>
+      <nav>${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')">${ico(i)}${t}</button>`).join('')}</nav>
+      <div class="who"><b>${esc(S.me.nama)}</b>${peran}</div></aside>
+    <header class="top"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer</span></div>
+      <div class="who-top"><b>${esc(S.me.nama)}</b><span class="role">${peran}</span></div></header>
     <main class="main" id="view"></main>
-    <nav class="bnav">${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')"><span class="ic">${i}</span>${t}</button>`).join('')}</nav>
+    <nav class="bnav">${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')"><span class="ico">${ico(i)}</span>${t}</button>`).join('')}</nav>
   </div>`;
 }
 const VIEWS = {};
@@ -438,21 +584,25 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if ($('#
 // ---------------------------------------------------------------------
 function kartuLead(l, ekstra = '') {
   const k = l.konsumen || {};
-  const telat = l.followup_berikutnya && new Date(l.followup_berikutnya) < new Date() && AKTIF.includes(l.tahap);
+  const aktif = AKTIF.includes(l.tahap);
+  const telat = aktif && l.followup_berikutnya && new Date(l.followup_berikutnya) < new Date();
+  const hp = k.hp || l.hp;
   return `<div class="item" onclick="bukaLead(${l.id || l.lead_id})">
-    <div class="av" style="background:${l.suhu === 'HOT' ? '#b91c1c' : l.suhu === 'WARM' ? '#b45309' : '#0f172a'}">${esc((k.nama || l.nama || '?').charAt(0).toUpperCase())}</div>
+    ${gauge(l.skor, l.suhu, 48)}
     <div class="mid"><div class="nm">${esc(k.nama || l.nama)}</div>
-      <div class="meta">${esc(l.tipe_motor ? tipeNama(l.tipe_motor) : 'Tipe belum dipilih')}${isAdmin() && l.sales ? ' · ' + esc(l.sales.nama) : ''}</div>
-      <div class="row" style="margin-top:6px;gap:5px">${pTahap(l.tahap)}${pSuhu(l.suhu, l.skor)}${telat ? pill('Terlambat', 'p-red') : ''}${ekstra}</div></div>
-    ${AKTIF.includes(l.tahap) ? `<div class="sub" style="text-align:right;flex:none">${l.followup_berikutnya ? 'FU<br>' + jam(l.followup_berikutnya) : ''}</div>` : ''}
+      <div class="meta">${esc(l.tipe_motor ? tipeNama(l.tipe_motor) : 'Tipe belum dipilih')}${isAdmin() && l.sales ? ' — ' + esc(l.sales.nama) : ''}</div>
+      <div class="tags">${pTahap(l.tahap)}${telat ? pill('Terlambat', 'p-red') : ''}${ekstra}</div></div>
+    <div class="right">${aktif && l.followup_berikutnya ? `<span class="when${telat ? ' late' : ''}">${jam(l.followup_berikutnya)}</span>` : ''}
+      ${aktif && hp ? `<a class="wa-dot" href="${waLink(hp)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" aria-label="WhatsApp ${esc(k.nama || l.nama)}">${ico('chat', 2)}</a>` : ''}</div>
   </div>`;
 }
 function kartuOrder(o) {
   return `<div class="item" onclick="bukaOrder(${o.id})">
-    <div class="av" style="background:#334155">📦</div>
-    <div class="mid"><div class="nm">${esc(o.konsumen?.nama)} <span class="sub">· ${esc(o.no_spk)}</span></div>
-      <div class="meta">${esc(tipeNama(o.tipe))} ${esc(o.warna)} · ${o.metode_bayar === 'KREDIT' ? 'Kredit' : 'Cash'}${isAdmin() ? ' · ' + esc(o.sales?.nama) : ''}</div>
-      <div class="row" style="margin-top:6px;gap:5px">${pOrder(o.status)}<span class="sub">${rp(kePesanan(o))}</span></div></div>
+    <div class="av">${ico('box')}</div>
+    <div class="mid"><div class="nm">${esc(o.konsumen?.nama)}</div>
+      <div class="meta">${esc(o.no_spk)} — ${esc(tipeNama(o.tipe))} ${esc(o.warna)}${isAdmin() ? ' — ' + esc(o.sales?.nama) : ''}</div>
+      <div class="tags">${pOrder(o.status)}${pill(o.metode_bayar === 'KREDIT' ? 'Kredit' : 'Cash', 'p-gray')}</div></div>
+    <div class="right"><span class="num" style="font-size:14px">${rp(kePesanan(o))}</span></div>
   </div>`;
 }
 
@@ -481,28 +631,30 @@ VIEWS.hari = async (v) => {
         .or(`aktivitas_terakhir.is.null,aktivitas_terakhir.lt.${new Date(Date.now() - 30 * 864e5).toISOString()}`)),
     ]);
     const izinTunggu = izin.filter((i) => i.setuju_pemilik !== false).length;
-    adminHtml = `<h2 class="mt2">Antrian admin</h2>
-      <div class="grid4 mt">
+    adminHtml = `<div class="sec-title"><h2>Antrian admin</h2></div>
+      <div class="grid4">
         <div class="stat" onclick="S.f.orderStatus='SPK';buka('order')" style="cursor:pointer"><b>${spk.length}</b><span>SPK menunggu bayar / unit</span></div>
         <div class="stat" onclick="S.f.orderStatus='SIAP_KIRIM';buka('order')" style="cursor:pointer"><b>${siap.length}</b><span>Siap kirim</span></div>
         <div class="stat" onclick="S.f.orderStatus='TERKIRIM';buka('order')" style="cursor:pointer"><b>${reg.length}</b><span>STNK/plat/BPKB belum tuntas</span></div>
         <div class="stat" onclick="buka('lain')" style="cursor:pointer"><b>${izinTunggu}</b><span>Izin sumber menunggu</span></div>
       </div>
-      ${basi.length ? `<h2 class="mt2">Bisa dialihkan <span class="sub">· tidak ada aktivitas 30 hari</span></h2><div class="stack mt">${basi.map((l) => kartuLead(l)).join('')}</div>` : ''}`;
+      ${basi.length ? `<div class="sec-title"><h2>Bisa dialihkan</h2><span class="sub">Tanpa aktivitas 30 hari</span></div><div class="list">${basi.map((l) => kartuLead(l)).join('')}</div>` : ''}`;
   }
-  v.innerHTML = `<div class="head"><div><h1>Halo, ${esc(S.me.nama.split(' ')[0])}</h1>
-      <p class="sub">${new Date().toLocaleDateString('id-ID', { ...TZ, weekday: 'long', day: 'numeric', month: 'long' })}</p></div></div>
-    <div class="grid4">
-      <div class="stat"><b>${fu.length}</b><span>Follow-up hari ini</span></div>
-      <div class="stat"><b style="color:${telat ? 'var(--red)' : 'inherit'}">${telat}</b><span>Terlambat</span></div>
-      <div class="stat"><b>${statLead.length}</b><span>Lead aktif</span></div>
-      <div class="stat"><b style="color:var(--red)">${statLead.filter((l) => l.suhu === 'HOT').length}</b><span>HOT</span></div>
-    </div>
+  const hot = statLead.filter((l) => l.suhu === 'HOT').length;
+  v.innerHTML = `<section class="hero">
+      <h1>Halo, ${esc(S.me.nama.split(' ')[0])}</h1>
+      <p class="sub">${new Date().toLocaleDateString('id-ID', { ...TZ, weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      <div class="lamps">
+        <div class="lamp go"><b>${fu.length}</b><span><i></i>Follow-up hari ini</span></div>
+        <div class="lamp${telat ? ' alert' : ''}"><b>${telat}</b><span><i></i>Terlambat</span></div>
+        <button class="lamp" onclick="S.f.leadTahap='AKTIF';S.f.leadSuhu='';buka('leads')"><b>${statLead.length}</b><span><i></i>Lead aktif</span></button>
+        <button class="lamp${hot ? ' hot' : ''}" onclick="S.f.leadTahap='AKTIF';S.f.leadSuhu='HOT';buka('leads')"><b>${hot}</b><span><i></i>Hot</span></button>
+      </div></section>
     ${adminHtml}
-    <h2 class="mt2">Follow-up hari ini</h2>
-    <div class="stack mt">${urut.length ? urut.map((l) => kartuLead(l)).join('') : '<div class="empty">Semua follow-up hari ini sudah beres 👍</div>'}</div>
-    ${siapUlang.length ? `<h2 class="mt2">Siap prospek ulang</h2><div class="stack mt">${siapUlang.map((l) => `<div class="item" onclick="bukaLead(${l.lead_id})"><div class="av" style="background:#64748b">↩</div><div class="mid"><div class="nm">${esc(l.nama)}</div><div class="meta">${esc(L.lost[l.alasan_lost])} · jadwal ${tgl(l.jadwal_prospek_ulang)}</div></div></div>`).join('')}</div>` : ''}
-    <button class="fab" onclick="formLead()">+ Lead</button>`;
+    <div class="sec-title"><h2>Follow-up hari ini</h2>${telat ? `<span class="sub">Yang terlambat di atas</span>` : ''}</div>
+    <div class="list">${urut.length ? urut.map((l) => kartuLead(l)).join('') : '<div class="empty">Semua follow-up hari ini sudah beres.</div>'}</div>
+    ${siapUlang.length ? `<div class="sec-title"><h2>Siap prospek ulang</h2></div><div class="list">${siapUlang.map((l) => `<div class="item" onclick="bukaLead(${l.lead_id})"><div class="av">${ico('back')}</div><div class="mid"><div class="nm">${esc(l.nama)}</div><div class="meta">${esc(L.lost[l.alasan_lost])} — jadwal ${tgl(l.jadwal_prospek_ulang)}</div></div></div>`).join('')}</div>` : ''}
+    <button class="fab" onclick="formLead()">${ico('plus', 2.4)}Lead</button>`;
 };
 
 // =====================================================================
@@ -518,16 +670,16 @@ VIEWS.leads = async (v) => {
   const data = await q(qy);
   const chipT = [['AKTIF', 'Aktif'], ...Object.entries(L.tahap)];
   v.innerHTML = `<div class="head"><div><h1>Leads</h1><p class="sub">${isAdmin() ? 'Semua lead tim' : 'Lead milik Anda'}</p></div>
-      <button class="btn pri" onclick="formLead()">+ Lead baru</button></div>
+      <button class="btn pri" onclick="formLead()">${ico('plus', 2.4)}Lead baru</button></div>
     <div class="card stack" style="padding:12px">
       <input id="cari" class="inp" placeholder="Cari nama atau nomor HP…" value="${esc(f.leadCari)}" oninput="S.f.leadCari=this.value;saringLeads()">
       <div class="chips">${chipT.map(([k, t]) => `<button class="chip${f.leadTahap === k ? ' on' : ''}" onclick="S.f.leadTahap='${k}';buka('leads')">${t}</button>`).join('')}</div>
       <div class="row">
-        <div class="chips">${['', 'HOT', 'WARM', 'COLD'].map((s) => `<button class="chip${f.leadSuhu === s ? ' on' : ''}" onclick="S.f.leadSuhu='${s}';buka('leads')">${s || 'Semua suhu'}</button>`).join('')}</div>
-        ${isAdmin() ? `<select class="inp" style="width:auto;padding:7px 10px" onchange="S.f.leadSales=this.value;buka('leads')"><option value="">Semua sales</option>${S.orang.map((p) => `<option value="${p.id}"${f.leadSales === p.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>` : ''}
+        <div class="chips">${['', 'HOT', 'WARM', 'COLD'].map((s) => `<button class="chip${f.leadSuhu === s ? ' on' : ''}" onclick="S.f.leadSuhu='${s}';buka('leads')">${s ? LABEL_SUHU[s] : 'Semua suhu'}</button>`).join('')}</div>
+        ${isAdmin() ? `<select class="inp" style="width:auto;min-height:38px;padding:6px 34px 6px 12px" onchange="S.f.leadSales=this.value;buka('leads')"><option value="">Semua sales</option>${S.orang.map((p) => `<option value="${p.id}"${f.leadSales === p.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>` : ''}
       </div></div>
-    <div id="daftarLead" class="stack mt"></div>
-    <button class="fab" onclick="formLead()">+ Lead</button>`;
+    <div id="daftarLead"></div>
+    <button class="fab" onclick="formLead()">${ico('plus', 2.4)}Lead</button>`;
   S._leads = data;
   saringLeads();
 };
@@ -536,7 +688,8 @@ function saringLeads() {
   const cDigit = c.replace(/\D/g, '').replace(/^0/, '62');
   const d = (S._leads || []).filter((l) => !c || (l.konsumen?.nama || '').toLowerCase().includes(c) || (cDigit.length >= 3 && (l.konsumen?.hp || '').includes(cDigit)));
   const el = $('#daftarLead'); if (!el) return;
-  el.innerHTML = d.length ? `<p class="sub">${d.length} lead</p>` + d.map((l) => kartuLead(l)).join('') : '<div class="empty">Tidak ada lead yang cocok.</div>';
+  el.innerHTML = d.length ? `<p class="sub" style="margin:16px 4px 8px">${d.length} lead</p><div class="list">${d.map((l) => kartuLead(l)).join('')}</div>`
+    : '<div class="empty mt">Tidak ada lead yang cocok. Ubah filter atau tambah lead baru.</div>';
 }
 
 // ---------- Form tambah lead ----------
@@ -574,7 +727,7 @@ async function cekHp() {
     const [r] = await q(sb.rpc('cek_hp', { p_hp: hp }));
     if (r.status === 'BARU') info.innerHTML = '<div class="ok">Nomor baru. Konsumen baru akan dibuat.</div>';
     else if (r.status === 'BEBAS') { info.innerHTML = `<div class="note">Konsumen lama: <b>${esc(r.nama_konsumen)}</b>. Lead baru akan dibuat (repeat order / prospek ulang).</div>`; if (!val('nNama')) $('#nNama').value = r.nama_konsumen; }
-    else if (r.status === 'MILIK_SAYA') { btn.disabled = true; info.innerHTML = `<div class="warn">Konsumen ini sudah ada di lead aktif Anda. <a href="#" onclick="event.preventDefault();tutupModal();bukaLead(${r.lead_id})">Buka lead →</a></div>`; }
+    else if (r.status === 'MILIK_SAYA') { btn.disabled = true; info.innerHTML = `<div class="warn">Konsumen ini sudah ada di lead aktif Anda. <a href="#" onclick="event.preventDefault();tutupModal();bukaLead(${r.lead_id})">Buka lead</a></div>`; }
     else { btn.disabled = true; info.innerHTML = `<div class="bad">Sedang ditangani <b>${esc(r.pemilik)}</b>. ${r.bisa_dialihkan ? 'Tidak ada aktivitas 30 hari: minta admin mengalihkan lead ini.' : 'Tidak bisa dibuat lead ganda.'}</div>`; }
   } catch (e) { info.innerHTML = `<div class="bad">${esc(pesanError(e))}</div>`; }
 }
@@ -610,25 +763,32 @@ function gambarLead(l, akt, ord) {
   const sapa = `Halo ${k.nama.split(' ')[0]}, saya ${S.me.nama} dari dealer.`;
   const lanjut = { BARU: null, DIHUBUNGI: 'PROSPEK', PROSPEK: 'NEGOSIASI', NEGOSIASI: null }[l.tahap];
   const bisaSpk = ['DIHUBUNGI', 'PROSPEK', 'NEGOSIASI'].includes(l.tahap);
-  panel(esc(k.nama), `${hpTampil(k.hp)} · ${esc(l.sales?.nama)} · ${esc(l.sumber?.nama)}`, `
-    <div class="row">${pTahap(l.tahap)}${pSuhu(l.suhu, l.skor)}
-      ${aktif && l.followup_berikutnya ? `<span class="sub">Follow-up: <b>${jam(l.followup_berikutnya)}</b></span>` : ''}</div>
-    <div class="mt"><div class="steps">${[0, 1, 2, 3, 4].map((i) => `<div class="${i <= idx && l.tahap !== 'LOST' ? 'on' : i <= idx ? 'on' : ''}" ${l.tahap === 'LOST' && i <= idx ? 'style="background:#cbd5e1"' : ''}></div>`).join('')}</div>
-      <div class="steps-l"><span>Baru</span><span>Dihubungi</span><span>Prospek</span><span>Negosiasi</span><span>Deal</span></div></div>
-    <div class="row mt">
-      <a class="btn wa" href="${waLink(k.hp, sapa)}" target="_blank" rel="noopener">💬 WhatsApp</a>
-      <a class="btn" href="tel:+${esc(k.hp)}">📞 Telepon</a>
-      ${lanjut ? `<button class="btn" onclick="naikTahap(${l.id},'${lanjut}',this)">Naikkan ke ${L.tahap[lanjut]} →</button>` : ''}
-      ${bisaSpk ? `<button class="btn green" onclick="formSpk(${l.id})">Buat SPK</button>` : ''}
+  panel(esc(k.nama), `${hpTampil(k.hp)} — ${esc(l.sales?.nama)}, ${esc(l.sumber?.nama)}`, `
+    <div class="blk">
+      <div class="row" style="gap:16px;flex-wrap:nowrap">
+        ${gauge(l.skor, l.suhu, 96)}
+        <div style="flex:1;min-width:0">
+          <div class="num" style="font-size:38px;line-height:1">${l.skor}<span style="font-size:15px;color:var(--muted);font-weight:650;font-stretch:100%;letter-spacing:0;margin-left:5px">/ 100</span></div>
+          <div class="row" style="margin-top:8px;gap:6px">${pill(LABEL_SUHU[l.suhu] || l.suhu, WARNA_SUHU[l.suhu])}${pTahap(l.tahap)}</div>
+          ${aktif && l.followup_berikutnya ? `<div class="sub" style="margin-top:7px">Follow-up <b style="color:var(--ink)">${jam(l.followup_berikutnya)}</b></div>` : ''}
+        </div>
+      </div>
+      <div class="mt">${gigi(l)}</div>
+      <div class="row mt">
+        <a class="btn wa" href="${waLink(k.hp, sapa)}" target="_blank" rel="noopener">${ico('chat', 2)}WhatsApp</a>
+        <a class="btn" href="tel:+${esc(k.hp)}">${ico('phone')}Telepon</a>
+        ${lanjut ? `<button class="btn" onclick="naikTahap(${l.id},'${lanjut}',this)">Naikkan ke ${L.tahap[lanjut]}</button>` : ''}
+        ${bisaSpk ? `<button class="btn green" onclick="formSpk(${l.id})">Buat SPK</button>` : ''}
+      </div>
+      ${l.tahap === 'LOST' ? `<div class="bad mt"><b>Lost:</b> ${esc(L.lost[l.alasan_lost])}${l.catatan_lost ? ' — ' + esc(l.catatan_lost) : ''}${l.jadwal_prospek_ulang ? '<br>Jadwal prospek ulang: ' + tgl(l.jadwal_prospek_ulang) : ''}
+          <div class="row mt"><button class="btn pri sm" onclick="prospekUlang(${l.id},this)">${ico('back')}Prospek ulang</button></div></div>` : ''}
+      ${ord.length ? `<div class="note mt">${ord.map((o) => `SPK <b>${esc(o.no_spk)}</b> ${pOrder(o.status)} <a href="#" onclick="event.preventDefault();bukaOrder(${o.id})">Buka order</a>`).join('<br>')}</div>` : ''}
+      ${l.tahap === 'BARU' ? '<div class="warn mt">Lead baru: hubungi secepatnya. Catat hasil kontak di bawah, tahap akan naik otomatis.</div>' : ''}
     </div>
-    ${l.tahap === 'LOST' ? `<div class="bad mt"><b>Lost:</b> ${esc(L.lost[l.alasan_lost])}${l.catatan_lost ? ' — ' + esc(l.catatan_lost) : ''}${l.jadwal_prospek_ulang ? '<br>Jadwal prospek ulang: ' + tgl(l.jadwal_prospek_ulang) : ''}
-        <div class="row mt"><button class="btn pri sm" onclick="prospekUlang(${l.id},this)">↩ Prospek ulang (buat lead baru)</button></div></div>` : ''}
-    ${ord.length ? `<div class="note mt">${ord.map((o) => `SPK <b>${esc(o.no_spk)}</b> ${pOrder(o.status)} <a href="#" onclick="event.preventDefault();bukaOrder(${o.id})">Buka order →</a>`).join('<br>')}</div>` : ''}
-    ${l.tahap === 'BARU' ? '<div class="warn mt">Lead baru: hubungi secepatnya. Catat hasil kontak di bawah, tahap akan naik otomatis.</div>' : ''}
 
-    ${l.tahap !== 'LOST' ? `<div class="sec"><h3>Catat aktivitas</h3>
+    ${l.tahap !== 'LOST' ? `<div class="blk sec"><h3>Catat aktivitas</h3>
       <div class="chips" id="jenisAkt">${['TELEPON', 'WHATSAPP', 'KUNJUNGAN_DEALER', 'KUNJUNGAN_RUMAH', 'TEST_RIDE', 'PENAWARAN', 'SIMULASI_KREDIT', 'CATATAN']
-        .map((j, i) => `<button class="chip${i === 0 ? ' on' : ''}" data-j="${j}" onclick="pilihJenis(this)">${L.ikon[j]} ${L.jenis[j]}</button>`).join('')}</div>
+        .map((j, i) => `<button class="chip${i === 0 ? ' on' : ''}" data-j="${j}" onclick="pilihJenis(this)">${ico(IKON_JENIS[j])}${L.jenis[j]}</button>`).join('')}</div>
       <div class="stack mt">
         <div class="row" id="hasilAkt"><label class="chk"><input type="radio" name="hasil" value="TERHUBUNG"> Terhubung</label>
           <label class="chk"><input type="radio" name="hasil" value="TIDAK_TERHUBUNG"> Tidak terhubung</label></div>
@@ -639,7 +799,7 @@ function gambarLead(l, akt, ord) {
         <button class="btn pri" onclick="simpanAktivitas(${l.id},this)">Simpan aktivitas</button>
       </div></div>` : ''}
 
-    <div class="sec"><h3>Kebutuhan</h3>
+    <div class="blk sec"><h3>Kebutuhan</h3>
       <div class="stack">
         <div class="field"><label>Tipe motor</label><select id="kTipe" class="inp" ${aktif ? '' : 'disabled'}>${opsiTipe(l.tipe_motor_id)}</select></div>
         <div class="grid2"><div class="field"><label>Warna</label><input id="kWarna" class="inp" value="${esc(l.warna)}" ${aktif ? '' : 'disabled'}></div>
@@ -647,12 +807,16 @@ function gambarLead(l, akt, ord) {
         <div class="grid2"><div class="field"><label>Rencana beli</label><select id="kRencana" class="inp" ${aktif ? '' : 'disabled'}>${opsi(L.rencana, l.rencana_beli, 'Belum ditanya')}</select></div>
           <div class="field"><label>Rencana DP (Rp)</label><input id="kDp" type="number" inputmode="numeric" class="inp" value="${l.dp_rencana ?? ''}" ${aktif ? '' : 'disabled'}></div></div>
         <label class="chk"><input type="checkbox" id="kDana" ${l.dana_siap ? 'checked' : ''} ${aktif ? '' : 'disabled'}> Dana / DP sudah siap</label>
-        <div class="sub">Otomatis dari aktivitas: ${l.sudah_lihat_unit ? '✅' : '⬜'} sudah lihat unit / test ride · ${l.sudah_penawaran ? '✅' : '⬜'} sudah terima penawaran${l.gagal_hubungi_beruntun ? ` · ⚠️ ${l.gagal_hubungi_beruntun}x gagal dihubungi` : ''}</div>
+        <div class="checklist" style="background:#F7F9FC;border-radius:12px;padding:11px 12px">
+          <div class="sub" style="font-weight:650">Terisi otomatis dari aktivitas</div>
+          <div>${centang(l.sudah_lihat_unit)}Sudah lihat unit atau test ride</div>
+          <div>${centang(l.sudah_penawaran)}Sudah terima penawaran atau simulasi</div>
+          ${l.gagal_hubungi_beruntun ? `<div style="color:var(--hot)">${centang(false)}${l.gagal_hubungi_beruntun} kali berturut-turut gagal dihubungi</div>` : ''}</div>
         <div class="field"><label>Catatan lead</label><textarea id="kCatatan" class="inp">${esc(l.catatan)}</textarea></div>
         <button class="btn" onclick="simpanKebutuhan(${l.id},this)">Simpan kebutuhan</button>
       </div></div>
 
-    <div class="sec"><h3>Data konsumen</h3>
+    <div class="blk sec"><h3>Data konsumen</h3>
       <div class="stack">
         <div class="grid2"><div class="field"><label>Nama</label><input id="cNama" class="inp" value="${esc(k.nama)}"></div>
           <div class="field"><label>No HP</label><input id="cHp" class="inp" inputmode="tel" value="${esc(hpTampil(k.hp))}"></div></div>
@@ -664,15 +828,15 @@ function gambarLead(l, akt, ord) {
         <button class="btn" onclick="simpanKonsumen(${k.id},${l.id},this)">Simpan data konsumen</button>
       </div></div>
 
-    <div class="sec"><h3>Riwayat</h3>
-      <div class="tl">${akt.length ? akt.map((a) => `<div class="ev"><div class="dot">${L.ikon[a.jenis] || '•'}</div><div style="flex:1">
-        <b>${esc(L.jenis[a.jenis])}</b>${a.hasil ? ' · ' + (a.hasil === 'TERHUBUNG' ? '<span style="color:var(--green)">terhubung</span>' : '<span style="color:var(--red)">tidak terhubung</span>') : ''}
-        ${a.catatan ? `<div>${esc(a.catatan)}</div>` : ''}<div class="sub">${jam(a.created_at)} · ${esc(a.user?.nama || 'sistem')}</div></div></div>`).join('')
+    <div class="blk sec"><h3>Riwayat</h3>
+      <div class="tl">${akt.length ? akt.map((a) => `<div class="ev"><div class="dot">${ico(IKON_JENIS[a.jenis] || 'note')}</div><div style="flex:1">
+        <b>${esc(L.jenis[a.jenis])}</b>${a.hasil ? ' · ' + (a.hasil === 'TERHUBUNG' ? '<span style="color:var(--ok);font-weight:650">terhubung</span>' : '<span style="color:var(--hot);font-weight:650">tidak terhubung</span>') : ''}
+        ${a.catatan ? `<div>${esc(a.catatan)}</div>` : ''}<div class="sub">${jam(a.created_at)}, ${esc(a.user?.nama || 'sistem')}</div></div></div>`).join('')
         : '<div class="sub">Belum ada aktivitas.</div>'}
-        <div class="ev"><div class="dot">✨</div><div><b>Lead masuk</b><div class="sub">${jam(l.created_at)}${l.prospek_ulang_dari ? ` · prospek ulang dari <a href="#" onclick="event.preventDefault();bukaLead(${l.prospek_ulang_dari})">lead #${l.prospek_ulang_dari}</a>` : ''}</div></div></div>
+        <div class="ev"><div class="dot">${ico('spark')}</div><div><b>Lead masuk</b><div class="sub">${jam(l.created_at)}${l.prospek_ulang_dari ? ` · prospek ulang dari <a href="#" onclick="event.preventDefault();bukaLead(${l.prospek_ulang_dari})">lead #${l.prospek_ulang_dari}</a>` : ''}</div></div></div>
       </div></div>
 
-    ${aktif ? `<div class="sec"><h3>Tutup lead</h3>
+    ${aktif ? `<div class="blk sec"><h3>Tutup lead</h3>
       <div class="stack">
         <div class="field"><label>Alasan lost</label><select id="xAlasan" class="inp">${opsi(L.lost, '', 'Pilih alasan')}</select></div>
         <input id="xCatatan" class="inp" placeholder="Catatan (wajib untuk Lainnya)">
@@ -680,10 +844,10 @@ function gambarLead(l, akt, ord) {
         <button class="btn danger" onclick="tutupLost(${l.id},this)">Tandai LOST</button>
       </div></div>` : ''}
 
-    ${isAdmin() && aktif ? `<div class="sec"><h3>Alihkan ke sales lain</h3><div class="row">
+    ${isAdmin() && aktif ? `<div class="blk sec"><h3>Alihkan ke sales lain</h3><div class="row">
       <select id="xSales" class="inp" style="flex:1">${S.orang.filter((p) => p.aktif).map((p) => `<option value="${p.id}"${p.id === l.sales_id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>
       <button class="btn" onclick="alihkan(${l.id},this)">Alihkan</button></div></div>` : ''}
-    ${(l.tahap === 'BARU' && !akt.length) || (isAdmin() && !ord.length) ? `<div class="sec"><button class="btn danger sm" onclick="hapusLead(${l.id},this)">Hapus lead (salah input)</button></div>` : ''}
+    ${(l.tahap === 'BARU' && !akt.length) || (isAdmin() && !ord.length) ? `<div class="blk sec"><button class="btn danger sm" onclick="hapusLead(${l.id},this)">Hapus lead (salah input)</button></div>` : ''}
   `, 'lead:' + l.id);
   pilihJenis($('#jenisAkt .chip.on'));
 }
@@ -786,7 +950,7 @@ VIEWS.order = async (v) => {
   const data = await q(qy);
   v.innerHTML = `<div class="head"><div><h1>Order</h1><p class="sub">SPK sampai STNK & BPKB selesai</p></div></div>
     <div class="chips">${[['AKTIF', 'Berjalan'], ...Object.entries(L.order)].map(([k, t]) => `<button class="chip${f.orderStatus === k ? ' on' : ''}" onclick="S.f.orderStatus='${k}';buka('order')">${t}</button>`).join('')}</div>
-    <div class="stack mt">${data.length ? data.map(kartuOrder).join('') : '<div class="empty">Belum ada order di kategori ini. SPK dibuat dari halaman detail lead.</div>'}</div>`;
+    <div class="${data.length ? 'list' : ''} mt">${data.length ? data.map(kartuOrder).join('') : '<div class="empty">Belum ada order di kategori ini. SPK dibuat dari halaman detail lead.</div>'}</div>`;
 };
 
 async function bukaOrder(id) {
@@ -824,35 +988,39 @@ function gambarOrder(o, bayar, kredit, reg, stok) {
   const bisaUbah = ['SPK', 'SIAP_KIRIM'].includes(o.status);
   const k = o.konsumen;
 
-  panel(esc(o.no_spk) + ' · ' + esc(k.nama), `${esc(tipeNama(o.tipe))} ${esc(o.warna)} · ${o.metode_bayar === 'KREDIT' ? 'Kredit' : 'Cash'} · ${esc(o.sales?.nama)}`, `
-    <div class="row">${pOrder(o.status)}<span class="sub">SPK ${tgl(o.tgl_spk)}</span>
-      <a class="btn sm wa" style="margin-left:auto" href="${waLink(k.hp)}" target="_blank" rel="noopener">💬 WA</a>
-      <button class="btn sm" onclick="bukaLead(${o.lead_id})">Lead</button></div>
-    ${o.status !== 'BATAL' ? `<div class="mt"><div class="steps">${[0, 1, 2, 3].map((i) => `<div class="${i <= idx ? 'on' : ''}"></div>`).join('')}</div>
-      <div class="steps-l"><span>SPK</span><span>Siap kirim</span><span>Terkirim</span><span>Selesai</span></div></div>`
-      : `<div class="bad mt"><b>Dibatalkan</b> ${tgl(o.batal_at)} — ${esc(o.alasan_batal)}</div>`}
+  const tahapOrder = ['SPK', 'Siap kirim', 'Terkirim', 'Selesai'];
+  panel(esc(k.nama), `${esc(o.no_spk)} — ${esc(tipeNama(o.tipe))} ${esc(o.warna)}, ${o.metode_bayar === 'KREDIT' ? 'kredit' : 'cash'}`, `
+    <div class="blk">
+      <div class="row between">
+        <div class="row" style="gap:8px">${pOrder(o.status)}<span class="sub">SPK ${tgl(o.tgl_spk)} oleh ${esc(o.sales?.nama)}</span></div>
+        <div class="row" style="gap:6px"><a class="btn sm wa" href="${waLink(k.hp)}" target="_blank" rel="noopener">${ico('chat', 2)}WA</a>
+          <button class="btn sm" onclick="bukaLead(${o.lead_id})">Lead</button></div>
+      </div>
+      ${o.status !== 'BATAL' ? `<div class="gear mt" style="grid-template-columns:repeat(4,1fr)">${tahapOrder.map((t, i) =>
+          `<div class="${i < idx ? 'done' : i === idx ? 'cur' : ''}"><b>${i + 1}</b><span>${t}</span></div>`).join('')}</div>`
+        : `<div class="bad mt"><b>Dibatalkan</b> ${tgl(o.batal_at)} — ${esc(o.alasan_batal)}</div>`}
+      <dl class="kv mt" style="background:#F7F9FC;border-radius:14px;padding:13px 14px">
+        <dt>Harga OTR</dt><dd>${rp(o.harga_otr)}</dd><dt>Diskon</dt><dd>− ${rp(o.diskon)}</dd>
+        <dt>Harga setelah diskon</dt><dd class="big">${rp(net)}</dd><dt>Total dibayar</dt><dd>${rp(total)}</dd>
+        ${o.metode_bayar === 'CASH' ? `<dt>Sisa</dt><dd style="color:${net - total > 0 ? 'var(--hot)' : 'var(--ok)'}">${rp(Math.max(0, net - total))}</dd>` : ''}
+        ${appr ? `<dt>Leasing</dt><dd>${esc(appr.leasing.nama)}, ${appr.tenor_bulan} bln × ${rp(appr.angsuran)}</dd>` : ''}
+      </dl>
+    </div>
 
-    <dl class="kv mt card">
-      <dt>Harga OTR</dt><dd>${rp(o.harga_otr)}</dd><dt>Diskon</dt><dd>− ${rp(o.diskon)}</dd>
-      <dt>Harga setelah diskon</dt><dd>${rp(net)}</dd><dt>Total dibayar</dt><dd>${rp(total)}</dd>
-      ${o.metode_bayar === 'CASH' ? `<dt>Sisa</dt><dd style="color:${net - total > 0 ? 'var(--red)' : 'var(--green)'}">${rp(Math.max(0, net - total))}</dd>` : ''}
-      ${appr ? `<dt>Leasing</dt><dd>${esc(appr.leasing.nama)} · ${appr.tenor_bulan} bln × ${rp(appr.angsuran)}</dd>` : ''}
-    </dl>
-
-    ${o.status === 'SPK' ? `<div class="sec"><h3>Syarat SIAP KIRIM</h3>
-      <div class="checklist">${syarat.map(([t, okk]) => `<div><span>${okk ? '✅' : '⬜'}</span><span>${esc(t)}</span></div>`).join('')}</div>
+    ${o.status === 'SPK' ? `<div class="blk sec"><h3>Syarat SIAP KIRIM</h3>
+      <div class="checklist">${syarat.map(([t, okk]) => `<div>${centang(okk)}<span>${esc(t)}</span></div>`).join('')}</div>
       ${admin ? `<button class="btn pri mt" ${siap ? '' : 'disabled'} onclick="ubahOrder(${o.id},{status:'SIAP_KIRIM'},'Order siap kirim',this)">Tandai SIAP KIRIM</button>`
         : `<p class="sub mt">Admin akan menandai SIAP KIRIM setelah semua syarat terpenuhi.</p>`}</div>` : ''}
 
-    ${o.status === 'SIAP_KIRIM' && milik ? `<div class="sec"><h3>Serah terima unit</h3><div class="stack">
-      <div class="chips" id="caraSerah"><button class="chip on" data-c="ANTAR" onclick="pilihSerah(this)">🚚 Antar ke rumah</button><button class="chip" data-c="AMBIL" onclick="pilihSerah(this)">🏢 Ambil di dealer</button></div>
+    ${o.status === 'SIAP_KIRIM' && milik ? `<div class="blk sec"><h3>Serah terima unit</h3><div class="stack">
+      <div class="chips" id="caraSerah"><button class="chip on" data-c="ANTAR" onclick="pilihSerah(this)">Antar ke rumah</button><button class="chip" data-c="AMBIL" onclick="pilihSerah(this)">Ambil di dealer</button></div>
       <div class="grid2"><div class="field"><label>Tanggal serah</label><input id="tSerah" type="date" class="inp" value="${hariIni()}"></div><div></div></div>
       <div class="field" id="alamatKirimF"><label>Alamat kirim</label><input id="tAlamat" class="inp" value="${esc([k.alamat, k.kelurahan, k.kecamatan].filter(Boolean).join(', '))}"></div>
       <button class="btn green" onclick="serahTerima(${o.id},this)">Konfirmasi unit sudah diserahkan</button></div></div>` : ''}
 
-    ${o.cara_serah ? `<div class="sec"><h3>Serah terima</h3><p>${o.cara_serah === 'ANTAR' ? '🚚 Diantar ke ' + esc(o.alamat_kirim) : '🏢 Diambil di dealer'} · ${tgl(o.tgl_serah)}</p></div>` : ''}
+    ${o.cara_serah ? `<div class="blk sec"><h3>Serah terima</h3><p>${o.cara_serah === 'ANTAR' ? 'Diantar ke ' + esc(o.alamat_kirim) : 'Diambil di dealer'}, ${tgl(o.tgl_serah)}</p></div>` : ''}
 
-    <div class="sec"><h3>Berkas</h3><div class="stack">
+    <div class="blk sec"><h3>Berkas</h3><div class="stack">
       <div class="row" style="gap:16px">
         <label class="chk"><input type="checkbox" id="bKtp" ${o.berkas_ktp ? 'checked' : ''} ${bisaUbah && milik ? '' : 'disabled'}> KTP</label>
         <label class="chk"><input type="checkbox" id="bKk" ${o.berkas_kk ? 'checked' : ''} ${bisaUbah && milik ? '' : 'disabled'}> KK${o.metode_bayar === 'KREDIT' ? ' *' : ''}</label>
@@ -863,21 +1031,21 @@ function gambarOrder(o, bayar, kredit, reg, stok) {
       ${bisaUbah && milik ? `<button class="btn" onclick="simpanBerkas(${o.id},'${o.status}',this)">Simpan berkas</button>` : ''}
     </div></div>
 
-    <div class="sec"><h3>Unit</h3>
-      ${o.unit ? `<div class="card" style="padding:12px"><b>${esc(o.unit.no_rangka)}</b><div class="sub">Mesin ${esc(o.unit.no_mesin)} · ${esc(o.unit.warna)} · ${o.unit.tahun}</div></div>` : '<p class="sub">Belum ada unit dialokasikan.</p>'}
+    <div class="blk sec"><h3>Unit</h3>
+      ${o.unit ? `<div style="background:#F7F9FC;border-radius:12px;padding:12px 13px"><b class="num" style="font-size:16px;letter-spacing:0">${esc(o.unit.no_rangka)}</b><div class="sub">Mesin ${esc(o.unit.no_mesin)}, ${esc(o.unit.warna)}, ${o.unit.tahun}</div></div>` : '<p class="sub">Belum ada unit dialokasikan.</p>'}
       ${admin && bisaUbah ? `<div class="row mt"><select id="uPilih" class="inp" style="flex:1">${stok.length ? stok.map((u) => `<option value="${u.id}">${esc(u.no_rangka)} · ${esc(u.warna)} · ${u.tahun}</option>`).join('') : '<option value="">Stok cocok tidak ada</option>'}</select>
         <button class="btn" ${stok.length ? '' : 'disabled'} onclick="ubahOrder(${o.id},{unit_id:num('uPilih')},'Unit dialokasikan',this)">${o.unit_id ? 'Ganti unit' : 'Alokasikan'}</button>
         ${o.unit_id && o.status === 'SPK' ? `<button class="btn danger" onclick="ubahOrder(${o.id},{unit_id:null},'Unit dilepas',this)">Lepas</button>` : ''}</div>` : ''}
     </div>
 
-    ${o.metode_bayar === 'KREDIT' ? `<div class="sec"><h3>Pengajuan leasing</h3><div class="stack">
+    ${o.metode_bayar === 'KREDIT' ? `<div class="blk sec"><h3>Pengajuan leasing</h3><div class="stack">
       ${kredit.length ? kredit.map((c) => kartuKredit(c, o, milik)).join('') : '<p class="sub">Belum diajukan ke leasing.</p>'}
       ${o.status === 'SPK' && milik && !appr ? `<div class="row"><select id="kLeasing" class="inp" style="flex:1">${S.leasing.filter((x) => x.aktif).map((x) => `<option value="${x.id}">${esc(x.nama)}</option>`).join('')}</select>
         <button class="btn" onclick="ajukanKredit(${o.id},this)">+ Ajukan</button></div>${kreditJalan ? '<p class="sub">Boleh mengajukan ke beberapa leasing sekaligus.</p>' : ''}` : ''}
     </div></div>` : ''}
 
-    <div class="sec"><h3>Pembayaran</h3>
-      ${bayar.length ? `<table class="t"><tr><th>Tanggal</th><th>Jenis</th><th class="n">Jumlah</th></tr>${bayar.map((b) => `<tr><td>${tgl(b.tgl)}</td><td>${esc(L.bayar[b.jenis])}<div class="sub">${esc({ TUNAI: 'Tunai', TRANSFER: 'Transfer', QRIS: 'QRIS', LAINNYA: 'Lainnya' }[b.cara] || b.cara)}${b.catatan ? ' · ' + esc(b.catatan) : ''}</div></td><td class="n" style="${b.jenis === 'REFUND' ? 'color:var(--red)' : ''}">${b.jenis === 'REFUND' ? '−' : ''}${rp(b.jumlah)}</td></tr>`).join('')}</table>` : '<p class="sub">Belum ada pembayaran tercatat.</p>'}
+    <div class="blk sec"><h3>Pembayaran</h3>
+      ${bayar.length ? `<table class="t"><tr><th>Tanggal</th><th>Jenis</th><th class="n">Jumlah</th></tr>${bayar.map((b) => `<tr><td>${tgl(b.tgl)}</td><td>${esc(L.bayar[b.jenis])}<div class="sub">${esc({ TUNAI: 'Tunai', TRANSFER: 'Transfer', QRIS: 'QRIS', LAINNYA: 'Lainnya' }[b.cara] || b.cara)}${b.catatan ? ' · ' + esc(b.catatan) : ''}</div></td><td class="n" style="${b.jenis === 'REFUND' ? 'color:var(--hot)' : ''}">${b.jenis === 'REFUND' ? '−' : ''}${rp(b.jumlah)}</td></tr>`).join('')}</table>` : '<p class="sub">Belum ada pembayaran tercatat.</p>'}
       ${admin && o.status !== 'SELESAI' ? `<div class="stack mt card" style="padding:12px"><b style="font-size:13px">Catat pembayaran (kasir)</b>
         <div class="grid2"><select id="pJenis" class="inp">${opsi(o.status === 'BATAL' ? { REFUND: 'Refund' } : o.metode_bayar === 'KREDIT' ? L.bayar : { TANDA_JADI: 'Tanda jadi', DP: 'DP', PELUNASAN: 'Pelunasan', REFUND: 'Refund' })}</select>
           <input id="pJumlah" type="number" inputmode="numeric" class="inp" placeholder="Jumlah (Rp)"></div>
@@ -890,7 +1058,7 @@ function gambarOrder(o, bayar, kredit, reg, stok) {
 
     ${reg ? gambarRegistrasi(reg, admin) : ''}
 
-    ${bisaUbah && milik ? `<div class="sec"><h3>Batalkan SPK</h3><div class="stack">
+    ${bisaUbah && milik ? `<div class="blk sec"><h3>Batalkan SPK</h3><div class="stack">
       <input id="xBatal" class="inp" placeholder="Alasan batal (wajib)">
       <button class="btn danger" onclick="batalOrder(${o.id},this)">Batalkan SPK</button>
       <p class="sub">Unit kembali ke stok dan lead kembali ke tahap Negosiasi.</p></div></div>` : ''}
@@ -916,7 +1084,7 @@ function kartuKredit(c, o, milik) {
 }
 function gambarRegistrasi(r, admin) {
   const sel = (id, obj, v) => `<select id="${id}" class="inp" ${admin ? '' : 'disabled'}>${opsi(obj, v)}</select>`;
-  return `<div class="sec"><h3>STNK, plat, BPKB</h3><div class="stack">
+  return `<div class="blk sec"><h3>STNK, plat, BPKB</h3><div class="stack">
     <div class="grid2"><div class="field"><label>STNK</label>${sel('rStnk', L.reg, r.stnk_status)}</div>
       <div class="field"><label>No polisi</label><input id="rNopol" class="inp" value="${esc(r.no_polisi)}" placeholder="F 1234 AB" ${admin ? '' : 'disabled'}></div></div>
     <div class="grid2"><div class="field"><label>Plat (TNKB)</label>${sel('rTnkb', { BELUM: 'Belum', JADI: 'Jadi', DISERAHKAN: 'Diserahkan' }, r.tnkb_status)}</div>
@@ -975,22 +1143,26 @@ async function simpanRegistrasi(oid, btn) {
 // TAB: TIM (sales) & papan tim
 // =====================================================================
 function htmlPapan(papan) {
-  return papan.length ? papan.map((p, i) => {
+  return papan.length ? `<div class="list">${papan.map((p, i) => {
     const pct = p.target_do_bulanan ? Math.min(100, Math.round(100 * p.unit_terkirim / p.target_do_bulanan)) : 0;
-    return `<div class="card" style="padding:12px 14px${p.sales_id === S.me.id ? ';border-color:var(--ink)' : ''}">
-      <div class="row between"><b>${i + 1}. ${esc(p.nama)}${p.sales_id === S.me.id ? ' (Anda)' : ''}</b><span class="sub">${p.unit_terkirim}/${p.target_do_bulanan} unit</span></div>
-      <div class="bar mt" style="margin-top:8px"><i style="width:${pct}%"></i></div>
-      <div class="row sub" style="margin-top:6px;gap:12px"><span>${p.lead_baru} lead</span><span>${p.spk} SPK</span><span>konversi ${p.konversi_persen ?? 0}%</span>${p.followup_terlambat ? `<span style="color:var(--red)">${p.followup_terlambat} FU terlambat</span>` : ''}</div></div>`;
-  }).join('') : '<div class="empty">Belum ada sales aktif.</div>';
+    const saya = p.sales_id === S.me.id;
+    return `<div class="item" style="cursor:default;align-items:flex-start${saya ? ';background:#F4F7FC' : ''}">
+      <div class="num" style="font-size:30px;line-height:1;width:34px;color:${i === 0 ? 'var(--navy)' : 'var(--faint)'}">${i + 1}</div>
+      <div class="mid">
+        <div class="row between"><span class="nm">${esc(p.nama)}${saya ? ' (Anda)' : ''}</span><span><b class="num" style="font-size:18px">${p.unit_terkirim}</b><span class="sub"> / ${p.target_do_bulanan} unit</span></span></div>
+        <div class="bar" style="margin-top:8px;height:7px"><i style="width:${pct}%"></i></div>
+        <div class="row sub" style="margin-top:7px;gap:14px"><span>${p.lead_baru} lead baru</span><span>${p.spk} SPK</span><span>Konversi ${p.konversi_persen ?? 0}%</span>${p.followup_terlambat ? `<span style="color:var(--hot);font-weight:650">${p.followup_terlambat} follow-up terlambat</span>` : ''}</div>
+      </div></div>`;
+  }).join('')}</div>` : '<div class="empty">Belum ada sales aktif.</div>';
 }
 VIEWS.tim = async (v) => {
   const [papan, tim] = await Promise.all([q(sb.rpc('papan_tim')), q(sb.rpc('daftar_lead_tim'))]);
-  v.innerHTML = `<div class="head"><div><h1>Papan tim</h1><p class="sub">Bulan ini · urut berdasarkan unit terkirim</p></div></div>
-    <div class="stack">${htmlPapan(papan)}</div>
-    <h2 class="mt2">Lead aktif tim</h2><p class="sub">Nomor HP disamarkan agar konsumen tidak diserobot.</p>
-    <div class="stack mt">${tim.length ? tim.map((l) => `<div class="item" style="cursor:default"><div class="av" style="background:#64748b">${esc(l.nama_depan.charAt(0))}</div>
-      <div class="mid"><div class="nm">${esc(l.nama_depan)} <span class="sub">· ${esc(hpTampil(l.hp_samar))}</span></div><div class="meta">${esc(l.tipe_motor || 'Tipe belum dipilih')} · ${esc(l.sales)}</div>
-      <div class="row" style="margin-top:6px;gap:5px">${pTahap(l.tahap)}${pSuhu(l.suhu, l.skor)}</div></div></div>`).join('') : '<div class="empty">Belum ada lead aktif.</div>'}</div>`;
+  v.innerHTML = `<div class="head"><div><h1>Papan tim</h1><p class="sub">Bulan ini, diurutkan dari unit terkirim terbanyak</p></div></div>
+    ${htmlPapan(papan)}
+    <div class="sec-title"><h2>Lead aktif tim</h2></div><p class="sub" style="margin:-4px 2px 10px">Nomor HP disamarkan agar konsumen tidak diserobot.</p>
+    <div class="${tim.length ? 'list' : ''}">${tim.length ? tim.map((l) => `<div class="item" style="cursor:default">${gauge(l.skor, l.suhu, 44)}
+      <div class="mid"><div class="nm">${esc(l.nama_depan)} <span class="sub" style="font-weight:500">${esc(hpTampil(l.hp_samar))}</span></div><div class="meta">${esc(l.tipe_motor || 'Tipe belum dipilih')} — ${esc(l.sales)}</div>
+      <div class="tags">${pTahap(l.tahap)}</div></div></div>`).join('') : '<div class="empty">Belum ada lead aktif.</div>'}</div>`;
 };
 
 // =====================================================================
@@ -1016,7 +1188,7 @@ VIEWS.laporan = async (v) => {
       <div class="stat"><b>${awal ? Math.round(100 * Number(funnel[5]?.jumlah || 0) / awal) : 0}%</b><span>Konversi lead → unit</span></div>
     </div>
     <div class="card mt"><h2>Funnel</h2><p class="sub">Berapa lead yang pernah mencapai tiap tahap</p>
-      <div class="stack mt">${funnel.map((f, i) => `<div><div class="row between" style="font-size:13px"><b>${esc(f.tahap)}</b><span>${f.jumlah}${i && awal ? ` <span class="sub">(${Math.round(100 * f.jumlah / awal)}%)</span>` : ''}</span></div>
+      <div class="stack mt">${funnel.map((f, i) => `<div><div class="row between" style="font-size:13px"><b>${esc(f.tahap.charAt(0) + f.tahap.slice(1).toLowerCase())}</b><span>${f.jumlah}${i && awal ? ` <span class="sub">(${Math.round(100 * f.jumlah / awal)}%)</span>` : ''}</span></div>
         <div class="bar" style="height:12px;margin-top:4px"><i style="width:${100 * f.jumlah / maks}%"></i></div></div>`).join('')}</div></div>
     <div class="card mt"><h2>Per sumber</h2><div class="scrollx"><table class="t mt"><tr><th>Sumber</th><th class="n">Lead</th><th class="n">SPK</th><th class="n">Unit</th><th class="n">Konversi</th></tr>
       ${sumber.filter((x) => Number(x.lead)).map((x) => `<tr><td>${esc(x.sumber)}</td><td class="n">${x.lead}</td><td class="n">${x.spk}</td><td class="n">${x.unit_terkirim}</td><td class="n">${x.konversi_persen ?? 0}%</td></tr>`).join('') || '<tr><td colspan="5" class="sub">Belum ada data.</td></tr>'}</table></div></div>
@@ -1050,7 +1222,7 @@ VIEWS.lain = async (v) => {
       <div class="row"><button class="btn sm" onclick="formSandi()">Ganti sandi</button><button class="btn sm danger" onclick="keluar()">Keluar</button></div></div></div>
 
     ${perluSaya.length ? `<div class="card mt"><h2>Permintaan izin sumber</h2><div class="stack mt">${perluSaya.map((i) => `<div class="warn"><b>${esc(i.peminta.nama)}</b> minta izin memakai <b>${esc(i.sumber.nama)}</b>
-      <div class="sub">Pemilik: ${i.setuju_pemilik ? '✅' : '⏳'} · Admin: ${i.setuju_admin ? '✅' : '⏳'}</div>
+      <div class="sub" style="margin-top:4px">Pemilik ${i.setuju_pemilik ? 'sudah setuju' : 'belum menjawab'}, admin ${i.setuju_admin ? 'sudah setuju' : 'belum menjawab'}</div>
       <div class="row mt"><button class="btn sm green" onclick="jawabIzin(${i.id},true,this)">Setujui</button><button class="btn sm danger" onclick="jawabIzin(${i.id},false,this)">Tolak</button></div></div>`).join('')}</div></div>` : ''}
 
     <div class="card mt"><div class="row between"><h2>Sumber leads</h2><button class="btn sm pri" onclick="formSumber()">+ Sumber ${admin ? 'global' : 'private'}</button></div>
@@ -1237,7 +1409,7 @@ function bagikanAkun(nama, email, sandi, judul) {
   S._teksAkun = teks;
   modal(`<h2>Kirim ke ${esc(nama)}</h2><p class="sub mt">Kata sandi ini hanya ditampilkan sekarang. Kirim ke orangnya sebelum menutup.</p>
     <pre id="teksAkun" class="inp" style="white-space:pre-wrap;font-family:inherit;margin-top:10px">${esc(teks)}</pre>
-    <div class="stack mt"><a class="btn wa full" style="text-align:center" href="https://wa.me/?text=${encodeURIComponent(teks)}" target="_blank" rel="noopener">💬 Kirim lewat WhatsApp</a>
+    <div class="stack mt"><a class="btn wa full" style="text-align:center" href="https://wa.me/?text=${encodeURIComponent(teks)}" target="_blank" rel="noopener">${ico('chat', 2)}Kirim lewat WhatsApp</a>
       <button class="btn full" onclick="salinAkun(this)">Salin teks</button><button class="btn full" onclick="tutupModal()">Selesai</button></div>`);
 }
 async function salinAkun(btn) {
