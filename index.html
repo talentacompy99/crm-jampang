@@ -225,6 +225,7 @@ function pesanError(e) {
   if (m.includes('Invalid login credentials')) return 'Email atau kata sandi salah.';
   if (m.includes('Failed to fetch') || m.includes('NetworkError')) return 'Tidak bisa terhubung ke server. Periksa internet Anda.';
   if (m.includes('JWT expired')) return 'Sesi habis, silakan masuk lagi.';
+  if (m.includes('Could not find the function')) return 'Fitur ini belum aktif di database. Jalankan file SQL terbaru (002_akun_dari_aplikasi.sql) di Supabase.';
   return m;
 }
 
@@ -1035,6 +1036,11 @@ VIEWS.lain = async (v) => {
     q(sb.from('izin_sumber').select('*, sumber:sumber_leads(nama,pemilik_id), peminta:profiles(nama)').order('created_at', { ascending: false })),
     q(sb.from('unit_stok').select('*, tipe:tipe_motor(merek,model,varian)').order('status').order('tgl_masuk')),
   ]);
+  S.emailOrang = {}; S.fitur002 = false;
+  if (admin) {
+    const { data: em, error: emErr } = await sb.rpc('admin_email_pengguna');
+    if (!emErr) { S.fitur002 = true; (em || []).forEach((e) => { S.emailOrang[e.id] = e; }); }
+  }
   const perluSaya = izinMasuk.filter((i) => i.setuju_pemilik !== false && i.setuju_admin !== false &&
     ((admin && i.setuju_admin == null) || (i.sumber.pemilik_id === S.me.id && i.setuju_pemilik == null)));
   const ringkasStok = {};
@@ -1072,10 +1078,11 @@ VIEWS.lain = async (v) => {
     <div class="card mt"><div class="row between"><h2>Leasing</h2><button class="btn sm pri" onclick="formLeasing()">+ Leasing</button></div>
       <div class="row mt">${S.leasing.map((x) => `<button class="chip${x.aktif ? '' : ''}" onclick="formLeasing(${x.id})">${esc(x.nama)}${x.aktif ? '' : ' (nonaktif)'}</button>`).join('')}</div></div>
 
-    <div class="card mt"><h2>Pengguna</h2>
-      <div class="note mt">Menambah akun baru: buka <b>Supabase → Authentication → Users → Add user</b>, isi email & kata sandi. Akun otomatis muncul di sini sebagai Sales. Sales yang keluar cukup dinonaktifkan.</div>
+    <div class="card mt"><div class="row between"><h2>Pengguna</h2><button class="btn sm pri" onclick="formAkun()">+ Akun baru</button></div>
+      ${S.fitur002 ? '<p class="sub">Buat akun Sales atau Admin langsung dari sini. Pengguna yang keluar cukup dinonaktifkan, jangan dihapus.</p>'
+        : '<div class="warn mt">Untuk membuat akun dari aplikasi, jalankan dulu file <b>002_akun_dari_aplikasi.sql</b> di Supabase SQL Editor. Sementara itu, akun bisa dibuat di Supabase → Authentication → Users → Add user.</div>'}
       <div class="stack mt">${S.orang.map((p) => `<div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line2)"><div><b style="font-size:13px">${esc(p.nama)}</b> ${pill(p.peran === 'ADMIN' ? 'Admin' : 'Sales', p.peran === 'ADMIN' ? 'p-indigo' : 'p-blue')} ${p.aktif ? '' : pill('nonaktif', 'p-red')}
-        <div class="sub">Target ${p.target_lead_harian} lead/hari · ${p.target_do_bulanan} unit/bulan</div></div>
+        <div class="sub">${S.emailOrang[p.id] ? esc(S.emailOrang[p.id].email) + ' · ' : ''}Target ${p.target_lead_harian} lead/hari · ${p.target_do_bulanan} unit/bulan${S.emailOrang[p.id] ? ' · ' + (S.emailOrang[p.id].terakhir_masuk ? 'terakhir masuk ' + jam(S.emailOrang[p.id].terakhir_masuk) : 'belum pernah masuk') : ''}</div></div>
         <button class="btn sm" onclick="formOrang('${p.id}')">Ubah</button></div>`).join('')}</div></div>` : ''}
 
     ${!S.cfg.tetap ? `<div class="card mt"><h2>Koneksi</h2><p class="sub mt">${esc(S.cfg.url)}</p><button class="btn sm mt" onclick="gantiKoneksi()">Ganti koneksi</button></div>` : ''}`;
@@ -1169,12 +1176,73 @@ function formOrang(id) {
       <div class="field"><label>Status</label><select id="ogAktif" class="inp" ${id === S.me.id ? 'disabled' : ''}>${opsi({ true: 'Aktif', false: 'Nonaktif' }, String(p.aktif))}</select></div></div>
     <div class="grid2"><div class="field"><label>Target lead/hari</label><input id="ogTl" type="number" class="inp" value="${p.target_lead_harian}"></div>
       <div class="field"><label>Target unit/bulan</label><input id="ogTd" type="number" class="inp" value="${p.target_do_bulanan}"></div></div>
-    <button class="btn pri" onclick="simpanOrang('${id}',this)">Simpan</button><button class="btn" onclick="tutupModal()">Batal</button></div>`);
+    <button class="btn pri" onclick="simpanOrang('${id}',this)">Simpan</button>
+    ${S.fitur002 && id !== S.me.id ? `<div class="sec" style="margin-top:6px;padding-top:12px"><h3>Reset kata sandi</h3><p class="sub" style="margin-bottom:8px">Untuk pengguna yang lupa sandi. Kirim sandi baru ke orangnya, lalu minta ia menggantinya sendiri.</p>
+      <div class="row"><input id="ogSandi" class="inp" style="flex:1" value="${sandiAcak()}"><button class="btn sm" onclick="$('#ogSandi').value=sandiAcak()">Acak</button></div>
+      <button class="btn mt" style="width:100%" onclick="resetSandi('${id}',this)">Simpan sandi baru</button></div>` : ''}
+    <button class="btn" onclick="tutupModal()">Batal</button></div>`);
 }
 async function simpanOrang(id, btn) {
   const isi = { nama: val('ogNama'), target_lead_harian: num('ogTl') || 0, target_do_bulanan: num('ogTd') || 0 };
   if (id !== S.me.id) { isi.peran = val('ogPeran'); isi.aktif = val('ogAktif') === 'true'; }
   await aman(async () => { await ubah('profiles', isi, 'id', id); tutupModal(); toast('Pengguna tersimpan'); buka('lain'); }, btn);
+}
+
+// ---------- akun baru & reset sandi (butuh file SQL 002) ----------
+function sandiAcak() {
+  const huruf = 'abcdefghjkmnpqrstuvwxyz', angka = '23456789';
+  const r = (str) => str[Math.floor(Math.random() * str.length)];
+  let s = '';
+  for (let i = 0; i < 6; i++) s += r(huruf);
+  for (let i = 0; i < 4; i++) s += r(angka);
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+function formAkun() {
+  if (!S.fitur002) return toast('Jalankan dulu file 002_akun_dari_aplikasi.sql di Supabase', true);
+  modal(`<div class="row between"><h2>Akun baru</h2><button class="btn sm" onclick="tutupModal()">Tutup</button></div>
+    <div class="stack mt">
+      <div class="field"><label>Nama lengkap *</label><input id="akNama" class="inp" placeholder="Contoh: Rizki Ramadhan"></div>
+      <div class="field"><label>Email *</label><input id="akEmail" class="inp" type="email" inputmode="email" placeholder="nama@gmail.com"></div>
+      <div class="field"><label>Kata sandi awal *</label><div class="row"><input id="akSandi" class="inp" style="flex:1" value="${sandiAcak()}"><button class="btn sm" onclick="$('#akSandi').value=sandiAcak()">Acak</button></div>
+        <span class="sub">Minimal 8 karakter. Pengguna bisa menggantinya sendiri setelah masuk.</span></div>
+      <div class="field"><label>Peran</label><select id="akPeran" class="inp">${opsi({ SALES: 'Sales', ADMIN: 'Admin' }, 'SALES')}</select></div>
+      <button class="btn pri full" onclick="simpanAkun(this)">Buat akun</button>
+    </div>`);
+  setTimeout(() => $('#akNama')?.focus(), 50);
+}
+async function simpanAkun(btn) {
+  const nama = val('akNama'), email = val('akEmail').toLowerCase(), sandi = $('#akSandi').value, peran = val('akPeran');
+  if (!nama || !email || !sandi) return toast('Nama, email, dan kata sandi wajib diisi', true);
+  if (sandi.length < 8) return toast('Kata sandi minimal 8 karakter', true);
+  await aman(async () => {
+    await q(sb.rpc('admin_buat_akun', { p_email: email, p_sandi: sandi, p_nama: nama, p_peran: peran }));
+    tutupModal(); toast('Akun dibuat'); buka('lain');
+    bagikanAkun(nama, email, sandi, 'Akun CRM Dealer Motor Anda sudah dibuat.');
+  }, btn);
+}
+async function resetSandi(id, btn) {
+  const sandi = $('#ogSandi').value;
+  if (sandi.length < 8) return toast('Kata sandi minimal 8 karakter', true);
+  if (!confirm('Ganti kata sandi pengguna ini?')) return;
+  await aman(async () => {
+    await q(sb.rpc('admin_reset_sandi', { p_user: id, p_sandi: sandi }));
+    const p = S.orang.find((x) => x.id === id) || {};
+    tutupModal(); toast('Kata sandi diganti');
+    bagikanAkun(p.nama, (S.emailOrang[id] || {}).email || '', sandi, 'Kata sandi CRM Dealer Motor Anda sudah direset.');
+  }, btn);
+}
+function bagikanAkun(nama, email, sandi, judul) {
+  const link = location.href.split('#')[0].split('?')[0];
+  const teks = `Halo ${String(nama || '').split(' ')[0]}, ${judul}\n\nLink: ${link}\nEmail: ${email}\nKata sandi: ${sandi}\n\nSetelah masuk, ganti kata sandi di menu Lainnya → Ganti sandi. Jangan bagikan ke orang lain.`;
+  S._teksAkun = teks;
+  modal(`<h2>Kirim ke ${esc(nama)}</h2><p class="sub mt">Kata sandi ini hanya ditampilkan sekarang. Kirim ke orangnya sebelum menutup.</p>
+    <pre id="teksAkun" class="inp" style="white-space:pre-wrap;font-family:inherit;margin-top:10px">${esc(teks)}</pre>
+    <div class="stack mt"><a class="btn wa full" style="text-align:center" href="https://wa.me/?text=${encodeURIComponent(teks)}" target="_blank" rel="noopener">💬 Kirim lewat WhatsApp</a>
+      <button class="btn full" onclick="salinAkun(this)">Salin teks</button><button class="btn full" onclick="tutupModal()">Selesai</button></div>`);
+}
+async function salinAkun(btn) {
+  try { await navigator.clipboard.writeText(S._teksAkun); btn.textContent = 'Tersalin ✓'; }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($('#teksAkun')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Tekan lama lalu Salin'); }
 }
 
 // =====================================================================
