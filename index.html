@@ -240,6 +240,131 @@ table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 .btn .spin{border-color:rgba(255,255,255,.35);border-top-color:#fff}
 .btn:not(.pri):not(.green):not(.wa) .spin{border-color:var(--line);border-top-color:var(--navy)}
 @keyframes sp{to{transform:rotate(360deg)}}
+
+/* =====================================================================
+   SUSUNAN BENTO (struktur; di HP mengalir satu kolom seperti V3.8)
+   ===================================================================== */
+.bento{display:flex;flex-direction:column}
+.bento > .col{display:contents}
+.tile{min-width:0}
+@media(max-width:919px){.desk-only{display:none!important}}
+.o1{order:1}.o2{order:2}.o3{order:3}.o4{order:4}.o5{order:5}.o6{order:6}
+.split > * + *{margin-top:14px}
+.tile-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:26px 2px 10px}
+.tile-h .sub{font-size:13px}
+.lain-grid > .card + .card{margin-top:14px}
+.lap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lap > .card{grid-column:1/-1}
+.mini-stat{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+
+/* =====================================================================
+   DESKTOP V3.9 — GLASSMORPHISM + BENTO GRID (hanya layar >= 920px)
+   ===================================================================== */
+@media(min-width:920px){
+  :root{
+    --glass:rgba(255,255,255,.70); --glass-2:rgba(255,255,255,.52); --glass-line:rgba(255,255,255,.62);
+    --glass-dark:rgba(7,24,56,.42); --glass-shadow:0 18px 50px -18px rgba(3,14,38,.55);
+  }
+  body{
+    background:
+      radial-gradient(900px 620px at 8% -8%, rgba(86,140,235,.75) 0%, transparent 62%),
+      radial-gradient(760px 560px at 98% 4%, rgba(140,196,255,.55) 0%, transparent 60%),
+      radial-gradient(900px 700px at 70% 108%, rgba(39,94,196,.80) 0%, transparent 62%),
+      radial-gradient(600px 480px at 30% 70%, rgba(20,64,140,.55) 0%, transparent 70%),
+      linear-gradient(155deg,#08214B 0%,#0E3170 42%,#174A99 100%);
+    background-attachment:fixed;
+  }
+  .mob-only{display:none!important}
+
+  /* sidebar kaca gelap */
+  .side{background:rgba(5,19,46,.38);backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);border-right:1px solid rgba(255,255,255,.12)}
+  .side nav button.on{background:rgba(255,255,255,.92);color:var(--navy);box-shadow:0 8px 22px -10px rgba(0,0,0,.5)}
+  .side .ver{display:inline-block;margin-top:6px;font-size:11px;color:#9FB2D6;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px}
+  .top{background:transparent!important;border-bottom:1px solid rgba(255,255,255,.12)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .top .who-top{color:#C9D6EE}.top .who-top b{color:#fff}
+  .top .role{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);color:#fff}
+
+  /* judul halaman di atas latar biru */
+  .main > .head h1,.main > .head h2{color:#fff}
+  .main > .head .sub{color:#B9C8E4}
+
+  /* permukaan kaca */
+  .main .card,.main .stat,.main .tile,.main > .list,.main > .empty,.main .list.glass{
+    background:var(--glass);border:1px solid var(--glass-line);
+    backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
+    box-shadow:var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,.75);border-radius:24px}
+  .main .tile{padding:18px 18px 16px}
+  .main .tile .card,.main .tile .list,.main .tile .empty{background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:16px;padding:0!important}
+  .main .tile .empty{border:1.5px dashed rgba(11,42,91,.18);padding:22px 12px}
+  .main .tile .stat{background:var(--glass-2);box-shadow:none;border-radius:16px;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .main .item{background:transparent}
+  .main .card .list{background:transparent;border:0;border-radius:0}
+  .main .tile .grid4{grid-template-columns:1fr 1fr}
+  .main .tile #daftarLead > p.sub:first-child{margin-top:0!important}
+  .stat-row .stat b{font-size:28px}
+  .main .list > .item{border-bottom-color:rgba(11,42,91,.08)}
+  .main .item:hover{background:rgba(255,255,255,.55)}
+  .main .tile .list > .item{padding-left:6px;padding-right:6px}
+  .tile-h{margin:0 2px 12px}
+  .tile-h h2{font-size:17px}
+  .main .inp{background:rgba(255,255,255,.75);border-color:rgba(11,42,91,.14)}
+  .main .chip{background:rgba(255,255,255,.62);border-color:rgba(11,42,91,.12)}
+  .main .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .main > .chips .chip{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28);color:#fff}
+  .main > .chips .chip.on{background:#fff;color:var(--navy);border-color:#fff}
+
+  /* hero kaca gelap */
+  .main .hero{background:var(--glass-dark);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);box-shadow:var(--glass-shadow);border-radius:26px;padding:24px 24px 20px}
+  .main .hero h1{font-size:34px}
+  .lamp{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.14);padding:14px 14px 12px;border-radius:16px}
+  .lamp b{font-size:34px}
+
+  /* grid bento */
+  .bento{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr);gap:18px;align-items:start}
+  .bento > .col{display:flex;flex-direction:column;gap:18px;min-width:0}
+  .bento > .col > *{order:0!important}
+  .bento .tile-h{margin-top:0}
+  .split{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+  .split > * + *{margin-top:0}
+  .split > .tile:first-child{position:sticky;top:76px}
+  .split.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .split .chips{flex-wrap:wrap;overflow:visible}
+  .lap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;align-items:stretch}
+  .lap > *{margin-top:0!important}
+  .lap .s3{grid-column:span 3}.lap .s4{grid-column:span 4}.lap .s5{grid-column:span 5}.lap .s7{grid-column:span 7}.lap .s8{grid-column:span 8}.lap .s12{grid-column:span 12}
+  .lap .stat b{font-size:34px}
+  .lain-grid{columns:2;column-gap:18px}
+  .lain-grid > .card{break-inside:avoid;margin:0 0 18px!important;display:block}
+  .stat-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
+  .stat-row .stat{cursor:pointer;transition:transform .15s}
+  .stat-row .stat:hover{transform:translateY(-2px)}
+  .stat-row .stat.on{background:rgba(255,255,255,.94);outline:2px solid #fff}
+
+  /* panel detail & modal kaca */
+  .sheet{background:rgba(5,19,46,.38);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  .panel{background:rgba(236,241,248,.80);backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%);border-left:1px solid rgba(255,255,255,.5);box-shadow:-30px 0 60px -30px rgba(0,0,0,.5)}
+  .panel-h{background:rgba(11,42,91,.88);backdrop-filter:blur(16px)}
+  .panel-b > .blk{background:rgba(255,255,255,.78);border-color:rgba(255,255,255,.8);box-shadow:0 8px 24px -16px rgba(3,14,38,.4);border-radius:20px}
+  .modal{background:rgba(5,19,46,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .modal .box{background:rgba(255,255,255,.90);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.7);box-shadow:var(--glass-shadow)}
+
+  /* layar masuk */
+  .center{background:transparent}
+  .login.card{background:rgba(255,255,255,.80);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:var(--glass-shadow);border-radius:26px}
+  .fab{border:1px solid rgba(255,255,255,.35);box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+}
+
+@media(min-width:920px) and (max-width:1199px){
+  .bento,.split,.split.even{grid-template-columns:minmax(0,1fr)}
+  .split > .tile:first-child{position:static}
+  .lap .s7,.lap .s5{grid-column:span 12}
+  .lap .s3{grid-column:span 6}
+  .stat-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .lain-grid{columns:1}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  @media(min-width:920px){ .main .card,.main .stat,.main .tile,.main > .list{background:rgba(255,255,255,.94)} .panel{background:#EEF2F7} }
+}
 </style>
 </head>
 <body>
@@ -257,8 +382,6 @@ table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 // =====================================================================
    const SUPABASE_URL = 'https://ddbkyqnfimriiuefuzmy.supabase.co';
    const SUPABASE_ANON_KEY = 'sb_publishable_UKePExVkvjhUre43wulMCA_7rWZHaj8';   // publishable key
-
-
 
 // ---------------------------------------------------------------------
 // Label tampilan
@@ -535,7 +658,7 @@ function gambarShell() {
   $('#root').innerHTML = `<div class="shell">
     <aside class="side"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer</span></div>
       <nav>${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')">${ico(i)}${t}</button>`).join('')}</nav>
-      <div class="who"><b>${esc(S.me.nama)}</b>${peran}</div></aside>
+      <div class="who"><b>${esc(S.me.nama)}</b>${peran}<br><span class="ver">V3.9</span></div></aside>
     <header class="top"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer</span></div>
       <div class="who-top"><b>${esc(S.me.nama)}</b><span class="role">${peran}</span></div></header>
     <main class="main" id="view"></main>
@@ -611,52 +734,79 @@ function kartuOrder(o) {
 // =====================================================================
 // TAB: HARI INI
 // =====================================================================
+const layarLebar = () => window.matchMedia('(min-width:920px)').matches;
+const SEL_LEAD_KARTU = 'id,tahap,suhu,skor,followup_berikutnya,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)';
 VIEWS.hari = async (v) => {
-  const [fu, siapUlang] = await Promise.all([
+  const lebar = layarLebar(), admin = isAdmin();
+  const [fu, siapUlang, statLead] = await Promise.all([
     q(sb.from('v_followup').select('*').order('followup_berikutnya')),
     q(sb.from('v_siap_prospek_ulang').select('*').order('jadwal_prospek_ulang')),
+    q(sb.from('leads').select('suhu').in('tahap', AKTIF)),
   ]);
   const ids = fu.map((f) => f.lead_id);
-  const detail = ids.length ? await q(sb.from('leads').select('id,tahap,suhu,skor,followup_berikutnya,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)').in('id', ids)) : [];
+  const detail = ids.length ? await q(sb.from('leads').select(SEL_LEAD_KARTU).in('id', ids)) : [];
   const urut = ids.map((id) => detail.find((d) => d.id === id)).filter(Boolean);
   const telat = fu.filter((f) => f.terlambat).length;
-  const statLead = await q(sb.from('leads').select('suhu').in('tahap', AKTIF));
-  let adminHtml = '';
-  if (isAdmin()) {
+  const hot = statLead.filter((l) => l.suhu === 'HOT').length;
+
+  let antrianHtml = '', basiHtml = '';
+  if (admin) {
+    const batas = new Date(Date.now() - 30 * 864e5).toISOString();
     const [spk, siap, reg, izin, basi] = await Promise.all([
-      q(sb.from('pesanan').select('id', { count: 'exact', head: false }).eq('status', 'SPK')),
+      q(sb.from('pesanan').select('id').eq('status', 'SPK')),
       q(sb.from('pesanan').select('id').eq('status', 'SIAP_KIRIM')),
       q(sb.from('registrasi').select('pesanan_id').or('stnk_status.neq.DISERAHKAN,tnkb_status.neq.DISERAHKAN,bpkb_status.neq.DISERAHKAN')),
       q(sb.from('izin_sumber').select('id,setuju_pemilik').is('setuju_admin', null)),
-      q(sb.from('leads').select('id,tahap,suhu,skor,followup_berikutnya,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)')
-        .in('tahap', AKTIF).lt('created_at', new Date(Date.now() - 30 * 864e5).toISOString())
-        .or(`aktivitas_terakhir.is.null,aktivitas_terakhir.lt.${new Date(Date.now() - 30 * 864e5).toISOString()}`)),
+      q(sb.from('leads').select(SEL_LEAD_KARTU).in('tahap', AKTIF).lt('created_at', batas).or(`aktivitas_terakhir.is.null,aktivitas_terakhir.lt.${batas}`)),
     ]);
     const izinTunggu = izin.filter((i) => i.setuju_pemilik !== false).length;
-    adminHtml = `<div class="sec-title"><h2>Antrian admin</h2></div>
+    antrianHtml = `<section class="tile o2"><div class="tile-h"><h2>Antrian admin</h2></div>
       <div class="grid4">
         <div class="stat" onclick="S.f.orderStatus='SPK';buka('order')" style="cursor:pointer"><b>${spk.length}</b><span>SPK menunggu bayar / unit</span></div>
         <div class="stat" onclick="S.f.orderStatus='SIAP_KIRIM';buka('order')" style="cursor:pointer"><b>${siap.length}</b><span>Siap kirim</span></div>
         <div class="stat" onclick="S.f.orderStatus='TERKIRIM';buka('order')" style="cursor:pointer"><b>${reg.length}</b><span>STNK/plat/BPKB belum tuntas</span></div>
         <div class="stat" onclick="buka('lain')" style="cursor:pointer"><b>${izinTunggu}</b><span>Izin sumber menunggu</span></div>
-      </div>
-      ${basi.length ? `<div class="sec-title"><h2>Bisa dialihkan</h2><span class="sub">Tanpa aktivitas 30 hari</span></div><div class="list">${basi.map((l) => kartuLead(l)).join('')}</div>` : ''}`;
+      </div></section>`;
+    if (basi.length) basiHtml = `<section class="tile o4"><div class="tile-h"><h2>Bisa dialihkan</h2><span class="sub">Tanpa aktivitas 30 hari</span></div>
+      <div class="list">${basi.map((l) => kartuLead(l)).join('')}</div></section>`;
   }
-  const hot = statLead.filter((l) => l.suhu === 'HOT').length;
-  v.innerHTML = `<section class="hero">
-      <h1>Halo, ${esc(S.me.nama.split(' ')[0])}</h1>
-      <p class="sub">${new Date().toLocaleDateString('id-ID', { ...TZ, weekday: 'long', day: 'numeric', month: 'long' })}</p>
-      <div class="lamps">
-        <div class="lamp go"><b>${fu.length}</b><span><i></i>Follow-up hari ini</span></div>
-        <div class="lamp${telat ? ' alert' : ''}"><b>${telat}</b><span><i></i>Terlambat</span></div>
-        <button class="lamp" onclick="S.f.leadTahap='AKTIF';S.f.leadSuhu='';buka('leads')"><b>${statLead.length}</b><span><i></i>Lead aktif</span></button>
-        <button class="lamp${hot ? ' hot' : ''}" onclick="S.f.leadTahap='AKTIF';S.f.leadSuhu='HOT';buka('leads')"><b>${hot}</b><span><i></i>Hot</span></button>
-      </div></section>
-    ${adminHtml}
-    <div class="sec-title"><h2>Follow-up hari ini</h2>${telat ? `<span class="sub">Yang terlambat di atas</span>` : ''}</div>
-    <div class="list">${urut.length ? urut.map((l) => kartuLead(l)).join('') : '<div class="empty">Semua follow-up hari ini sudah beres.</div>'}</div>
-    ${siapUlang.length ? `<div class="sec-title"><h2>Siap prospek ulang</h2></div><div class="list">${siapUlang.map((l) => `<div class="item" onclick="bukaLead(${l.lead_id})"><div class="av">${ico('back')}</div><div class="mid"><div class="nm">${esc(l.nama)}</div><div class="meta">${esc(L.lost[l.alasan_lost])} — jadwal ${tgl(l.jadwal_prospek_ulang)}</div></div></div>`).join('')}</div>` : ''}
-    <button class="fab" onclick="formLead()">${ico('plus', 2.4)}Lead</button>`;
+
+  // ubin tambahan khusus layar lebar
+  let hotHtml = '', papanHtml = '';
+  if (lebar) {
+    const [hotList, papan] = await Promise.all([
+      q(sb.from('leads').select(SEL_LEAD_KARTU).in('tahap', AKTIF).eq('suhu', 'HOT').order('skor', { ascending: false }).limit(5)),
+      q(sb.rpc('papan_tim')),
+    ]);
+    hotHtml = `<section class="tile desk-only"><div class="tile-h"><h2>Lead Hot teratas</h2><a href="#" onclick="event.preventDefault();S.f.leadTahap='AKTIF';S.f.leadSuhu='HOT';buka('leads')">Lihat semua</a></div>
+      <div class="list">${hotList.length ? hotList.map((l) => kartuLead(l)).join('') : '<div class="empty">Belum ada lead Hot. Catat test ride dan penawaran untuk menaikkan skor.</div>'}</div></section>`;
+    papanHtml = `<section class="tile desk-only"><div class="tile-h"><h2>Papan tim bulan ini</h2><a href="#" onclick="event.preventDefault();buka('${admin ? 'laporan' : 'tim'}')">Lihat semua</a></div>
+      ${htmlPapan(papan.slice(0, 3))}</section>`;
+  }
+
+  v.innerHTML = `<div class="bento">
+    <div class="col">
+      <section class="hero o1">
+        <h1>Halo, ${esc(S.me.nama.split(' ')[0])}</h1>
+        <p class="sub">${new Date().toLocaleDateString('id-ID', { ...TZ, weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <div class="lamps">
+          <div class="lamp go"><b>${fu.length}</b><span><i></i>Follow-up hari ini</span></div>
+          <div class="lamp${telat ? ' alert' : ''}"><b>${telat}</b><span><i></i>Terlambat</span></div>
+          <button class="lamp" onclick="S.f.leadTahap='AKTIF';S.f.leadSuhu='';buka('leads')"><b>${statLead.length}</b><span><i></i>Lead aktif</span></button>
+          <button class="lamp${hot ? ' hot' : ''}" onclick="S.f.leadTahap='AKTIF';S.f.leadSuhu='HOT';buka('leads')"><b>${hot}</b><span><i></i>Hot</span></button>
+        </div></section>
+      <section class="tile o3"><div class="tile-h"><h2>Follow-up hari ini</h2>${telat ? `<span class="sub">Yang terlambat di atas</span>` : ''}</div>
+        <div class="list">${urut.length ? urut.map((l) => kartuLead(l)).join('') : '<div class="empty">Semua follow-up hari ini sudah beres.</div>'}</div></section>
+      ${basiHtml}
+    </div>
+    <div class="col">
+      ${antrianHtml}
+      ${hotHtml}
+      ${papanHtml}
+      ${siapUlang.length ? `<section class="tile o5"><div class="tile-h"><h2>Siap prospek ulang</h2></div><div class="list">${siapUlang.map((l) => `<div class="item" onclick="bukaLead(${l.lead_id})"><div class="av">${ico('back')}</div><div class="mid"><div class="nm">${esc(l.nama)}</div><div class="meta">${esc(L.lost[l.alasan_lost])} — jadwal ${tgl(l.jadwal_prospek_ulang)}</div></div></div>`).join('')}</div></section>` : ''}
+    </div>
+  </div>
+  <button class="fab" onclick="formLead()">${ico('plus', 2.4)}Lead</button>`;
 };
 
 // =====================================================================
@@ -673,14 +823,16 @@ VIEWS.leads = async (v) => {
   const chipT = [['AKTIF', 'Aktif'], ...Object.entries(L.tahap)];
   v.innerHTML = `<div class="head"><div><h1>Leads</h1><p class="sub">${isAdmin() ? 'Semua lead tim' : 'Lead milik Anda'}</p></div>
       <button class="btn pri" onclick="formLead()">${ico('plus', 2.4)}Lead baru</button></div>
-    <div class="card stack" style="padding:12px">
+    <div class="split">
+    <aside class="tile"><div class="tile-h desk-only"><h2>Saring</h2></div><div class="card stack" style="padding:12px">
       <input id="cari" class="inp" placeholder="Cari nama atau nomor HP…" value="${esc(f.leadCari)}" oninput="S.f.leadCari=this.value;saringLeads()">
       <div class="chips">${chipT.map(([k, t]) => `<button class="chip${f.leadTahap === k ? ' on' : ''}" onclick="S.f.leadTahap='${k}';buka('leads')">${t}</button>`).join('')}</div>
       <div class="row">
         <div class="chips">${['', 'HOT', 'WARM', 'COLD'].map((s) => `<button class="chip${f.leadSuhu === s ? ' on' : ''}" onclick="S.f.leadSuhu='${s}';buka('leads')">${s ? LABEL_SUHU[s] : 'Semua suhu'}</button>`).join('')}</div>
         ${isAdmin() ? `<select class="inp" style="width:auto;min-height:38px;padding:6px 34px 6px 12px" onchange="S.f.leadSales=this.value;buka('leads')"><option value="">Semua sales</option>${S.orang.map((p) => `<option value="${p.id}"${f.leadSales === p.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>` : ''}
-      </div></div>
-    <div id="daftarLead"></div>
+      </div></div></aside>
+    <section class="tile"><div id="daftarLead"></div></section>
+    </div>
     <button class="fab" onclick="formLead()">${ico('plus', 2.4)}Lead</button>`;
   S._leads = data;
   saringLeads();
@@ -949,9 +1101,12 @@ VIEWS.order = async (v) => {
   const f = S.f;
   let qy = sb.from('pesanan').select(SEL_ORDER).order('created_at', { ascending: false }).limit(300);
   if (f.orderStatus === 'AKTIF') qy = qy.in('status', ['SPK', 'SIAP_KIRIM', 'TERKIRIM']); else if (f.orderStatus) qy = qy.eq('status', f.orderStatus);
-  const data = await q(qy);
+  const [data, semua] = await Promise.all([q(qy), layarLebar() ? q(sb.from('pesanan').select('status')) : Promise.resolve([])]);
+  const hitung = (st) => st === 'AKTIF' ? semua.filter((o) => ['SPK', 'SIAP_KIRIM', 'TERKIRIM'].includes(o.status)).length : semua.filter((o) => o.status === st).length;
+  const pilihan = [['AKTIF', 'Berjalan'], ...Object.entries(L.order)];
   v.innerHTML = `<div class="head"><div><h1>Order</h1><p class="sub">SPK sampai STNK & BPKB selesai</p></div></div>
-    <div class="chips">${[['AKTIF', 'Berjalan'], ...Object.entries(L.order)].map(([k, t]) => `<button class="chip${f.orderStatus === k ? ' on' : ''}" onclick="S.f.orderStatus='${k}';buka('order')">${t}</button>`).join('')}</div>
+    <div class="stat-row desk-only">${pilihan.map(([k, t]) => `<div class="stat${f.orderStatus === k ? ' on' : ''}" data-st="${k}" onclick="S.f.orderStatus='${k}';buka('order')"><b>${hitung(k)}</b><span>${t}</span></div>`).join('')}</div>
+    <div class="chips mob-only">${pilihan.map(([k, t]) => `<button class="chip${f.orderStatus === k ? ' on' : ''}" data-st="${k}" onclick="S.f.orderStatus='${k}';buka('order')">${t}</button>`).join('')}</div>
     <div class="${data.length ? 'list' : ''} mt">${data.length ? data.map(kartuOrder).join('') : '<div class="empty">Belum ada order di kategori ini. SPK dibuat dari halaman detail lead.</div>'}</div>`;
 };
 
@@ -1160,11 +1315,13 @@ function htmlPapan(papan) {
 VIEWS.tim = async (v) => {
   const [papan, tim] = await Promise.all([q(sb.rpc('papan_tim')), q(sb.rpc('daftar_lead_tim'))]);
   v.innerHTML = `<div class="head"><div><h1>Papan tim</h1><p class="sub">Bulan ini, diurutkan dari unit terkirim terbanyak</p></div></div>
-    ${htmlPapan(papan)}
-    <div class="sec-title"><h2>Lead aktif tim</h2></div><p class="sub" style="margin:-4px 2px 10px">Nomor HP disamarkan agar konsumen tidak diserobot.</p>
-    <div class="${tim.length ? 'list' : ''}">${tim.length ? tim.map((l) => `<div class="item" style="cursor:default">${gauge(l.skor, l.suhu, 44)}
-      <div class="mid"><div class="nm">${esc(l.nama_depan)} <span class="sub" style="font-weight:500">${esc(hpTampil(l.hp_samar))}</span></div><div class="meta">${esc(l.tipe_motor || 'Tipe belum dipilih')} — ${esc(l.sales)}</div>
-      <div class="tags">${pTahap(l.tahap)}</div></div></div>`).join('') : '<div class="empty">Belum ada lead aktif.</div>'}</div>`;
+    <div class="split even">
+      <section class="tile"><div class="tile-h desk-only"><h2>Peringkat</h2></div>${htmlPapan(papan)}</section>
+      <section class="tile"><div class="tile-h"><h2>Lead aktif tim</h2></div><p class="sub" style="margin:-4px 2px 10px">Nomor HP disamarkan agar konsumen tidak diserobot.</p>
+      <div class="${tim.length ? 'list' : ''}">${tim.length ? tim.map((l) => `<div class="item" style="cursor:default">${gauge(l.skor, l.suhu, 44)}
+        <div class="mid"><div class="nm">${esc(l.nama_depan)} <span class="sub" style="font-weight:500">${esc(hpTampil(l.hp_samar))}</span></div><div class="meta">${esc(l.tipe_motor || 'Tipe belum dipilih')} — ${esc(l.sales)}</div>
+        <div class="tags">${pTahap(l.tahap)}</div></div></div>`).join('') : '<div class="empty">Belum ada lead aktif.</div>'}</div></section>
+    </div>`;
 };
 
 // =====================================================================
@@ -1183,21 +1340,26 @@ VIEWS.laporan = async (v) => {
   v.innerHTML = `<div class="head"><div><h1>Laporan</h1><p class="sub">Lead yang masuk pada periode ini</p></div>
       <div class="row"><input type="date" class="inp" style="width:auto" value="${d}" onchange="S.f.lapDari=this.value;buka('laporan')">
         <span class="sub">s/d</span><input type="date" class="inp" style="width:auto" value="${s}" onchange="S.f.lapSampai=this.value;buka('laporan')"></div></div>
-    <div class="grid4">
-      <div class="stat"><b>${awal}</b><span>Lead masuk</span></div>
-      <div class="stat"><b>${funnel[4]?.jumlah ?? 0}</b><span>Pernah SPK</span></div>
-      <div class="stat"><b>${funnel[5]?.jumlah ?? 0}</b><span>Unit terkirim</span></div>
-      <div class="stat"><b>${awal ? Math.round(100 * Number(funnel[5]?.jumlah || 0) / awal) : 0}%</b><span>Konversi lead → unit</span></div>
-    </div>
-    <div class="card mt"><h2>Funnel</h2><p class="sub">Berapa lead yang pernah mencapai tiap tahap</p>
-      <div class="stack mt">${funnel.map((f, i) => `<div><div class="row between" style="font-size:13px"><b>${esc(f.tahap.charAt(0) + f.tahap.slice(1).toLowerCase())}</b><span>${f.jumlah}${i && awal ? ` <span class="sub">(${Math.round(100 * f.jumlah / awal)}%)</span>` : ''}</span></div>
-        <div class="bar" style="height:12px;margin-top:4px"><i style="width:${100 * f.jumlah / maks}%"></i></div></div>`).join('')}</div></div>
-    <div class="card mt"><h2>Per sumber</h2><div class="scrollx"><table class="t mt"><tr><th>Sumber</th><th class="n">Lead</th><th class="n">SPK</th><th class="n">Unit</th><th class="n">Konversi</th></tr>
-      ${sumber.filter((x) => Number(x.lead)).map((x) => `<tr><td>${esc(x.sumber)}</td><td class="n">${x.lead}</td><td class="n">${x.spk}</td><td class="n">${x.unit_terkirim}</td><td class="n">${x.konversi_persen ?? 0}%</td></tr>`).join('') || '<tr><td colspan="5" class="sub">Belum ada data.</td></tr>'}</table></div></div>
-    <div class="card mt"><h2>Alasan lost</h2><div class="stack mt">${lost.length ? lost.map((x) => `<div><div class="row between" style="font-size:13px"><span>${esc(L.lost[x.alasan])}</span><b>${x.jumlah}</b></div>
-      <div class="bar" style="margin-top:4px"><i style="width:${100 * x.jumlah / maksLost}%;background:#b91c1c"></i></div></div>`).join('') : '<p class="sub">Tidak ada lead lost.</p>'}</div></div>
-    <div class="card mt"><h2>Papan tim</h2><div class="stack mt">${htmlPapan(papan)}</div></div>
-    <div class="card mt"><h2>Stok unit</h2><p class="mt">${stok.filter((u) => u.status === 'STOK').length} tersedia · ${stok.filter((u) => u.status === 'DIALOKASIKAN').length} dialokasikan · ${stok.filter((u) => u.status === 'TERJUAL').length} terjual</p></div>`;
+    <div class="lap">
+      <div class="stat s3"><b>${awal}</b><span>Lead masuk</span></div>
+      <div class="stat s3"><b>${funnel[4]?.jumlah ?? 0}</b><span>Pernah SPK</span></div>
+      <div class="stat s3"><b>${funnel[5]?.jumlah ?? 0}</b><span>Unit terkirim</span></div>
+      <div class="stat s3"><b>${awal ? Math.round(100 * Number(funnel[5]?.jumlah || 0) / awal) : 0}%</b><span>Konversi lead ke unit</span></div>
+      <div class="card s7"><h2>Funnel</h2><p class="sub">Berapa lead yang pernah mencapai tiap tahap</p>
+        <div class="stack mt">${funnel.map((f, i) => `<div><div class="row between" style="font-size:13.5px"><b>${esc({ 'LEAD MASUK': 'Lead masuk', DIHUBUNGI: 'Dihubungi', PROSPEK: 'Prospek', NEGOSIASI: 'Negosiasi', SPK: 'SPK', 'UNIT TERKIRIM': 'Unit terkirim' }[f.tahap] || f.tahap)}</b><span class="num" style="font-size:14px;letter-spacing:0">${f.jumlah}${i && awal ? ` <span class="sub" style="font-stretch:100%;font-weight:500">${Math.round(100 * f.jumlah / awal)}%</span>` : ''}</span></div>
+          <div class="bar" style="height:12px;margin-top:5px"><i style="width:${100 * f.jumlah / maks}%"></i></div></div>`).join('')}</div></div>
+      <div class="card s5"><h2>Alasan lost</h2><div class="stack mt">${lost.length ? lost.map((x) => `<div><div class="row between" style="font-size:13.5px"><span>${esc(L.lost[x.alasan])}</span><b>${x.jumlah}</b></div>
+        <div class="bar" style="margin-top:5px"><i style="width:${100 * x.jumlah / maksLost}%;background:var(--hot)"></i></div></div>`).join('') : '<p class="sub mt">Tidak ada lead lost pada periode ini.</p>'}</div></div>
+      <div class="card s7"><h2>Per sumber</h2><div class="scrollx"><table class="t mt"><tr><th>Sumber</th><th class="n">Lead</th><th class="n">SPK</th><th class="n">Unit</th><th class="n">Konversi</th></tr>
+        ${sumber.filter((x) => Number(x.lead)).map((x) => `<tr><td>${esc(x.sumber)}</td><td class="n">${x.lead}</td><td class="n">${x.spk}</td><td class="n">${x.unit_terkirim}</td><td class="n">${x.konversi_persen ?? 0}%</td></tr>`).join('') || '<tr><td colspan="5" class="sub">Belum ada data.</td></tr>'}</table></div></div>
+      <div class="card s5"><h2>Stok unit</h2>
+        <div class="grid2 mt" style="grid-template-columns:repeat(3,1fr)">
+          <div><b class="num" style="font-size:30px">${stok.filter((u) => u.status === 'STOK').length}</b><div class="sub">Tersedia</div></div>
+          <div><b class="num" style="font-size:30px">${stok.filter((u) => u.status === 'DIALOKASIKAN').length}</b><div class="sub">Dialokasikan</div></div>
+          <div><b class="num" style="font-size:30px">${stok.filter((u) => u.status === 'TERJUAL').length}</b><div class="sub">Terjual</div></div>
+        </div></div>
+      <div class="card s12"><h2>Papan tim</h2><div class="mt">${htmlPapan(papan)}</div></div>
+    </div>`;
 };
 
 // =====================================================================
@@ -1220,6 +1382,7 @@ VIEWS.lain = async (v) => {
   const ringkasStok = {};
   stok.filter((u) => u.status === 'STOK').forEach((u) => { const k = tipeNama(u.tipe) + ' · ' + u.warna; ringkasStok[k] = (ringkasStok[k] || 0) + 1; });
   v.innerHTML = `<div class="head"><div><h1>Lainnya</h1></div></div>
+    <div class="lain-grid">
     <div class="card"><div class="row between"><div><b>${esc(S.me.nama)}</b><div class="sub">${esc(S.user.email)} · ${admin ? 'Admin' : 'Sales'}</div></div>
       <div class="row"><button class="btn sm" onclick="formSandi()">Ganti sandi</button><button class="btn sm danger" onclick="keluar()">Keluar</button></div></div></div>
 
@@ -1259,7 +1422,8 @@ VIEWS.lain = async (v) => {
         <div class="sub">${S.emailOrang[p.id] ? esc(S.emailOrang[p.id].email) + ' · ' : ''}Target ${p.target_lead_harian} lead/hari · ${p.target_do_bulanan} unit/bulan${S.emailOrang[p.id] ? ' · ' + (S.emailOrang[p.id].terakhir_masuk ? 'terakhir masuk ' + jam(S.emailOrang[p.id].terakhir_masuk) : 'belum pernah masuk') : ''}</div></div>
         <button class="btn sm" onclick="formOrang('${p.id}')">Ubah</button></div>`).join('')}</div></div>` : ''}
 
-    ${!S.cfg.tetap ? `<div class="card mt"><h2>Koneksi</h2><p class="sub mt">${esc(S.cfg.url)}</p><button class="btn sm mt" onclick="gantiKoneksi()">Ganti koneksi</button></div>` : ''}`;
+    ${!S.cfg.tetap ? `<div class="card mt"><h2>Koneksi</h2><p class="sub mt">${esc(S.cfg.url)}</p><button class="btn sm mt" onclick="gantiKoneksi()">Ganti koneksi</button></div>` : ''}
+    </div>`;
 };
 
 // ---------- form-form kecil ----------
