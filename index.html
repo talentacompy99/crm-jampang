@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>CRM Dealer Motor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<style>
+/* ===================== TAMPILAN ===================== */
+:root{
+  --ink:#0f172a; --ink2:#334155; --muted:#64748b; --faint:#94a3b8;
+  --line:#e2e8f0; --line2:#f1f5f9; --bg:#f8fafc; --card:#ffffff;
+  --blue:#2563eb; --blue-bg:#eff6ff; --green:#15803d; --green-bg:#dcfce7;
+  --amber:#b45309; --amber-bg:#fef3c7; --red:#b91c1c; --red-bg:#fee2e2;
+  --indigo:#4338ca; --indigo-bg:#e0e7ff; --sky:#0369a1; --sky-bg:#e0f2fe;
+  --gray-bg:#f1f5f9; --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--blue);text-decoration:none}
+.hidden{display:none!important}
+
+/* layout */
+.shell{min-height:100vh}
+.side{display:none}
+.top{position:sticky;top:0;z-index:20;height:56px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.3px}
+.logo{width:32px;height:32px;border-radius:10px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
+.main{padding:16px 16px 96px;max-width:1100px;margin:0 auto}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+.bnav button{flex:1;border:0;background:none;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--faint);cursor:pointer}
+.bnav button .ic{font-size:19px;line-height:1.2}
+.bnav button.on{color:var(--ink)}
+@media(min-width:900px){
+  .side{display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;width:232px;background:#fff;border-right:1px solid var(--line);padding:16px 12px;z-index:25}
+  .side .brand{padding:4px 8px 18px}
+  .side nav{display:flex;flex-direction:column;gap:4px}
+  .side nav button{border:0;background:none;text-align:left;padding:10px 12px;border-radius:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;gap:10px;align-items:center}
+  .side nav button:hover{background:var(--bg)}
+  .side nav button.on{background:var(--ink);color:#fff}
+  .side .who{margin-top:auto;padding:12px;border-top:1px solid var(--line2);font-size:12px;color:var(--muted)}
+  .top{margin-left:232px}
+  .top .brand{visibility:hidden}
+  .main{margin-left:232px;padding:24px 28px 40px}
+  .bnav{display:none}
+}
+
+/* komponen */
+h1{font-size:22px;font-weight:800;letter-spacing:-.5px}
+h2{font-size:16px;font-weight:800;letter-spacing:-.2px}
+h3{font-size:14px;font-weight:700}
+.sub{color:var(--muted);font-size:12.5px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:700px){.grid4{grid-template-columns:repeat(4,1fr)}}
+.mt{margin-top:14px}.mt2{margin-top:22px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.stat b{display:block;font-size:24px;font-weight:800;letter-spacing:-.5px}
+.stat span{font-size:11.5px;color:var(--muted);font-weight:600}
+.btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:#cbd5e1}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.green{background:var(--green);border-color:var(--green);color:#fff}
+.btn.danger{color:var(--red);border-color:#fecaca}
+.btn.sm{padding:6px 12px;font-size:12px}
+.btn.full{width:100%;padding:12px}
+.wa{background:#16a34a;border-color:#16a34a;color:#fff}
+.fab{position:fixed;right:18px;bottom:84px;z-index:19;border:0;border-radius:999px;background:var(--ink);color:#fff;padding:14px 20px;font-weight:700;box-shadow:0 10px 24px rgba(15,23,42,.25);cursor:pointer}
+@media(min-width:900px){.fab{bottom:28px;right:28px}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;color:var(--ink2)}
+.inp{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:14px}
+.inp:focus{outline:none;border-color:var(--ink);background:#fff}
+textarea.inp{min-height:70px;resize:vertical}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-gray{background:var(--gray-bg);color:var(--ink2)}.p-blue{background:var(--blue-bg);color:var(--blue)}
+.p-green{background:var(--green-bg);color:var(--green)}.p-amber{background:var(--amber-bg);color:var(--amber)}
+.p-red{background:var(--red-bg);color:var(--red)}.p-indigo{background:var(--indigo-bg);color:var(--indigo)}
+.p-sky{background:var(--sky-bg);color:var(--sky)}
+.item{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer}
+.item:hover{border-color:#cbd5e1}
+.av{width:40px;height:40px;flex:none;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+.item .mid{flex:1;min-width:0}
+.item .nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .meta{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{text-align:center;color:var(--faint);padding:28px 12px;border:1px dashed var(--line);border-radius:var(--r);background:#fff}
+.note{font-size:12px;background:var(--blue-bg);color:#1e3a8a;border-radius:12px;padding:10px 12px;line-height:1.5}
+.warn{font-size:12px;background:var(--amber-bg);color:#78350f;border-radius:12px;padding:10px 12px;line-height:1.5}
+.bad{font-size:12px;background:var(--red-bg);color:#7f1d1d;border-radius:12px;padding:10px 12px;line-height:1.5}
+.ok{font-size:12px;background:var(--green-bg);color:#14532d;border-radius:12px;padding:10px 12px;line-height:1.5}
+.sec{border-top:1px solid var(--line2);padding-top:16px;margin-top:16px}
+.sec>h3{margin-bottom:10px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}
+.kv dt{color:var(--muted)}.kv dd{font-weight:600;text-align:right}
+.steps{display:flex;gap:4px}
+.steps div{flex:1;height:6px;border-radius:99px;background:var(--line)}
+.steps div.on{background:var(--ink)}
+.steps-l{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);margin-top:5px;font-weight:600}
+.checklist{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.checklist div{display:flex;gap:8px;align-items:flex-start}
+.tl{display:flex;flex-direction:column;gap:0}
+.tl .ev{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2);font-size:13px}
+.tl .ev:last-child{border-bottom:0}
+.tl .dot{width:28px;height:28px;flex:none;border-radius:9px;background:var(--gray-bg);display:flex;align-items:center;justify-content:center;font-size:14px}
+.bar{height:8px;border-radius:99px;background:var(--line2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink);border-radius:99px}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;font-size:11px;color:var(--muted);font-weight:700;padding:8px 6px;border-bottom:1px solid var(--line)}
+table.t td{padding:9px 6px;border-bottom:1px solid var(--line2)}
+table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scrollx{overflow-x:auto}
+
+/* panel detail (drawer) */
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(15,23,42,.45);display:flex;justify-content:flex-end}
+.panel{background:#fff;width:100%;max-width:600px;height:100%;overflow-y:auto;display:flex;flex-direction:column;animation:slide .18s ease-out}
+@keyframes slide{from{transform:translateX(30px);opacity:.6}to{transform:none;opacity:1}}
+.panel-h{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px}
+.panel-h .x{border:0;background:var(--gray-bg);width:34px;height:34px;border-radius:10px;font-size:16px;cursor:pointer;flex:none}
+.panel-h .t{flex:1;min-width:0}
+.panel-h .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel-b{padding:16px 16px 40px}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.5);display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal .box{background:#fff;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px 24px}
+@media(min-width:600px){.modal{align-items:center;padding:16px}.modal .box{border-radius:20px}}
+
+/* layar login */
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(900px 500px at 0% -10%,#dbeafe,transparent 60%),radial-gradient(700px 400px at 100% 0%,#fef3c7,transparent 55%),var(--bg)}
+.login{width:100%;max-width:400px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;padding:11px 16px;border-radius:12px;font-size:13px;font-weight:600;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.toast.err{background:#b91c1c}
+@media(min-width:900px){.toast{bottom:30px}}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="layer"></div>
+<script>
+// =====================================================================
+//  CRM DEALER MOTOR  -  aplikasi web (satu file)
+//  1) Isi SUPABASE_URL dan SUPABASE_ANON_KEY di bawah (dari Supabase:
+//     tombol Connect, atau Settings > API Keys). Pakai "Publishable key"
+//     (sb_publishable_...). Kunci "anon" lama juga bisa, tapi Supabase
+//     menghentikannya akhir 2026. Boleh juga dikosongkan: aplikasi akan
+//     menanyakan alamat & kunci saat pertama dibuka di tiap perangkat.
+//  2) JANGAN pernah memasang "secret key" / "service_role" di sini.
+// =====================================================================
+   const SUPABASE_URL = 'https://ddbkyqnfimriiuefuzmy.supabase.co';
+   const SUPABASE_ANON_KEY = 'sb_publishable_UKePExVkvjhUre43wulMCA_7rWZHaj8';   // publishable key
+
+// ---------------------------------------------------------------------
+// Label tampilan
+// ---------------------------------------------------------------------
+const L = {
+  tahap: { BARU: 'Baru', DIHUBUNGI: 'Dihubungi', PROSPEK: 'Prospek', NEGOSIASI: 'Negosiasi', DEAL: 'Deal', LOST: 'Lost' },
+  rencana: { MINGGU_INI: 'Minggu ini', BULAN_INI: 'Bulan ini', '1_3_BULAN': '1–3 bulan', BELUM_PASTI: 'Belum pasti' },
+  jenis: { TELEPON: 'Telepon', WHATSAPP: 'WhatsApp', KUNJUNGAN_DEALER: 'Datang ke dealer', KUNJUNGAN_RUMAH: 'Kunjungan rumah',
+           TEST_RIDE: 'Test ride', PENAWARAN: 'Kirim penawaran', SIMULASI_KREDIT: 'Simulasi kredit', CATATAN: 'Catatan', SISTEM: 'Sistem' },
+  ikon: { TELEPON: '📞', WHATSAPP: '💬', KUNJUNGAN_DEALER: '🏢', KUNJUNGAN_RUMAH: '🏠', TEST_RIDE: '🏍️', PENAWARAN: '📄',
+          SIMULASI_KREDIT: '🧮', CATATAN: '📝', SISTEM: '⚙️' },
+  lost: { HARGA_DP: 'Harga/DP terlalu tinggi', DITOLAK_LEASING: 'Ditolak leasing', DEALER_LAIN: 'Beli di dealer lain',
+          MEREK_LAIN: 'Pilih merek lain', UNIT_TIDAK_ADA: 'Tipe/warna tidak tersedia', DITUNDA: 'Belum butuh / ditunda',
+          TIDAK_BISA_DIHUBUNGI: 'Tidak bisa dihubungi', LAINNYA: 'Lainnya' },
+  order: { SPK: 'SPK', SIAP_KIRIM: 'Siap kirim', TERKIRIM: 'Terkirim', SELESAI: 'Selesai', BATAL: 'Batal' },
+  bayar: { TANDA_JADI: 'Tanda jadi', DP: 'DP', PELUNASAN: 'Pelunasan', PENCAIRAN_LEASING: 'Pencairan leasing', REFUND: 'Refund' },
+  kredit: { DIAJUKAN: 'Diajukan', SURVEI: 'Survei', APPROVED: 'Approved', DITOLAK: 'Ditolak', BATAL: 'Batal' },
+  reg: { BELUM: 'Belum', PROSES: 'Proses', JADI: 'Jadi', DISERAHKAN: 'Diserahkan' },
+  kategori: { DIGITAL: 'Digital', OFFLINE: 'Offline', REFERENSI: 'Referensi', REPEAT: 'Repeat order' },
+};
+const WARNA_TAHAP = { BARU: 'p-gray', DIHUBUNGI: 'p-blue', PROSPEK: 'p-indigo', NEGOSIASI: 'p-amber', DEAL: 'p-green', LOST: 'p-red' };
+const WARNA_SUHU = { HOT: 'p-red', WARM: 'p-amber', COLD: 'p-sky' };
+const WARNA_ORDER = { SPK: 'p-blue', SIAP_KIRIM: 'p-amber', TERKIRIM: 'p-indigo', SELESAI: 'p-green', BATAL: 'p-gray' };
+const WARNA_KREDIT = { DIAJUKAN: 'p-blue', SURVEI: 'p-amber', APPROVED: 'p-green', DITOLAK: 'p-red', BATAL: 'p-gray' };
+const AKTIF = ['BARU', 'DIHUBUNGI', 'PROSPEK', 'NEGOSIASI'];
+
+// Pesan error database -> bahasa yang mudah dimengerti
+const PESAN_CONSTRAINT = {
+  syarat_prospek: 'Lengkapi tipe motor, metode bayar, dan rencana beli di bagian Kebutuhan dulu.',
+  followup_wajib: 'Lead aktif wajib punya jadwal follow-up.',
+  lost_wajib_alasan: 'Pilih alasan lost.',
+  lainnya_wajib_catatan: 'Alasan "Lainnya" wajib diisi catatan.',
+  diskon_wajar: 'Diskon harus lebih kecil dari harga OTR.',
+  batal_wajib_alasan: 'Isi alasan pembatalan.',
+  serah_terima_lengkap: 'Isi cara serah, tanggal serah, dan alamat (jika diantar).',
+  approved_lengkap: 'Isi DP disetujui, tenor, dan angsuran.',
+  ditolak_wajib_alasan: 'Isi alasan penolakan leasing.',
+  stnk_jadi_wajib_nopol: 'Isi nomor polisi sebelum STNK berstatus Jadi.',
+  plat_setelah_stnk: 'Plat baru bisa diproses setelah STNK jadi.',
+  satu_lead_aktif_per_konsumen: 'Konsumen ini sudah punya lead aktif.',
+  satu_pesanan_per_unit: 'Unit ini sudah dipakai pesanan lain.',
+  satu_pesanan_aktif_per_lead: 'Lead ini sudah punya SPK aktif.',
+  satu_approved_per_pesanan: 'Sudah ada leasing yang approved.',
+  satu_pengajuan_berjalan_per_leasing: 'Pengajuan ke leasing ini masih berjalan.',
+  sumber_nama_unik: 'Nama sumber sudah ada.',
+  konsumen_hp_key: 'Nomor HP sudah terdaftar pada konsumen lain.',
+  unit_stok_no_rangka_key: 'Nomor rangka sudah terdaftar.',
+  unit_stok_no_mesin_key: 'Nomor mesin sudah terdaftar.',
+  tipe_motor_merek_model_varian_key: 'Tipe motor ini sudah ada.',
+  leasing_nama_key: 'Nama leasing sudah ada.',
+  izin_sumber_sumber_id_peminta_id_key: 'Anda sudah pernah minta izin untuk sumber ini.',
+};
+function pesanError(e) {
+  const m = (e && (e.message || e.error_description || e.msg)) || String(e);
+  for (const k in PESAN_CONSTRAINT) if (m.includes(k)) return PESAN_CONSTRAINT[k];
+  if (m.includes('row-level security')) return 'Anda tidak punya akses untuk tindakan ini.';
+  if (m.includes('Invalid login credentials')) return 'Email atau kata sandi salah.';
+  if (m.includes('Failed to fetch') || m.includes('NetworkError')) return 'Tidak bisa terhubung ke server. Periksa internet Anda.';
+  if (m.includes('JWT expired')) return 'Sesi habis, silakan masuk lagi.';
+  return m;
+}
+
+// ---------------------------------------------------------------------
+// Alat bantu kecil
+// ---------------------------------------------------------------------
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const rp = (n) => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+const TZ = { timeZone: 'Asia/Jakarta' };
+const tgl = (d) => d ? new Date(d.length === 10 ? d + 'T00:00:00+07:00' : d).toLocaleDateString('id-ID', { ...TZ, day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+const jam = (d) => d ? new Date(d).toLocaleString('id-ID', { ...TZ, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
+const hariIni = () => new Date().toLocaleDateString('en-CA', TZ); // YYYY-MM-DD (WIB)
+const awalBulan = () => hariIni().slice(0, 8) + '01';
+const tipeNama = (t) => t ? [t.merek, t.model, t.varian].filter(Boolean).join(' ') : '-';
+const pill = (txt, cls) => `<span class="pill ${cls}">${esc(txt)}</span>`;
+const pTahap = (t) => pill(L.tahap[t] || t, WARNA_TAHAP[t] || 'p-gray');
+const pSuhu = (s, skor) => pill((s || '') + (skor != null ? ' · ' + skor : ''), WARNA_SUHU[s] || 'p-gray');
+const pOrder = (s) => pill(L.order[s] || s, WARNA_ORDER[s] || 'p-gray');
+const opsi = (obj, sel, kosong) => (kosong != null ? `<option value="">${esc(kosong)}</option>` : '') +
+  Object.entries(obj).map(([k, v]) => `<option value="${esc(k)}"${k === sel ? ' selected' : ''}>${esc(v)}</option>`).join('');
+const waLink = (hp, teks) => `https://wa.me/${esc(hp)}${teks ? '?text=' + encodeURIComponent(teks) : ''}`;
+const hpTampil = (hp) => hp ? '0' + String(hp).replace(/^62/, '') : '-';
+const val = (id) => { const el = document.getElementById(id); return el ? (el.type === 'checkbox' ? el.checked : el.value.trim()) : null; };
+const num = (id) => { const v = val(id); return v === '' || v == null ? null : Number(v); };
+const kePesanan = (o) => Number(o.harga_otr) - Number(o.diskon || 0);
+function localKeISO(v) { return v ? new Date(v).toISOString() : null; }
+function isoLokal(d) { // Date -> nilai input datetime-local
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+let toastT;
+function toast(msg, err) {
+  const old = $('.toast'); if (old) old.remove();
+  const el = document.createElement('div');
+  el.className = 'toast' + (err ? ' err' : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  clearTimeout(toastT); toastT = setTimeout(() => el.remove(), err ? 5000 : 2600);
+}
+const gagal = (e) => { console.warn(e); toast(pesanError(e), true); };
+
+// Jalankan query Supabase; lempar error bila gagal
+async function q(p) { const { data, error } = await p; if (error) throw error; return data; }
+// Update yang harus mengenai minimal 1 baris (kalau 0 = tidak punya akses)
+async function ubah(tabel, isi, kolom, nilai) {
+  const d = await q(sb.from(tabel).update(isi).eq(kolom, nilai).select());
+  if (!d || !d.length) throw new Error('Tidak ada perubahan. Anda mungkin tidak punya akses untuk data ini.');
+  return d[0];
+}
+async function aman(fn, btn) {
+  if (btn) { btn.disabled = true; btn.dataset.t = btn.innerHTML; btn.innerHTML = '<span class="spin"></span>'; }
+  try { return await fn(); } catch (e) { gagal(e); } finally { if (btn) { btn.disabled = false; btn.innerHTML = btn.dataset.t; } }
+}
+
+// ---------------------------------------------------------------------
+// Koneksi Supabase
+// ---------------------------------------------------------------------
+function bacaKonfig() {
+  if (SUPABASE_URL && SUPABASE_ANON_KEY) return { url: SUPABASE_URL, key: SUPABASE_ANON_KEY, tetap: true };
+  try { const c = JSON.parse(localStorage.getItem('crm_koneksi') || 'null'); if (c && c.url && c.key) return c; } catch (e) {}
+  return null;
+}
+let sb = null;
+const S = { user: null, me: null, tab: 'hari', tipe: [], leasing: [], sumber: [], orang: [], izinSaya: [],
+  f: { leadTahap: 'AKTIF', leadSuhu: '', leadSales: '', leadCari: '', orderStatus: 'AKTIF', lapDari: awalBulan(), lapSampai: hariIni() } };
+const isAdmin = () => S.me && S.me.peran === 'ADMIN';
+const namaOrang = (id) => (S.orang.find((p) => p.id === id) || {}).nama || '-';
+
+function layarKoneksi() {
+  $('#root').innerHTML = `<div class="center"><div class="login card stack" style="padding:24px">
+    <div class="brand"><div class="logo">🏍️</div><span>CRM Dealer Motor</span></div>
+    <h2>Hubungkan ke Supabase</h2>
+    <p class="sub">Salin dari Supabase: tombol <b>Connect</b> atau <b>Settings → API Keys</b>. Cukup sekali di perangkat ini.</p>
+    <div class="field"><label>Project URL</label><input id="kUrl" class="inp" placeholder="https://xxxx.supabase.co"></div>
+    <div class="field"><label>Publishable key</label><textarea id="kKey" class="inp" placeholder="sb_publishable_..."></textarea></div>
+    <button class="btn pri full" onclick="simpanKoneksi(this)">Simpan & lanjut</button>
+    <p class="sub">Jangan gunakan <b>secret key</b> atau <b>service_role</b>.</p></div></div>`;
+}
+function simpanKoneksi() {
+  const url = val('kUrl').replace(/\/+$/, ''), key = val('kKey');
+  if (!/^https?:\/\//.test(url) || key.length < 20) return toast('URL atau key belum benar', true);
+  try { localStorage.setItem('crm_koneksi', JSON.stringify({ url, key })); } catch (e) {}
+  mulai({ url, key });
+}
+function gantiKoneksi() {
+  if (!confirm('Hapus pengaturan koneksi di perangkat ini?')) return;
+  try { localStorage.removeItem('crm_koneksi'); } catch (e) {}
+  location.reload();
+}
+
+async function mulai(cfg) {
+  if (!window.supabase) { $('#root').innerHTML = '<div class="center"><div class="bad">Gagal memuat pustaka Supabase. Periksa internet lalu muat ulang.</div></div>'; return; }
+  sb = window.supabase.createClient(cfg.url, cfg.key);
+  S.cfg = cfg;
+  const { data } = await sb.auth.getSession();
+  if (data.session) await setelahMasuk(data.session.user); else layarLogin();
+}
+
+function layarLogin() {
+  $('#root').innerHTML = `<div class="center"><form class="login card stack" style="padding:24px" onsubmit="event.preventDefault();masuk(this.querySelector('button'))">
+    <div class="brand"><div class="logo">🏍️</div><span>CRM Dealer Motor</span></div>
+    <div><h1>Masuk</h1><p class="sub">Gunakan email & kata sandi dari admin dealer.</p></div>
+    <div class="field"><label>Email</label><input id="lgEmail" class="inp" type="email" autocomplete="username" required></div>
+    <div class="field"><label>Kata sandi</label><input id="lgPass" class="inp" type="password" autocomplete="current-password" required></div>
+    <button class="btn pri full" type="submit">Masuk</button>
+    ${S.cfg && !S.cfg.tetap ? '<button type="button" class="btn sm" style="align-self:center" onclick="gantiKoneksi()">Ganti koneksi</button>' : ''}
+  </form></div>`;
+}
+async function masuk(btn) {
+  await aman(async () => {
+    const { data, error } = await sb.auth.signInWithPassword({ email: val('lgEmail'), password: $('#lgPass').value });
+    if (error) throw error;
+    await setelahMasuk(data.user);
+  }, btn);
+}
+async function keluar() { await sb.auth.signOut(); S.me = null; layarLogin(); }
+
+async function setelahMasuk(user) {
+  S.user = user;
+  try {
+    S.me = await q(sb.from('profiles').select('*').eq('id', user.id).maybeSingle());
+    if (!S.me) throw new Error('Profil tidak ditemukan. Hubungi admin.');
+    if (!S.me.aktif) { await sb.auth.signOut(); layarLogin(); return toast('Akun Anda dinonaktifkan. Hubungi admin.', true); }
+    await muatMaster();
+    gambarShell();
+    buka(S.tab);
+  } catch (e) { gagal(e); layarLogin(); }
+}
+async function muatMaster() {
+  const [tipe, leasing, sumber, orang, izin] = await Promise.all([
+    q(sb.from('tipe_motor').select('*').order('merek').order('model')),
+    q(sb.from('leasing').select('*').order('nama')),
+    q(sb.from('sumber_leads').select('*').order('nama')),
+    q(sb.from('profiles').select('id,nama,peran,aktif,target_lead_harian,target_do_bulanan').order('nama')),
+    q(sb.from('izin_sumber').select('*').eq('peminta_id', S.me.id)),
+  ]);
+  Object.assign(S, { tipe, leasing, sumber, orang, izinSaya: izin });
+}
+// sumber yang boleh dipakai user ini
+function sumberBoleh() {
+  return S.sumber.filter((s) => s.aktif && (isAdmin() || !s.pemilik_id || s.pemilik_id === S.me.id ||
+    S.izinSaya.some((i) => i.sumber_id === s.id && i.setuju_pemilik && i.setuju_admin)));
+}
+const opsiTipe = (sel, kosong = 'Pilih tipe motor') => `<option value="">${kosong}</option>` +
+  S.tipe.filter((t) => t.aktif || t.id === sel).map((t) => `<option value="${t.id}"${t.id === sel ? ' selected' : ''}>${esc(tipeNama(t))} — ${rp(t.harga_otr)}</option>`).join('');
+
+// ---------------------------------------------------------------------
+// Kerangka & navigasi
+// ---------------------------------------------------------------------
+function menu() {
+  return isAdmin()
+    ? [['hari', '🏠', 'Hari Ini'], ['leads', '👥', 'Leads'], ['order', '📦', 'Order'], ['laporan', '📊', 'Laporan'], ['lain', '☰', 'Lainnya']]
+    : [['hari', '🏠', 'Hari Ini'], ['leads', '👥', 'Leads'], ['order', '📦', 'Order'], ['tim', '🏆', 'Tim'], ['lain', '☰', 'Lainnya']];
+}
+function gambarShell() {
+  const m = menu();
+  $('#root').innerHTML = `<div class="shell">
+    <aside class="side"><div class="brand"><div class="logo">🏍️</div><span>CRM Dealer</span></div>
+      <nav>${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')"><span>${i}</span>${t}</button>`).join('')}</nav>
+      <div class="who"><b style="color:var(--ink)">${esc(S.me.nama)}</b><br>${S.me.peran === 'ADMIN' ? 'Admin' : 'Sales'}</div></aside>
+    <header class="top"><div class="brand"><div class="logo">🏍️</div><span>CRM Dealer</span></div>
+      <div class="row"><span class="sub">${esc(S.me.nama)}</span><span class="pill ${isAdmin() ? 'p-indigo' : 'p-blue'}">${isAdmin() ? 'Admin' : 'Sales'}</span></div></header>
+    <main class="main" id="view"></main>
+    <nav class="bnav">${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')"><span class="ic">${i}</span>${t}</button>`).join('')}</nav>
+  </div>`;
+}
+const VIEWS = {};
+async function buka(tab) {
+  if (!menu().some((m) => m[0] === tab)) tab = 'hari';
+  S.tab = tab;
+  document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === tab));
+  const v = $('#view'); if (!v) return;
+  v.innerHTML = '<div class="empty"><span class="spin"></span></div>';
+  window.scrollTo(0, 0);
+  try { await VIEWS[tab](v); } catch (e) { v.innerHTML = `<div class="bad">${esc(pesanError(e))}</div>`; }
+}
+const muatUlang = () => buka(S.tab);
+
+// ---------------------------------------------------------------------
+// Panel detail & modal
+// ---------------------------------------------------------------------
+function panel(judul, subjudul, isi, kunci) {
+  const ada = $('#layer .panel');
+  if (ada && kunci && ada.dataset.k === kunci) {           // panel sama: perbarui isi tanpa animasi & tetap di posisi gulir
+    const top = ada.scrollTop;
+    ada.querySelector('.panel-h .t').innerHTML = `<b>${judul}</b><span class="sub">${subjudul || ''}</span>`;
+    $('#panelBody').innerHTML = isi; ada.scrollTop = top; return;
+  }
+  $('#layer').innerHTML = `<div class="sheet" onclick="if(event.target===this)tutupPanel()"><div class="panel" data-k="${esc(kunci || '')}">
+    <div class="panel-h"><button class="x" onclick="tutupPanel()" aria-label="Tutup">✕</button>
+      <div class="t"><b>${judul}</b><span class="sub">${subjudul || ''}</span></div></div>
+    <div class="panel-b" id="panelBody">${isi}</div></div></div>`;
+  document.body.style.overflow = 'hidden';
+}
+function tutupPanel() { $('#layer').innerHTML = ''; document.body.style.overflow = ''; }
+function modal(isi) {
+  const d = document.createElement('div');
+  d.className = 'modal'; d.id = 'modal';
+  d.innerHTML = `<div class="box">${isi}</div>`;
+  d.onclick = (e) => { if (e.target === d) tutupModal(); };
+  document.body.appendChild(d);
+}
+function tutupModal() { const m = $('#modal'); if (m) m.remove(); }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if ($('#modal')) tutupModal(); else tutupPanel(); } });
+
+// ---------------------------------------------------------------------
+// Kartu daftar
+// ---------------------------------------------------------------------
+function kartuLead(l, ekstra = '') {
+  const k = l.konsumen || {};
+  const telat = l.followup_berikutnya && new Date(l.followup_berikutnya) < new Date() && AKTIF.includes(l.tahap);
+  return `<div class="item" onclick="bukaLead(${l.id || l.lead_id})">
+    <div class="av" style="background:${l.suhu === 'HOT' ? '#b91c1c' : l.suhu === 'WARM' ? '#b45309' : '#0f172a'}">${esc((k.nama || l.nama || '?').charAt(0).toUpperCase())}</div>
+    <div class="mid"><div class="nm">${esc(k.nama || l.nama)}</div>
+      <div class="meta">${esc(l.tipe_motor ? tipeNama(l.tipe_motor) : 'Tipe belum dipilih')}${isAdmin() && l.sales ? ' · ' + esc(l.sales.nama) : ''}</div>
+      <div class="row" style="margin-top:6px;gap:5px">${pTahap(l.tahap)}${pSuhu(l.suhu, l.skor)}${telat ? pill('Terlambat', 'p-red') : ''}${ekstra}</div></div>
+    ${AKTIF.includes(l.tahap) ? `<div class="sub" style="text-align:right;flex:none">${l.followup_berikutnya ? 'FU<br>' + jam(l.followup_berikutnya) : ''}</div>` : ''}
+  </div>`;
+}
+function kartuOrder(o) {
+  return `<div class="item" onclick="bukaOrder(${o.id})">
+    <div class="av" style="background:#334155">📦</div>
+    <div class="mid"><div class="nm">${esc(o.konsumen?.nama)} <span class="sub">· ${esc(o.no_spk)}</span></div>
+      <div class="meta">${esc(tipeNama(o.tipe))} ${esc(o.warna)} · ${o.metode_bayar === 'KREDIT' ? 'Kredit' : 'Cash'}${isAdmin() ? ' · ' + esc(o.sales?.nama) : ''}</div>
+      <div class="row" style="margin-top:6px;gap:5px">${pOrder(o.status)}<span class="sub">${rp(kePesanan(o))}</span></div></div>
+  </div>`;
+}
+
+// =====================================================================
+// TAB: HARI INI
+// =====================================================================
+VIEWS.hari = async (v) => {
+  const [fu, siapUlang] = await Promise.all([
+    q(sb.from('v_followup').select('*').order('followup_berikutnya')),
+    q(sb.from('v_siap_prospek_ulang').select('*').order('jadwal_prospek_ulang')),
+  ]);
+  const ids = fu.map((f) => f.lead_id);
+  const detail = ids.length ? await q(sb.from('leads').select('id,tahap,suhu,skor,followup_berikutnya,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)').in('id', ids)) : [];
+  const urut = ids.map((id) => detail.find((d) => d.id === id)).filter(Boolean);
+  const telat = fu.filter((f) => f.terlambat).length;
+  const statLead = await q(sb.from('leads').select('suhu').in('tahap', AKTIF));
+  let adminHtml = '';
+  if (isAdmin()) {
+    const [spk, siap, reg, izin, basi] = await Promise.all([
+      q(sb.from('pesanan').select('id', { count: 'exact', head: false }).eq('status', 'SPK')),
+      q(sb.from('pesanan').select('id').eq('status', 'SIAP_KIRIM')),
+      q(sb.from('registrasi').select('pesanan_id').or('stnk_status.neq.DISERAHKAN,tnkb_status.neq.DISERAHKAN,bpkb_status.neq.DISERAHKAN')),
+      q(sb.from('izin_sumber').select('id,setuju_pemilik').is('setuju_admin', null)),
+      q(sb.from('leads').select('id,tahap,suhu,skor,followup_berikutnya,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)')
+        .in('tahap', AKTIF).lt('created_at', new Date(Date.now() - 30 * 864e5).toISOString())
+        .or(`aktivitas_terakhir.is.null,aktivitas_terakhir.lt.${new Date(Date.now() - 30 * 864e5).toISOString()}`)),
+    ]);
+    const izinTunggu = izin.filter((i) => i.setuju_pemilik !== false).length;
+    adminHtml = `<h2 class="mt2">Antrian admin</h2>
+      <div class="grid4 mt">
+        <div class="stat" onclick="S.f.orderStatus='SPK';buka('order')" style="cursor:pointer"><b>${spk.length}</b><span>SPK menunggu bayar / unit</span></div>
+        <div class="stat" onclick="S.f.orderStatus='SIAP_KIRIM';buka('order')" style="cursor:pointer"><b>${siap.length}</b><span>Siap kirim</span></div>
+        <div class="stat" onclick="S.f.orderStatus='TERKIRIM';buka('order')" style="cursor:pointer"><b>${reg.length}</b><span>STNK/plat/BPKB belum tuntas</span></div>
+        <div class="stat" onclick="buka('lain')" style="cursor:pointer"><b>${izinTunggu}</b><span>Izin sumber menunggu</span></div>
+      </div>
+      ${basi.length ? `<h2 class="mt2">Bisa dialihkan <span class="sub">· tidak ada aktivitas 30 hari</span></h2><div class="stack mt">${basi.map((l) => kartuLead(l)).join('')}</div>` : ''}`;
+  }
+  v.innerHTML = `<div class="head"><div><h1>Halo, ${esc(S.me.nama.split(' ')[0])}</h1>
+      <p class="sub">${new Date().toLocaleDateString('id-ID', { ...TZ, weekday: 'long', day: 'numeric', month: 'long' })}</p></div></div>
+    <div class="grid4">
+      <div class="stat"><b>${fu.length}</b><span>Follow-up hari ini</span></div>
+      <div class="stat"><b style="color:${telat ? 'var(--red)' : 'inherit'}">${telat}</b><span>Terlambat</span></div>
+      <div class="stat"><b>${statLead.length}</b><span>Lead aktif</span></div>
+      <div class="stat"><b style="color:var(--red)">${statLead.filter((l) => l.suhu === 'HOT').length}</b><span>HOT</span></div>
+    </div>
+    ${adminHtml}
+    <h2 class="mt2">Follow-up hari ini</h2>
+    <div class="stack mt">${urut.length ? urut.map((l) => kartuLead(l)).join('') : '<div class="empty">Semua follow-up hari ini sudah beres 👍</div>'}</div>
+    ${siapUlang.length ? `<h2 class="mt2">Siap prospek ulang</h2><div class="stack mt">${siapUlang.map((l) => `<div class="item" onclick="bukaLead(${l.lead_id})"><div class="av" style="background:#64748b">↩</div><div class="mid"><div class="nm">${esc(l.nama)}</div><div class="meta">${esc(L.lost[l.alasan_lost])} · jadwal ${tgl(l.jadwal_prospek_ulang)}</div></div></div>`).join('')}</div>` : ''}
+    <button class="fab" onclick="formLead()">+ Lead</button>`;
+};
+
+// =====================================================================
+// TAB: LEADS
+// =====================================================================
+VIEWS.leads = async (v) => {
+  const f = S.f;
+  let qy = sb.from('leads').select('id,tahap,suhu,skor,followup_berikutnya,created_at,sales_id,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)')
+    .order('updated_at', { ascending: false }).limit(500);
+  if (f.leadTahap === 'AKTIF') qy = qy.in('tahap', AKTIF); else if (f.leadTahap) qy = qy.eq('tahap', f.leadTahap);
+  if (f.leadSuhu) qy = qy.eq('suhu', f.leadSuhu);
+  if (f.leadSales) qy = qy.eq('sales_id', f.leadSales);
+  const data = await q(qy);
+  const chipT = [['AKTIF', 'Aktif'], ...Object.entries(L.tahap)];
+  v.innerHTML = `<div class="head"><div><h1>Leads</h1><p class="sub">${isAdmin() ? 'Semua lead tim' : 'Lead milik Anda'}</p></div>
+      <button class="btn pri" onclick="formLead()">+ Lead baru</button></div>
+    <div class="card stack" style="padding:12px">
+      <input id="cari" class="inp" placeholder="Cari nama atau nomor HP…" value="${esc(f.leadCari)}" oninput="S.f.leadCari=this.value;saringLeads()">
+      <div class="chips">${chipT.map(([k, t]) => `<button class="chip${f.leadTahap === k ? ' on' : ''}" onclick="S.f.leadTahap='${k}';buka('leads')">${t}</button>`).join('')}</div>
+      <div class="row">
+        <div class="chips">${['', 'HOT', 'WARM', 'COLD'].map((s) => `<button class="chip${f.leadSuhu === s ? ' on' : ''}" onclick="S.f.leadSuhu='${s}';buka('leads')">${s || 'Semua suhu'}</button>`).join('')}</div>
+        ${isAdmin() ? `<select class="inp" style="width:auto;padding:7px 10px" onchange="S.f.leadSales=this.value;buka('leads')"><option value="">Semua sales</option>${S.orang.map((p) => `<option value="${p.id}"${f.leadSales === p.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>` : ''}
+      </div></div>
+    <div id="daftarLead" class="stack mt"></div>
+    <button class="fab" onclick="formLead()">+ Lead</button>`;
+  S._leads = data;
+  saringLeads();
+};
+function saringLeads() {
+  const c = (S.f.leadCari || '').toLowerCase().trim();
+  const cDigit = c.replace(/\D/g, '').replace(/^0/, '62');
+  const d = (S._leads || []).filter((l) => !c || (l.konsumen?.nama || '').toLowerCase().includes(c) || (cDigit.length >= 3 && (l.konsumen?.hp || '').includes(cDigit)));
+  const el = $('#daftarLead'); if (!el) return;
+  el.innerHTML = d.length ? `<p class="sub">${d.length} lead</p>` + d.map((l) => kartuLead(l)).join('') : '<div class="empty">Tidak ada lead yang cocok.</div>';
+}
+
+// ---------- Form tambah lead ----------
+function formLead() {
+  const boleh = sumberBoleh();
+  modal(`<div class="row between"><h2>Lead baru</h2><button class="btn sm" onclick="tutupModal()">Tutup</button></div>
+  <div class="stack mt">
+    <div class="field"><label>Nomor HP / WhatsApp *</label><input id="nHp" class="inp" inputmode="tel" placeholder="0812…" oninput="cekHpNanti()"></div>
+    <div id="hpInfo"></div>
+    <div class="field"><label>Nama konsumen *</label><input id="nNama" class="inp"></div>
+    <div class="field"><label>Alamat</label><input id="nAlamat" class="inp" placeholder="Kampung, desa, kecamatan"></div>
+    <div class="field"><label>Sumber lead *</label><select id="nSumber" class="inp"><option value="">Pilih sumber</option>${boleh.map((s) => `<option value="${s.id}">${esc(s.nama)}${s.pemilik_id ? ' (private ' + esc(namaOrang(s.pemilik_id)) + ')' : ''}</option>`).join('')}</select></div>
+    ${isAdmin() ? `<div class="field"><label>Ditangani oleh</label><select id="nSales" class="inp">${S.orang.filter((p) => p.aktif).map((p) => `<option value="${p.id}"${p.id === S.me.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select></div>` : ''}
+    <details><summary class="sub" style="cursor:pointer;padding:4px 0">Kebutuhan (boleh diisi nanti)</summary>
+      <div class="stack mt">
+        <div class="field"><label>Tipe motor</label><select id="nTipe" class="inp">${opsiTipe(null)}</select></div>
+        <div class="grid2"><div class="field"><label>Warna</label><input id="nWarna" class="inp"></div>
+          <div class="field"><label>Metode bayar</label><select id="nMetode" class="inp">${opsi({ CASH: 'Cash', KREDIT: 'Kredit' }, '', 'Belum tahu')}</select></div></div>
+        <div class="field"><label>Rencana beli</label><select id="nRencana" class="inp">${opsi(L.rencana, '', 'Belum ditanya')}</select></div>
+        <label class="chk"><input type="checkbox" id="nDana"> Dana / DP sudah siap</label>
+      </div></details>
+    <div class="field"><label>Catatan</label><textarea id="nCatatan" class="inp"></textarea></div>
+    <button id="nSimpan" class="btn pri full" onclick="simpanLead(this)">Simpan lead</button>
+  </div>`);
+  setTimeout(() => $('#nHp')?.focus(), 50);
+}
+let hpT;
+function cekHpNanti() { clearTimeout(hpT); hpT = setTimeout(cekHp, 450); }
+async function cekHp() {
+  const hp = val('nHp'), info = $('#hpInfo'), btn = $('#nSimpan');
+  if (!info) return;
+  btn.disabled = false;
+  if (hp.replace(/\D/g, '').length < 10) { info.innerHTML = ''; return; }
+  try {
+    const [r] = await q(sb.rpc('cek_hp', { p_hp: hp }));
+    if (r.status === 'BARU') info.innerHTML = '<div class="ok">Nomor baru. Konsumen baru akan dibuat.</div>';
+    else if (r.status === 'BEBAS') { info.innerHTML = `<div class="note">Konsumen lama: <b>${esc(r.nama_konsumen)}</b>. Lead baru akan dibuat (repeat order / prospek ulang).</div>`; if (!val('nNama')) $('#nNama').value = r.nama_konsumen; }
+    else if (r.status === 'MILIK_SAYA') { btn.disabled = true; info.innerHTML = `<div class="warn">Konsumen ini sudah ada di lead aktif Anda. <a href="#" onclick="event.preventDefault();tutupModal();bukaLead(${r.lead_id})">Buka lead →</a></div>`; }
+    else { btn.disabled = true; info.innerHTML = `<div class="bad">Sedang ditangani <b>${esc(r.pemilik)}</b>. ${r.bisa_dialihkan ? 'Tidak ada aktivitas 30 hari: minta admin mengalihkan lead ini.' : 'Tidak bisa dibuat lead ganda.'}</div>`; }
+  } catch (e) { info.innerHTML = `<div class="bad">${esc(pesanError(e))}</div>`; }
+}
+async function simpanLead(btn) {
+  if (!val('nHp') || !val('nNama') || !val('nSumber')) return toast('Nomor HP, nama, dan sumber wajib diisi', true);
+  await aman(async () => {
+    const id = await q(sb.rpc('buat_lead', {
+      p_nama: val('nNama'), p_hp: val('nHp'), p_sumber_id: Number(val('nSumber')), p_alamat: val('nAlamat') || null,
+      p_tipe_motor_id: num('nTipe'), p_warna: val('nWarna') || null, p_metode_bayar: val('nMetode') || null,
+      p_rencana_beli: val('nRencana') || null, p_dana_siap: val('nDana'), p_catatan: val('nCatatan') || null,
+      p_sales_id: isAdmin() ? val('nSales') : null }));
+    tutupModal(); toast('Lead tersimpan'); muatUlang(); bukaLead(id);
+  }, btn);
+}
+
+// =====================================================================
+// DETAIL LEAD
+// =====================================================================
+async function bukaLead(id) {
+  if ($('#layer .panel')?.dataset.k !== 'lead:' + id) panel('Memuat…', '', '<div class="empty"><span class="spin"></span></div>', 'lead:' + id);
+  try {
+    const [l, akt, ord] = await Promise.all([
+      q(sb.from('leads').select('*, konsumen(*), tipe_motor(*), sumber:sumber_leads(nama), sales:profiles(nama)').eq('id', id).single()),
+      q(sb.from('aktivitas').select('*, user:profiles(nama)').eq('lead_id', id).order('created_at', { ascending: false })),
+      q(sb.from('pesanan').select('id,no_spk,status').eq('lead_id', id).order('created_at', { ascending: false })),
+    ]);
+    gambarLead(l, akt, ord);
+  } catch (e) { $('#panelBody').innerHTML = `<div class="bad">${esc(pesanError(e))}</div>`; }
+}
+function gambarLead(l, akt, ord) {
+  const k = l.konsumen, aktif = AKTIF.includes(l.tahap);
+  const idx = Math.max(0, ['BARU', 'DIHUBUNGI', 'PROSPEK', 'NEGOSIASI', 'DEAL'].indexOf(l.tahap === 'LOST' ? l.tahap_tertinggi : l.tahap));
+  const sapa = `Halo ${k.nama.split(' ')[0]}, saya ${S.me.nama} dari dealer.`;
+  const lanjut = { BARU: null, DIHUBUNGI: 'PROSPEK', PROSPEK: 'NEGOSIASI', NEGOSIASI: null }[l.tahap];
+  const bisaSpk = ['DIHUBUNGI', 'PROSPEK', 'NEGOSIASI'].includes(l.tahap);
+  panel(esc(k.nama), `${hpTampil(k.hp)} · ${esc(l.sales?.nama)} · ${esc(l.sumber?.nama)}`, `
+    <div class="row">${pTahap(l.tahap)}${pSuhu(l.suhu, l.skor)}
+      ${aktif && l.followup_berikutnya ? `<span class="sub">Follow-up: <b>${jam(l.followup_berikutnya)}</b></span>` : ''}</div>
+    <div class="mt"><div class="steps">${[0, 1, 2, 3, 4].map((i) => `<div class="${i <= idx && l.tahap !== 'LOST' ? 'on' : i <= idx ? 'on' : ''}" ${l.tahap === 'LOST' && i <= idx ? 'style="background:#cbd5e1"' : ''}></div>`).join('')}</div>
+      <div class="steps-l"><span>Baru</span><span>Dihubungi</span><span>Prospek</span><span>Negosiasi</span><span>Deal</span></div></div>
+    <div class="row mt">
+      <a class="btn wa" href="${waLink(k.hp, sapa)}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a class="btn" href="tel:+${esc(k.hp)}">📞 Telepon</a>
+      ${lanjut ? `<button class="btn" onclick="naikTahap(${l.id},'${lanjut}',this)">Naikkan ke ${L.tahap[lanjut]} →</button>` : ''}
+      ${bisaSpk ? `<button class="btn green" onclick="formSpk(${l.id})">Buat SPK</button>` : ''}
+    </div>
+    ${l.tahap === 'LOST' ? `<div class="bad mt"><b>Lost:</b> ${esc(L.lost[l.alasan_lost])}${l.catatan_lost ? ' — ' + esc(l.catatan_lost) : ''}${l.jadwal_prospek_ulang ? '<br>Jadwal prospek ulang: ' + tgl(l.jadwal_prospek_ulang) : ''}
+        <div class="row mt"><button class="btn pri sm" onclick="prospekUlang(${l.id},this)">↩ Prospek ulang (buat lead baru)</button></div></div>` : ''}
+    ${ord.length ? `<div class="note mt">${ord.map((o) => `SPK <b>${esc(o.no_spk)}</b> ${pOrder(o.status)} <a href="#" onclick="event.preventDefault();bukaOrder(${o.id})">Buka order →</a>`).join('<br>')}</div>` : ''}
+    ${l.tahap === 'BARU' ? '<div class="warn mt">Lead baru: hubungi secepatnya. Catat hasil kontak di bawah, tahap akan naik otomatis.</div>' : ''}
+
+    ${l.tahap !== 'LOST' ? `<div class="sec"><h3>Catat aktivitas</h3>
+      <div class="chips" id="jenisAkt">${['TELEPON', 'WHATSAPP', 'KUNJUNGAN_DEALER', 'KUNJUNGAN_RUMAH', 'TEST_RIDE', 'PENAWARAN', 'SIMULASI_KREDIT', 'CATATAN']
+        .map((j, i) => `<button class="chip${i === 0 ? ' on' : ''}" data-j="${j}" onclick="pilihJenis(this)">${L.ikon[j]} ${L.jenis[j]}</button>`).join('')}</div>
+      <div class="stack mt">
+        <div class="row" id="hasilAkt"><label class="chk"><input type="radio" name="hasil" value="TERHUBUNG"> Terhubung</label>
+          <label class="chk"><input type="radio" name="hasil" value="TIDAK_TERHUBUNG"> Tidak terhubung</label></div>
+        <textarea id="aCatatan" class="inp" placeholder="Apa hasil pembicaraannya?"></textarea>
+        ${aktif ? `<div class="field"><label>Follow-up berikutnya <span class="sub">(kosongkan = otomatis sesuai suhu)</span></label>
+          <div class="row"><input id="aFu" type="datetime-local" class="inp" style="flex:1;min-width:180px">
+          <button class="chip" onclick="setFu(1)">Besok</button><button class="chip" onclick="setFu(3)">3 hari</button><button class="chip" onclick="setFu(7)">1 minggu</button></div></div>` : ''}
+        <button class="btn pri" onclick="simpanAktivitas(${l.id},this)">Simpan aktivitas</button>
+      </div></div>` : ''}
+
+    <div class="sec"><h3>Kebutuhan</h3>
+      <div class="stack">
+        <div class="field"><label>Tipe motor</label><select id="kTipe" class="inp" ${aktif ? '' : 'disabled'}>${opsiTipe(l.tipe_motor_id)}</select></div>
+        <div class="grid2"><div class="field"><label>Warna</label><input id="kWarna" class="inp" value="${esc(l.warna)}" ${aktif ? '' : 'disabled'}></div>
+          <div class="field"><label>Metode bayar</label><select id="kMetode" class="inp" ${aktif ? '' : 'disabled'}>${opsi({ CASH: 'Cash', KREDIT: 'Kredit' }, l.metode_bayar, 'Belum tahu')}</select></div></div>
+        <div class="grid2"><div class="field"><label>Rencana beli</label><select id="kRencana" class="inp" ${aktif ? '' : 'disabled'}>${opsi(L.rencana, l.rencana_beli, 'Belum ditanya')}</select></div>
+          <div class="field"><label>Rencana DP (Rp)</label><input id="kDp" type="number" inputmode="numeric" class="inp" value="${l.dp_rencana ?? ''}" ${aktif ? '' : 'disabled'}></div></div>
+        <label class="chk"><input type="checkbox" id="kDana" ${l.dana_siap ? 'checked' : ''} ${aktif ? '' : 'disabled'}> Dana / DP sudah siap</label>
+        <div class="sub">Otomatis dari aktivitas: ${l.sudah_lihat_unit ? '✅' : '⬜'} sudah lihat unit / test ride · ${l.sudah_penawaran ? '✅' : '⬜'} sudah terima penawaran${l.gagal_hubungi_beruntun ? ` · ⚠️ ${l.gagal_hubungi_beruntun}x gagal dihubungi` : ''}</div>
+        <div class="field"><label>Catatan lead</label><textarea id="kCatatan" class="inp">${esc(l.catatan)}</textarea></div>
+        <button class="btn" onclick="simpanKebutuhan(${l.id},this)">Simpan kebutuhan</button>
+      </div></div>
+
+    <div class="sec"><h3>Data konsumen</h3>
+      <div class="stack">
+        <div class="grid2"><div class="field"><label>Nama</label><input id="cNama" class="inp" value="${esc(k.nama)}"></div>
+          <div class="field"><label>No HP</label><input id="cHp" class="inp" inputmode="tel" value="${esc(hpTampil(k.hp))}"></div></div>
+        <div class="field"><label>Alamat</label><input id="cAlamat" class="inp" value="${esc(k.alamat)}"></div>
+        <div class="grid2"><div class="field"><label>Desa/Kelurahan</label><input id="cKel" class="inp" value="${esc(k.kelurahan)}"></div>
+          <div class="field"><label>Kecamatan</label><input id="cKec" class="inp" value="${esc(k.kecamatan)}"></div></div>
+        <div class="grid2"><div class="field"><label>Kota/Kab.</label><input id="cKota" class="inp" value="${esc(k.kota)}"></div>
+          <div class="field"><label>Pekerjaan</label><input id="cKerja" class="inp" value="${esc(k.pekerjaan)}"></div></div>
+        <button class="btn" onclick="simpanKonsumen(${k.id},${l.id},this)">Simpan data konsumen</button>
+      </div></div>
+
+    <div class="sec"><h3>Riwayat</h3>
+      <div class="tl">${akt.length ? akt.map((a) => `<div class="ev"><div class="dot">${L.ikon[a.jenis] || '•'}</div><div style="flex:1">
+        <b>${esc(L.jenis[a.jenis])}</b>${a.hasil ? ' · ' + (a.hasil === 'TERHUBUNG' ? '<span style="color:var(--green)">terhubung</span>' : '<span style="color:var(--red)">tidak terhubung</span>') : ''}
+        ${a.catatan ? `<div>${esc(a.catatan)}</div>` : ''}<div class="sub">${jam(a.created_at)} · ${esc(a.user?.nama || 'sistem')}</div></div></div>`).join('')
+        : '<div class="sub">Belum ada aktivitas.</div>'}
+        <div class="ev"><div class="dot">✨</div><div><b>Lead masuk</b><div class="sub">${jam(l.created_at)}${l.prospek_ulang_dari ? ` · prospek ulang dari <a href="#" onclick="event.preventDefault();bukaLead(${l.prospek_ulang_dari})">lead #${l.prospek_ulang_dari}</a>` : ''}</div></div></div>
+      </div></div>
+
+    ${aktif ? `<div class="sec"><h3>Tutup lead</h3>
+      <div class="stack">
+        <div class="field"><label>Alasan lost</label><select id="xAlasan" class="inp">${opsi(L.lost, '', 'Pilih alasan')}</select></div>
+        <input id="xCatatan" class="inp" placeholder="Catatan (wajib untuk Lainnya)">
+        <div class="field"><label>Jadwal prospek ulang (opsional)</label><input id="xJadwal" type="date" class="inp" min="${hariIni()}"></div>
+        <button class="btn danger" onclick="tutupLost(${l.id},this)">Tandai LOST</button>
+      </div></div>` : ''}
+
+    ${isAdmin() && aktif ? `<div class="sec"><h3>Alihkan ke sales lain</h3><div class="row">
+      <select id="xSales" class="inp" style="flex:1">${S.orang.filter((p) => p.aktif).map((p) => `<option value="${p.id}"${p.id === l.sales_id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>
+      <button class="btn" onclick="alihkan(${l.id},this)">Alihkan</button></div></div>` : ''}
+    ${(l.tahap === 'BARU' && !akt.length) || (isAdmin() && !ord.length) ? `<div class="sec"><button class="btn danger sm" onclick="hapusLead(${l.id},this)">Hapus lead (salah input)</button></div>` : ''}
+  `, 'lead:' + l.id);
+  pilihJenis($('#jenisAkt .chip.on'));
+}
+function pilihJenis(b) {
+  if (!b) return;
+  document.querySelectorAll('#jenisAkt .chip').forEach((c) => c.classList.toggle('on', c === b));
+  const j = b.dataset.j;
+  $('#hasilAkt').classList.toggle('hidden', !['TELEPON', 'WHATSAPP'].includes(j));
+}
+function setFu(hari) { const d = new Date(); d.setDate(d.getDate() + hari); d.setHours(9, 0, 0, 0); $('#aFu').value = isoLokal(d); }
+async function simpanAktivitas(leadId, btn) {
+  const jenis = $('#jenisAkt .chip.on').dataset.j;
+  const hasil = (document.querySelector('input[name=hasil]:checked') || {}).value || null;
+  if (['TELEPON', 'WHATSAPP'].includes(jenis) && !hasil) return toast('Pilih hasil: terhubung atau tidak', true);
+  await aman(async () => {
+    await q(sb.from('aktivitas').insert({ lead_id: leadId, jenis, hasil: ['TELEPON', 'WHATSAPP'].includes(jenis) ? hasil : null,
+      catatan: val('aCatatan') || null, followup_berikutnya: $('#aFu') ? localKeISO(val('aFu')) : null }));
+    toast('Aktivitas tersimpan'); bukaLead(leadId); muatUlang();
+  }, btn);
+}
+async function simpanKebutuhan(id, btn) {
+  await aman(async () => {
+    await ubah('leads', { tipe_motor_id: num('kTipe'), warna: val('kWarna') || null, metode_bayar: val('kMetode') || null,
+      rencana_beli: val('kRencana') || null, dp_rencana: num('kDp'), dana_siap: val('kDana'), catatan: val('kCatatan') || null }, 'id', id);
+    toast('Kebutuhan tersimpan'); bukaLead(id); muatUlang();
+  }, btn);
+}
+async function simpanKonsumen(kid, lid, btn) {
+  await aman(async () => {
+    await ubah('konsumen', { nama: val('cNama'), hp: val('cHp'), alamat: val('cAlamat') || null, kelurahan: val('cKel') || null,
+      kecamatan: val('cKec') || null, kota: val('cKota') || null, pekerjaan: val('cKerja') || null }, 'id', kid);
+    toast('Data konsumen tersimpan'); bukaLead(lid);
+  }, btn);
+}
+async function naikTahap(id, tahap, btn) {
+  await aman(async () => { await ubah('leads', { tahap }, 'id', id); toast('Tahap: ' + L.tahap[tahap]); bukaLead(id); muatUlang(); }, btn);
+}
+async function tutupLost(id, btn) {
+  if (!val('xAlasan')) return toast('Pilih alasan lost', true);
+  if (!confirm('Tutup lead ini sebagai LOST?')) return;
+  await aman(async () => {
+    await ubah('leads', { tahap: 'LOST', alasan_lost: val('xAlasan'), catatan_lost: val('xCatatan') || null, jadwal_prospek_ulang: val('xJadwal') || null }, 'id', id);
+    toast('Lead ditutup'); bukaLead(id); muatUlang();
+  }, btn);
+}
+async function prospekUlang(id, btn) {
+  await aman(async () => { const baru = await q(sb.rpc('prospek_ulang', { p_lead_id: id })); toast('Lead baru dibuat'); bukaLead(baru); muatUlang(); }, btn);
+}
+async function alihkan(id, btn) {
+  await aman(async () => { await ubah('leads', { sales_id: val('xSales') }, 'id', id); toast('Lead dialihkan'); bukaLead(id); muatUlang(); }, btn);
+}
+async function hapusLead(id, btn) {
+  if (!confirm('Hapus lead ini? Hanya untuk data salah input.')) return;
+  await aman(async () => {
+    const d = await q(sb.from('leads').delete().eq('id', id).select('id'));
+    if (!d.length) throw new Error('Lead tidak bisa dihapus (sudah ada aktivitas/SPK). Gunakan Tandai LOST.');
+    tutupPanel(); toast('Lead dihapus'); muatUlang();
+  }, btn);
+}
+
+// ---------- Buat SPK ----------
+async function formSpk(leadId) {
+  const l = await q(sb.from('leads').select('*, konsumen(nama)').eq('id', leadId).single());
+  modal(`<div class="row between"><h2>Buat SPK</h2><button class="btn sm" onclick="tutupModal()">Tutup</button></div>
+    <p class="sub">${esc(l.konsumen.nama)} · harga OTR diambil dari master</p>
+    <div class="stack mt">
+      <div class="field"><label>Tipe motor *</label><select id="sTipe" class="inp" onchange="hitungSpk()">${opsiTipe(l.tipe_motor_id)}</select></div>
+      <div class="grid2"><div class="field"><label>Warna *</label><input id="sWarna" class="inp" value="${esc(l.warna)}"></div>
+        <div class="field"><label>Metode bayar *</label><select id="sMetode" class="inp">${opsi({ CASH: 'Cash', KREDIT: 'Kredit' }, l.metode_bayar, 'Pilih')}</select></div></div>
+      <div class="field"><label>Rencana beli *</label><select id="sRencana" class="inp">${opsi(L.rencana, l.rencana_beli || 'MINGGU_INI')}</select></div>
+      <div class="field"><label>Diskon (Rp)</label><input id="sDiskon" type="number" inputmode="numeric" class="inp" value="0" oninput="hitungSpk()"></div>
+      <div id="sTotal" class="note"></div>
+      <button class="btn green full" onclick="simpanSpk(${leadId},this)">Buat SPK</button>
+    </div>`);
+  hitungSpk();
+}
+function hitungSpk() {
+  const t = S.tipe.find((x) => x.id === num('sTipe'));
+  $('#sTotal').innerHTML = t ? `Harga OTR ${rp(t.harga_otr)} − diskon ${rp(num('sDiskon'))} = <b>${rp(t.harga_otr - (num('sDiskon') || 0))}</b>` : 'Pilih tipe motor';
+}
+async function simpanSpk(leadId, btn) {
+  if (!val('sTipe') || !val('sWarna') || !val('sMetode')) return toast('Tipe, warna, dan metode bayar wajib', true);
+  await aman(async () => {
+    // simpan kebutuhan lead dulu supaya konsisten dengan SPK
+    await ubah('leads', { tipe_motor_id: num('sTipe'), warna: val('sWarna'), metode_bayar: val('sMetode'), rencana_beli: val('sRencana') }, 'id', leadId);
+    const [o] = await q(sb.from('pesanan').insert({ lead_id: leadId, tipe_motor_id: num('sTipe'), warna: val('sWarna'),
+      metode_bayar: val('sMetode'), diskon: num('sDiskon') || 0 }).select('id,no_spk'));
+    tutupModal(); toast('SPK ' + o.no_spk + ' dibuat'); muatUlang(); bukaOrder(o.id);
+  }, btn);
+}
+
+// =====================================================================
+// TAB: ORDER
+// =====================================================================
+const SEL_ORDER = 'id,no_spk,status,metode_bayar,harga_otr,diskon,warna,tgl_spk,konsumen(nama,hp),tipe:tipe_motor(merek,model,varian),sales:profiles(nama)';
+VIEWS.order = async (v) => {
+  const f = S.f;
+  let qy = sb.from('pesanan').select(SEL_ORDER).order('created_at', { ascending: false }).limit(300);
+  if (f.orderStatus === 'AKTIF') qy = qy.in('status', ['SPK', 'SIAP_KIRIM', 'TERKIRIM']); else if (f.orderStatus) qy = qy.eq('status', f.orderStatus);
+  const data = await q(qy);
+  v.innerHTML = `<div class="head"><div><h1>Order</h1><p class="sub">SPK sampai STNK & BPKB selesai</p></div></div>
+    <div class="chips">${[['AKTIF', 'Berjalan'], ...Object.entries(L.order)].map(([k, t]) => `<button class="chip${f.orderStatus === k ? ' on' : ''}" onclick="S.f.orderStatus='${k}';buka('order')">${t}</button>`).join('')}</div>
+    <div class="stack mt">${data.length ? data.map(kartuOrder).join('') : '<div class="empty">Belum ada order di kategori ini. SPK dibuat dari halaman detail lead.</div>'}</div>`;
+};
+
+async function bukaOrder(id) {
+  if ($('#layer .panel')?.dataset.k !== 'order:' + id) panel('Memuat…', '', '<div class="empty"><span class="spin"></span></div>', 'order:' + id);
+  try {
+    const [o, bayar, kredit, reg] = await Promise.all([
+      q(sb.from('pesanan').select('*, konsumen(nama,hp,alamat,kelurahan,kecamatan), tipe:tipe_motor(merek,model,varian), sales:profiles(nama), unit:unit_stok(no_rangka,no_mesin,tahun,warna)').eq('id', id).single()),
+      q(sb.from('pembayaran').select('*').eq('pesanan_id', id).order('created_at')),
+      q(sb.from('pengajuan_kredit').select('*, leasing(nama)').eq('pesanan_id', id).order('created_at')),
+      q(sb.from('registrasi').select('*').eq('pesanan_id', id).maybeSingle()),
+    ]);
+    let stok = [];
+    if (isAdmin() && ['SPK', 'SIAP_KIRIM'].includes(o.status)) {
+      stok = await q(sb.from('unit_stok').select('*').eq('status', 'STOK').eq('tipe_motor_id', o.tipe_motor_id).ilike('warna', o.warna).order('tgl_masuk'));
+    }
+    gambarOrder(o, bayar, kredit, reg, stok);
+  } catch (e) { $('#panelBody').innerHTML = `<div class="bad">${esc(pesanError(e))}</div>`; }
+}
+function gambarOrder(o, bayar, kredit, reg, stok) {
+  const admin = isAdmin(), milik = admin || o.sales_id === S.me.id;
+  const net = kePesanan(o);
+  const total = bayar.reduce((s, b) => s + (b.jenis === 'REFUND' ? -1 : 1) * Number(b.jumlah), 0);
+  const dpBayar = bayar.reduce((s, b) => s + (b.jenis === 'REFUND' ? -Number(b.jumlah) : ['TANDA_JADI', 'DP'].includes(b.jenis) ? Number(b.jumlah) : 0), 0);
+  const appr = kredit.find((k) => k.status === 'APPROVED');
+  const kreditJalan = kredit.some((k) => ['DIAJUKAN', 'SURVEI'].includes(k.status));
+  const syarat = [
+    ['Berkas KTP', o.berkas_ktp],
+    ...(o.metode_bayar === 'KREDIT' ? [['Berkas KK', o.berkas_kk], ['Leasing approved', !!appr],
+      ['DP terbayar ' + rp(dpBayar) + (appr ? ' dari ' + rp(appr.dp_disetujui) : ''), !!appr && dpBayar >= Number(appr.dp_disetujui)]]
+      : [['Lunas ' + rp(total) + ' dari ' + rp(net), total >= net]]),
+    ['Unit dialokasikan', !!o.unit_id],
+  ];
+  const siap = syarat.every((s) => s[1]);
+  const idx = { SPK: 0, SIAP_KIRIM: 1, TERKIRIM: 2, SELESAI: 3 }[o.status] ?? -1;
+  const bisaUbah = ['SPK', 'SIAP_KIRIM'].includes(o.status);
+  const k = o.konsumen;
+
+  panel(esc(o.no_spk) + ' · ' + esc(k.nama), `${esc(tipeNama(o.tipe))} ${esc(o.warna)} · ${o.metode_bayar === 'KREDIT' ? 'Kredit' : 'Cash'} · ${esc(o.sales?.nama)}`, `
+    <div class="row">${pOrder(o.status)}<span class="sub">SPK ${tgl(o.tgl_spk)}</span>
+      <a class="btn sm wa" style="margin-left:auto" href="${waLink(k.hp)}" target="_blank" rel="noopener">💬 WA</a>
+      <button class="btn sm" onclick="bukaLead(${o.lead_id})">Lead</button></div>
+    ${o.status !== 'BATAL' ? `<div class="mt"><div class="steps">${[0, 1, 2, 3].map((i) => `<div class="${i <= idx ? 'on' : ''}"></div>`).join('')}</div>
+      <div class="steps-l"><span>SPK</span><span>Siap kirim</span><span>Terkirim</span><span>Selesai</span></div></div>`
+      : `<div class="bad mt"><b>Dibatalkan</b> ${tgl(o.batal_at)} — ${esc(o.alasan_batal)}</div>`}
+
+    <dl class="kv mt card">
+      <dt>Harga OTR</dt><dd>${rp(o.harga_otr)}</dd><dt>Diskon</dt><dd>− ${rp(o.diskon)}</dd>
+      <dt>Harga setelah diskon</dt><dd>${rp(net)}</dd><dt>Total dibayar</dt><dd>${rp(total)}</dd>
+      ${o.metode_bayar === 'CASH' ? `<dt>Sisa</dt><dd style="color:${net - total > 0 ? 'var(--red)' : 'var(--green)'}">${rp(Math.max(0, net - total))}</dd>` : ''}
+      ${appr ? `<dt>Leasing</dt><dd>${esc(appr.leasing.nama)} · ${appr.tenor_bulan} bln × ${rp(appr.angsuran)}</dd>` : ''}
+    </dl>
+
+    ${o.status === 'SPK' ? `<div class="sec"><h3>Syarat SIAP KIRIM</h3>
+      <div class="checklist">${syarat.map(([t, okk]) => `<div><span>${okk ? '✅' : '⬜'}</span><span>${esc(t)}</span></div>`).join('')}</div>
+      ${admin ? `<button class="btn pri mt" ${siap ? '' : 'disabled'} onclick="ubahOrder(${o.id},{status:'SIAP_KIRIM'},'Order siap kirim',this)">Tandai SIAP KIRIM</button>`
+        : `<p class="sub mt">Admin akan menandai SIAP KIRIM setelah semua syarat terpenuhi.</p>`}</div>` : ''}
+
+    ${o.status === 'SIAP_KIRIM' && milik ? `<div class="sec"><h3>Serah terima unit</h3><div class="stack">
+      <div class="chips" id="caraSerah"><button class="chip on" data-c="ANTAR" onclick="pilihSerah(this)">🚚 Antar ke rumah</button><button class="chip" data-c="AMBIL" onclick="pilihSerah(this)">🏢 Ambil di dealer</button></div>
+      <div class="grid2"><div class="field"><label>Tanggal serah</label><input id="tSerah" type="date" class="inp" value="${hariIni()}"></div><div></div></div>
+      <div class="field" id="alamatKirimF"><label>Alamat kirim</label><input id="tAlamat" class="inp" value="${esc([k.alamat, k.kelurahan, k.kecamatan].filter(Boolean).join(', '))}"></div>
+      <button class="btn green" onclick="serahTerima(${o.id},this)">Konfirmasi unit sudah diserahkan</button></div></div>` : ''}
+
+    ${o.cara_serah ? `<div class="sec"><h3>Serah terima</h3><p>${o.cara_serah === 'ANTAR' ? '🚚 Diantar ke ' + esc(o.alamat_kirim) : '🏢 Diambil di dealer'} · ${tgl(o.tgl_serah)}</p></div>` : ''}
+
+    <div class="sec"><h3>Berkas</h3><div class="stack">
+      <div class="row" style="gap:16px">
+        <label class="chk"><input type="checkbox" id="bKtp" ${o.berkas_ktp ? 'checked' : ''} ${bisaUbah && milik ? '' : 'disabled'}> KTP</label>
+        <label class="chk"><input type="checkbox" id="bKk" ${o.berkas_kk ? 'checked' : ''} ${bisaUbah && milik ? '' : 'disabled'}> KK${o.metode_bayar === 'KREDIT' ? ' *' : ''}</label>
+        <label class="chk"><input type="checkbox" id="bNpwp" ${o.berkas_npwp ? 'checked' : ''} ${bisaUbah && milik ? '' : 'disabled'}> NPWP</label></div>
+      <input id="bLain" class="inp" placeholder="Berkas lain / catatan" value="${esc(o.berkas_lain)}" ${bisaUbah && milik ? '' : 'disabled'}>
+      ${o.status === 'SPK' && milik ? `<div class="grid2"><div class="field"><label>Diskon (Rp)</label><input id="bDiskon" type="number" class="inp" value="${o.diskon}"></div>
+        ${admin ? `<div class="field"><label>Harga OTR (Rp)</label><input id="bHarga" type="number" class="inp" value="${o.harga_otr}"></div>` : '<div></div>'}</div>` : ''}
+      ${bisaUbah && milik ? `<button class="btn" onclick="simpanBerkas(${o.id},'${o.status}',this)">Simpan berkas</button>` : ''}
+    </div></div>
+
+    <div class="sec"><h3>Unit</h3>
+      ${o.unit ? `<div class="card" style="padding:12px"><b>${esc(o.unit.no_rangka)}</b><div class="sub">Mesin ${esc(o.unit.no_mesin)} · ${esc(o.unit.warna)} · ${o.unit.tahun}</div></div>` : '<p class="sub">Belum ada unit dialokasikan.</p>'}
+      ${admin && bisaUbah ? `<div class="row mt"><select id="uPilih" class="inp" style="flex:1">${stok.length ? stok.map((u) => `<option value="${u.id}">${esc(u.no_rangka)} · ${esc(u.warna)} · ${u.tahun}</option>`).join('') : '<option value="">Stok cocok tidak ada</option>'}</select>
+        <button class="btn" ${stok.length ? '' : 'disabled'} onclick="ubahOrder(${o.id},{unit_id:num('uPilih')},'Unit dialokasikan',this)">${o.unit_id ? 'Ganti unit' : 'Alokasikan'}</button>
+        ${o.unit_id && o.status === 'SPK' ? `<button class="btn danger" onclick="ubahOrder(${o.id},{unit_id:null},'Unit dilepas',this)">Lepas</button>` : ''}</div>` : ''}
+    </div>
+
+    ${o.metode_bayar === 'KREDIT' ? `<div class="sec"><h3>Pengajuan leasing</h3><div class="stack">
+      ${kredit.length ? kredit.map((c) => kartuKredit(c, o, milik)).join('') : '<p class="sub">Belum diajukan ke leasing.</p>'}
+      ${o.status === 'SPK' && milik && !appr ? `<div class="row"><select id="kLeasing" class="inp" style="flex:1">${S.leasing.filter((x) => x.aktif).map((x) => `<option value="${x.id}">${esc(x.nama)}</option>`).join('')}</select>
+        <button class="btn" onclick="ajukanKredit(${o.id},this)">+ Ajukan</button></div>${kreditJalan ? '<p class="sub">Boleh mengajukan ke beberapa leasing sekaligus.</p>' : ''}` : ''}
+    </div></div>` : ''}
+
+    <div class="sec"><h3>Pembayaran</h3>
+      ${bayar.length ? `<table class="t"><tr><th>Tanggal</th><th>Jenis</th><th class="n">Jumlah</th></tr>${bayar.map((b) => `<tr><td>${tgl(b.tgl)}</td><td>${esc(L.bayar[b.jenis])}<div class="sub">${esc({ TUNAI: 'Tunai', TRANSFER: 'Transfer', QRIS: 'QRIS', LAINNYA: 'Lainnya' }[b.cara] || b.cara)}${b.catatan ? ' · ' + esc(b.catatan) : ''}</div></td><td class="n" style="${b.jenis === 'REFUND' ? 'color:var(--red)' : ''}">${b.jenis === 'REFUND' ? '−' : ''}${rp(b.jumlah)}</td></tr>`).join('')}</table>` : '<p class="sub">Belum ada pembayaran tercatat.</p>'}
+      ${admin && o.status !== 'SELESAI' ? `<div class="stack mt card" style="padding:12px"><b style="font-size:13px">Catat pembayaran (kasir)</b>
+        <div class="grid2"><select id="pJenis" class="inp">${opsi(o.status === 'BATAL' ? { REFUND: 'Refund' } : o.metode_bayar === 'KREDIT' ? L.bayar : { TANDA_JADI: 'Tanda jadi', DP: 'DP', PELUNASAN: 'Pelunasan', REFUND: 'Refund' })}</select>
+          <input id="pJumlah" type="number" inputmode="numeric" class="inp" placeholder="Jumlah (Rp)"></div>
+        <div class="grid2"><select id="pCara" class="inp">${opsi({ TUNAI: 'Tunai', TRANSFER: 'Transfer', QRIS: 'QRIS', LAINNYA: 'Lainnya' })}</select>
+          <input id="pTgl" type="date" class="inp" value="${hariIni()}"></div>
+        <input id="pCatatan" class="inp" placeholder="Catatan (opsional)">
+        <button class="btn pri" onclick="catatBayar(${o.id},this)">Simpan pembayaran</button>
+        <p class="sub">Pembayaran tidak bisa diedit atau dihapus. Salah catat? Koreksi dengan Refund.</p></div>` : ''}
+    </div>
+
+    ${reg ? gambarRegistrasi(reg, admin) : ''}
+
+    ${bisaUbah && milik ? `<div class="sec"><h3>Batalkan SPK</h3><div class="stack">
+      <input id="xBatal" class="inp" placeholder="Alasan batal (wajib)">
+      <button class="btn danger" onclick="batalOrder(${o.id},this)">Batalkan SPK</button>
+      <p class="sub">Unit kembali ke stok dan lead kembali ke tahap Negosiasi.</p></div></div>` : ''}
+  `, 'order:' + o.id);
+}
+function kartuKredit(c, o, milik) {
+  const bisa = o.status === 'SPK' && milik;
+  return `<div class="card" style="padding:12px"><div class="row between"><b>${esc(c.leasing.nama)}</b>${pill(L.kredit[c.status], WARNA_KREDIT[c.status])}</div>
+    <div class="sub">Diajukan ${tgl(c.tgl_pengajuan)}${c.tgl_keputusan ? ' · diputuskan ' + tgl(c.tgl_keputusan) : ''}</div>
+    ${c.status === 'APPROVED' ? `<div class="mt" style="font-size:13px">DP ${rp(c.dp_disetujui)} · ${c.tenor_bulan} bulan × ${rp(c.angsuran)}</div>` : ''}
+    ${c.status === 'DITOLAK' ? `<div class="mt sub">Alasan: ${esc(c.alasan_tolak)}</div>` : ''}
+    ${bisa && ['DIAJUKAN', 'SURVEI'].includes(c.status) ? `<div class="stack mt">
+      <div class="row">${c.status === 'DIAJUKAN' ? `<button class="btn sm" onclick="ubahKredit(${c.id},${o.id},{status:'SURVEI'},this)">Survei</button>` : ''}
+        <button class="btn sm danger" onclick="ubahKredit(${c.id},${o.id},{status:'BATAL'},this)">Batal</button></div>
+      <div class="grid2"><input id="kDp${c.id}" type="number" class="inp" placeholder="DP disetujui"><input id="kTenor${c.id}" type="number" class="inp" placeholder="Tenor (bulan)"></div>
+      <div class="row"><input id="kAng${c.id}" type="number" class="inp" style="flex:1" placeholder="Angsuran / bulan">
+        <button class="btn sm green" onclick="ubahKredit(${c.id},${o.id},{status:'APPROVED',dp_disetujui:num('kDp${c.id}'),tenor_bulan:num('kTenor${c.id}'),angsuran:num('kAng${c.id}')},this)">Approved</button></div>
+      <div class="row"><input id="kTolak${c.id}" class="inp" style="flex:1" placeholder="Alasan ditolak">
+        <button class="btn sm danger" onclick="ubahKredit(${c.id},${o.id},{status:'DITOLAK',alasan_tolak:val('kTolak${c.id}')},this)">Ditolak</button></div>
+    </div>` : ''}
+    ${bisa && c.status === 'APPROVED' ? `<button class="btn sm danger mt" onclick="ubahKredit(${c.id},${o.id},{status:'BATAL'},this)">Batalkan approval</button>` : ''}
+  </div>`;
+}
+function gambarRegistrasi(r, admin) {
+  const sel = (id, obj, v) => `<select id="${id}" class="inp" ${admin ? '' : 'disabled'}>${opsi(obj, v)}</select>`;
+  return `<div class="sec"><h3>STNK, plat, BPKB</h3><div class="stack">
+    <div class="grid2"><div class="field"><label>STNK</label>${sel('rStnk', L.reg, r.stnk_status)}</div>
+      <div class="field"><label>No polisi</label><input id="rNopol" class="inp" value="${esc(r.no_polisi)}" placeholder="F 1234 AB" ${admin ? '' : 'disabled'}></div></div>
+    <div class="grid2"><div class="field"><label>Plat (TNKB)</label>${sel('rTnkb', { BELUM: 'Belum', JADI: 'Jadi', DISERAHKAN: 'Diserahkan' }, r.tnkb_status)}</div>
+      <div class="field"><label>BPKB → ${r.bpkb_penerima === 'LEASING' ? 'leasing' : 'konsumen'}</label>${sel('rBpkb', L.reg, r.bpkb_status)}</div></div>
+    <div class="sub">${r.stnk_jadi_at ? 'STNK jadi ' + tgl(r.stnk_jadi_at) : ''}${r.stnk_serah_at ? ' · diserahkan ' + tgl(r.stnk_serah_at) : ''}${r.bpkb_serah_at ? ' · BPKB diserahkan ' + tgl(r.bpkb_serah_at) : ''}</div>
+    ${admin ? `<input id="rCatatan" class="inp" placeholder="Catatan (biro jasa, dll)" value="${esc(r.catatan)}">
+      <button class="btn pri" onclick="simpanRegistrasi(${r.pesanan_id},this)">Simpan registrasi</button>
+      <p class="sub">Status tidak bisa dimundurkan. Saat ketiganya Diserahkan, order otomatis SELESAI.</p>` : '<p class="sub">Diperbarui oleh admin.</p>'}
+  </div></div>`;
+}
+function pilihSerah(b) {
+  document.querySelectorAll('#caraSerah .chip').forEach((c) => c.classList.toggle('on', c === b));
+  $('#alamatKirimF').classList.toggle('hidden', b.dataset.c !== 'ANTAR');
+}
+async function ubahOrder(id, isi, pesan, btn) {
+  await aman(async () => { await ubah('pesanan', isi, 'id', id); toast(pesan); bukaOrder(id); muatUlang(); }, btn);
+}
+async function simpanBerkas(id, status, btn) {
+  const isi = { berkas_ktp: val('bKtp'), berkas_kk: val('bKk'), berkas_npwp: val('bNpwp'), berkas_lain: val('bLain') || null };
+  if (status === 'SPK' && $('#bDiskon')) isi.diskon = num('bDiskon') || 0;
+  if ($('#bHarga')) isi.harga_otr = num('bHarga');
+  await ubahOrder(id, isi, 'Berkas tersimpan', btn);
+}
+async function serahTerima(id, btn) {
+  const cara = $('#caraSerah .chip.on').dataset.c;
+  if (!confirm('Konfirmasi unit sudah diterima konsumen?')) return;
+  await ubahOrder(id, { status: 'TERKIRIM', cara_serah: cara, tgl_serah: val('tSerah'), alamat_kirim: cara === 'ANTAR' ? val('tAlamat') : null }, 'Unit diserahkan 🎉', btn);
+}
+async function batalOrder(id, btn) {
+  if (!val('xBatal')) return toast('Isi alasan batal', true);
+  if (!confirm('Batalkan SPK ini?')) return;
+  await ubahOrder(id, { status: 'BATAL', alasan_batal: val('xBatal') }, 'SPK dibatalkan', btn);
+}
+async function ajukanKredit(oid, btn) {
+  await aman(async () => { await q(sb.from('pengajuan_kredit').insert({ pesanan_id: oid, leasing_id: num('kLeasing') })); toast('Pengajuan dibuat'); bukaOrder(oid); }, btn);
+}
+async function ubahKredit(cid, oid, isi, btn) {
+  if (isi.status === 'BATAL' && !confirm('Batalkan pengajuan ini?')) return;
+  await aman(async () => { await ubah('pengajuan_kredit', isi, 'id', cid); toast('Pengajuan: ' + L.kredit[isi.status]); bukaOrder(oid); }, btn);
+}
+async function catatBayar(oid, btn) {
+  if (!num('pJumlah')) return toast('Isi jumlah', true);
+  await aman(async () => {
+    await q(sb.from('pembayaran').insert({ pesanan_id: oid, jenis: val('pJenis'), jumlah: num('pJumlah'), cara: val('pCara'), tgl: val('pTgl'), catatan: val('pCatatan') || null }));
+    toast('Pembayaran tercatat'); bukaOrder(oid);
+  }, btn);
+}
+async function simpanRegistrasi(oid, btn) {
+  await aman(async () => {
+    await ubah('registrasi', { stnk_status: val('rStnk'), no_polisi: val('rNopol') || null, tnkb_status: val('rTnkb'), bpkb_status: val('rBpkb'), catatan: val('rCatatan') || null }, 'pesanan_id', oid);
+    toast('Registrasi tersimpan'); bukaOrder(oid); muatUlang();
+  }, btn);
+}
+
+// =====================================================================
+// TAB: TIM (sales) & papan tim
+// =====================================================================
+function htmlPapan(papan) {
+  return papan.length ? papan.map((p, i) => {
+    const pct = p.target_do_bulanan ? Math.min(100, Math.round(100 * p.unit_terkirim / p.target_do_bulanan)) : 0;
+    return `<div class="card" style="padding:12px 14px${p.sales_id === S.me.id ? ';border-color:var(--ink)' : ''}">
+      <div class="row between"><b>${i + 1}. ${esc(p.nama)}${p.sales_id === S.me.id ? ' (Anda)' : ''}</b><span class="sub">${p.unit_terkirim}/${p.target_do_bulanan} unit</span></div>
+      <div class="bar mt" style="margin-top:8px"><i style="width:${pct}%"></i></div>
+      <div class="row sub" style="margin-top:6px;gap:12px"><span>${p.lead_baru} lead</span><span>${p.spk} SPK</span><span>konversi ${p.konversi_persen ?? 0}%</span>${p.followup_terlambat ? `<span style="color:var(--red)">${p.followup_terlambat} FU terlambat</span>` : ''}</div></div>`;
+  }).join('') : '<div class="empty">Belum ada sales aktif.</div>';
+}
+VIEWS.tim = async (v) => {
+  const [papan, tim] = await Promise.all([q(sb.rpc('papan_tim')), q(sb.rpc('daftar_lead_tim'))]);
+  v.innerHTML = `<div class="head"><div><h1>Papan tim</h1><p class="sub">Bulan ini · urut berdasarkan unit terkirim</p></div></div>
+    <div class="stack">${htmlPapan(papan)}</div>
+    <h2 class="mt2">Lead aktif tim</h2><p class="sub">Nomor HP disamarkan agar konsumen tidak diserobot.</p>
+    <div class="stack mt">${tim.length ? tim.map((l) => `<div class="item" style="cursor:default"><div class="av" style="background:#64748b">${esc(l.nama_depan.charAt(0))}</div>
+      <div class="mid"><div class="nm">${esc(l.nama_depan)} <span class="sub">· ${esc(hpTampil(l.hp_samar))}</span></div><div class="meta">${esc(l.tipe_motor || 'Tipe belum dipilih')} · ${esc(l.sales)}</div>
+      <div class="row" style="margin-top:6px;gap:5px">${pTahap(l.tahap)}${pSuhu(l.suhu, l.skor)}</div></div></div>`).join('') : '<div class="empty">Belum ada lead aktif.</div>'}</div>`;
+};
+
+// =====================================================================
+// TAB: LAPORAN (admin)
+// =====================================================================
+VIEWS.laporan = async (v) => {
+  const { lapDari: d, lapSampai: s } = S.f;
+  const [funnel, sumber, lost, papan, stok] = await Promise.all([
+    q(sb.rpc('laporan_funnel', { p_dari: d, p_sampai: s })), q(sb.rpc('laporan_sumber', { p_dari: d, p_sampai: s })),
+    q(sb.rpc('laporan_lost', { p_dari: d, p_sampai: s })), q(sb.rpc('papan_tim', { p_dari: d, p_sampai: s })),
+    q(sb.from('unit_stok').select('status')),
+  ]);
+  const maks = Math.max(1, ...funnel.map((f) => Number(f.jumlah)));
+  const maksLost = Math.max(1, ...lost.map((f) => Number(f.jumlah)));
+  const awal = Number(funnel[0]?.jumlah || 0);
+  v.innerHTML = `<div class="head"><div><h1>Laporan</h1><p class="sub">Lead yang masuk pada periode ini</p></div>
+      <div class="row"><input type="date" class="inp" style="width:auto" value="${d}" onchange="S.f.lapDari=this.value;buka('laporan')">
+        <span class="sub">s/d</span><input type="date" class="inp" style="width:auto" value="${s}" onchange="S.f.lapSampai=this.value;buka('laporan')"></div></div>
+    <div class="grid4">
+      <div class="stat"><b>${awal}</b><span>Lead masuk</span></div>
+      <div class="stat"><b>${funnel[4]?.jumlah ?? 0}</b><span>Pernah SPK</span></div>
+      <div class="stat"><b>${funnel[5]?.jumlah ?? 0}</b><span>Unit terkirim</span></div>
+      <div class="stat"><b>${awal ? Math.round(100 * Number(funnel[5]?.jumlah || 0) / awal) : 0}%</b><span>Konversi lead → unit</span></div>
+    </div>
+    <div class="card mt"><h2>Funnel</h2><p class="sub">Berapa lead yang pernah mencapai tiap tahap</p>
+      <div class="stack mt">${funnel.map((f, i) => `<div><div class="row between" style="font-size:13px"><b>${esc(f.tahap)}</b><span>${f.jumlah}${i && awal ? ` <span class="sub">(${Math.round(100 * f.jumlah / awal)}%)</span>` : ''}</span></div>
+        <div class="bar" style="height:12px;margin-top:4px"><i style="width:${100 * f.jumlah / maks}%"></i></div></div>`).join('')}</div></div>
+    <div class="card mt"><h2>Per sumber</h2><div class="scrollx"><table class="t mt"><tr><th>Sumber</th><th class="n">Lead</th><th class="n">SPK</th><th class="n">Unit</th><th class="n">Konversi</th></tr>
+      ${sumber.filter((x) => Number(x.lead)).map((x) => `<tr><td>${esc(x.sumber)}</td><td class="n">${x.lead}</td><td class="n">${x.spk}</td><td class="n">${x.unit_terkirim}</td><td class="n">${x.konversi_persen ?? 0}%</td></tr>`).join('') || '<tr><td colspan="5" class="sub">Belum ada data.</td></tr>'}</table></div></div>
+    <div class="card mt"><h2>Alasan lost</h2><div class="stack mt">${lost.length ? lost.map((x) => `<div><div class="row between" style="font-size:13px"><span>${esc(L.lost[x.alasan])}</span><b>${x.jumlah}</b></div>
+      <div class="bar" style="margin-top:4px"><i style="width:${100 * x.jumlah / maksLost}%;background:#b91c1c"></i></div></div>`).join('') : '<p class="sub">Tidak ada lead lost.</p>'}</div></div>
+    <div class="card mt"><h2>Papan tim</h2><div class="stack mt">${htmlPapan(papan)}</div></div>
+    <div class="card mt"><h2>Stok unit</h2><p class="mt">${stok.filter((u) => u.status === 'STOK').length} tersedia · ${stok.filter((u) => u.status === 'DIALOKASIKAN').length} dialokasikan · ${stok.filter((u) => u.status === 'TERJUAL').length} terjual</p></div>`;
+};
+
+// =====================================================================
+// TAB: LAINNYA
+// =====================================================================
+VIEWS.lain = async (v) => {
+  await muatMaster();
+  const admin = isAdmin();
+  const [izinMasuk, stok] = await Promise.all([
+    q(sb.from('izin_sumber').select('*, sumber:sumber_leads(nama,pemilik_id), peminta:profiles(nama)').order('created_at', { ascending: false })),
+    q(sb.from('unit_stok').select('*, tipe:tipe_motor(merek,model,varian)').order('status').order('tgl_masuk')),
+  ]);
+  const perluSaya = izinMasuk.filter((i) => i.setuju_pemilik !== false && i.setuju_admin !== false &&
+    ((admin && i.setuju_admin == null) || (i.sumber.pemilik_id === S.me.id && i.setuju_pemilik == null)));
+  const ringkasStok = {};
+  stok.filter((u) => u.status === 'STOK').forEach((u) => { const k = tipeNama(u.tipe) + ' · ' + u.warna; ringkasStok[k] = (ringkasStok[k] || 0) + 1; });
+  v.innerHTML = `<div class="head"><div><h1>Lainnya</h1></div></div>
+    <div class="card"><div class="row between"><div><b>${esc(S.me.nama)}</b><div class="sub">${esc(S.user.email)} · ${admin ? 'Admin' : 'Sales'}</div></div>
+      <div class="row"><button class="btn sm" onclick="formSandi()">Ganti sandi</button><button class="btn sm danger" onclick="keluar()">Keluar</button></div></div></div>
+
+    ${perluSaya.length ? `<div class="card mt"><h2>Permintaan izin sumber</h2><div class="stack mt">${perluSaya.map((i) => `<div class="warn"><b>${esc(i.peminta.nama)}</b> minta izin memakai <b>${esc(i.sumber.nama)}</b>
+      <div class="sub">Pemilik: ${i.setuju_pemilik ? '✅' : '⏳'} · Admin: ${i.setuju_admin ? '✅' : '⏳'}</div>
+      <div class="row mt"><button class="btn sm green" onclick="jawabIzin(${i.id},true,this)">Setujui</button><button class="btn sm danger" onclick="jawabIzin(${i.id},false,this)">Tolak</button></div></div>`).join('')}</div></div>` : ''}
+
+    <div class="card mt"><div class="row between"><h2>Sumber leads</h2><button class="btn sm pri" onclick="formSumber()">+ Sumber ${admin ? 'global' : 'private'}</button></div>
+      <p class="sub">Sumber global bebas dipakai. Sumber private hanya bisa dipakai pemiliknya atau yang disetujui pemilik <b>dan</b> admin.</p>
+      <div class="stack mt">${S.sumber.map((s) => {
+        const iz = S.izinSaya.find((i) => i.sumber_id === s.id);
+        const boleh = sumberBoleh().some((x) => x.id === s.id);
+        const milik = admin || s.pemilik_id === S.me.id;
+        return `<div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line2)"><div><b style="font-size:13px">${esc(s.nama)}</b> ${s.aktif ? '' : pill('nonaktif', 'p-gray')}
+          <div class="sub">${s.pemilik_id ? 'Private · ' + esc(namaOrang(s.pemilik_id)) : 'Global'} · ${esc(L.kategori[s.kategori])}</div></div>
+          <div class="row">${milik ? `<button class="btn sm" onclick="formSumber(${s.id})">Ubah</button>` : boleh ? pill('Boleh pakai', 'p-green')
+            : iz ? (iz.setuju_pemilik === false || iz.setuju_admin === false ? pill('Ditolak', 'p-red') + ` <button class="btn sm" onclick="batalIzin(${iz.id},this)">Hapus</button>` : pill('Menunggu izin', 'p-amber'))
+            : `<button class="btn sm" onclick="mintaIzin(${s.id},this)">Minta izin</button>`}</div></div>`;
+      }).join('')}</div></div>
+
+    <div class="card mt"><div class="row between"><h2>Stok unit</h2>${admin ? '<button class="btn sm pri" onclick="formUnit()">+ Unit</button>' : ''}</div>
+      <div class="stack mt">${Object.keys(ringkasStok).length ? Object.entries(ringkasStok).map(([k, n]) => `<div class="row between" style="font-size:13px"><span>${esc(k)}</span><b>${n} unit</b></div>`).join('') : '<p class="sub">Stok kosong.</p>'}</div>
+      ${admin ? `<details class="mt"><summary class="sub" style="cursor:pointer">Semua unit (${stok.length})</summary><div class="scrollx"><table class="t mt"><tr><th>No rangka</th><th>Tipe</th><th>Status</th><th></th></tr>
+        ${stok.map((u) => `<tr><td>${esc(u.no_rangka)}<div class="sub">${esc(u.no_mesin)}</div></td><td>${esc(tipeNama(u.tipe))}<div class="sub">${esc(u.warna)} · ${u.tahun}</div></td><td>${pill(u.status, u.status === 'STOK' ? 'p-green' : u.status === 'TERJUAL' ? 'p-gray' : 'p-amber')}</td>
+          <td>${u.status === 'STOK' ? `<button class="btn sm" onclick="formUnit(${u.id})">Ubah</button>` : ''}</td></tr>`).join('')}</table></div></details>` : ''}</div>
+
+    ${admin ? `<div class="card mt"><div class="row between"><h2>Tipe motor & harga OTR</h2><button class="btn sm pri" onclick="formTipe()">+ Tipe</button></div>
+      <div class="scrollx"><table class="t mt"><tr><th>Tipe</th><th class="n">Harga OTR</th><th></th></tr>${S.tipe.map((t) => `<tr><td>${esc(tipeNama(t))} ${t.aktif ? '' : pill('nonaktif', 'p-gray')}</td><td class="n">${rp(t.harga_otr)}</td><td class="n"><button class="btn sm" onclick="formTipe(${t.id})">Ubah</button></td></tr>`).join('') || '<tr><td colspan="3" class="sub">Belum ada tipe motor. Tambahkan dulu.</td></tr>'}</table></div></div>
+
+    <div class="card mt"><div class="row between"><h2>Leasing</h2><button class="btn sm pri" onclick="formLeasing()">+ Leasing</button></div>
+      <div class="row mt">${S.leasing.map((x) => `<button class="chip${x.aktif ? '' : ''}" onclick="formLeasing(${x.id})">${esc(x.nama)}${x.aktif ? '' : ' (nonaktif)'}</button>`).join('')}</div></div>
+
+    <div class="card mt"><h2>Pengguna</h2>
+      <div class="note mt">Menambah akun baru: buka <b>Supabase → Authentication → Users → Add user</b>, isi email & kata sandi. Akun otomatis muncul di sini sebagai Sales. Sales yang keluar cukup dinonaktifkan.</div>
+      <div class="stack mt">${S.orang.map((p) => `<div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line2)"><div><b style="font-size:13px">${esc(p.nama)}</b> ${pill(p.peran === 'ADMIN' ? 'Admin' : 'Sales', p.peran === 'ADMIN' ? 'p-indigo' : 'p-blue')} ${p.aktif ? '' : pill('nonaktif', 'p-red')}
+        <div class="sub">Target ${p.target_lead_harian} lead/hari · ${p.target_do_bulanan} unit/bulan</div></div>
+        <button class="btn sm" onclick="formOrang('${p.id}')">Ubah</button></div>`).join('')}</div></div>` : ''}
+
+    ${!S.cfg.tetap ? `<div class="card mt"><h2>Koneksi</h2><p class="sub mt">${esc(S.cfg.url)}</p><button class="btn sm mt" onclick="gantiKoneksi()">Ganti koneksi</button></div>` : ''}`;
+};
+
+// ---------- form-form kecil ----------
+function formSandi() {
+  modal(`<h2>Ganti kata sandi</h2><div class="stack mt"><input id="sdBaru" type="password" class="inp" placeholder="Kata sandi baru (min. 8 karakter)">
+    <button class="btn pri" onclick="gantiSandi(this)">Simpan</button><button class="btn" onclick="tutupModal()">Batal</button></div>`);
+}
+async function gantiSandi(btn) {
+  if ((val('sdBaru') || '').length < 8) return toast('Minimal 8 karakter', true);
+  await aman(async () => { const { error } = await sb.auth.updateUser({ password: $('#sdBaru').value }); if (error) throw error; tutupModal(); toast('Kata sandi diganti'); }, btn);
+}
+function formSumber(id) {
+  const s = S.sumber.find((x) => x.id === id) || { nama: '', kategori: 'OFFLINE', aktif: true };
+  modal(`<h2>${id ? 'Ubah' : 'Tambah'} sumber</h2><div class="stack mt">
+    <input id="smNama" class="inp" placeholder="Contoh: Komunitas Ojol Cikadu" value="${esc(s.nama)}">
+    <select id="smKat" class="inp">${opsi(L.kategori, s.kategori)}</select>
+    <label class="chk"><input type="checkbox" id="smAktif" ${s.aktif ? 'checked' : ''}> Aktif</label>
+    ${!isAdmin() && !id ? '<p class="sub">Sumber ini menjadi private milik Anda.</p>' : ''}
+    <button class="btn pri" onclick="simpanSumber(${id || 'null'},this)">Simpan</button><button class="btn" onclick="tutupModal()">Batal</button></div>`);
+}
+async function simpanSumber(id, btn) {
+  if (!val('smNama')) return toast('Isi nama sumber', true);
+  const isi = { nama: val('smNama'), kategori: val('smKat'), aktif: val('smAktif') };
+  await aman(async () => {
+    if (id) await ubah('sumber_leads', isi, 'id', id); else await q(sb.from('sumber_leads').insert(isi));
+    tutupModal(); toast('Sumber tersimpan'); buka('lain');
+  }, btn);
+}
+async function mintaIzin(sid, btn) {
+  await aman(async () => { await q(sb.from('izin_sumber').insert({ sumber_id: sid })); toast('Permintaan izin dikirim'); buka('lain'); }, btn);
+}
+async function batalIzin(id, btn) {
+  await aman(async () => { await q(sb.from('izin_sumber').delete().eq('id', id)); buka('lain'); }, btn);
+}
+async function jawabIzin(id, setuju, btn) {
+  const iz = (await q(sb.from('izin_sumber').select('*, sumber:sumber_leads(pemilik_id)').eq('id', id).single()));
+  const isi = {};
+  if (iz.sumber.pemilik_id === S.me.id) isi.setuju_pemilik = setuju;
+  if (isAdmin()) isi.setuju_admin = setuju;
+  await aman(async () => { await ubah('izin_sumber', isi, 'id', id); toast(setuju ? 'Disetujui' : 'Ditolak'); buka('lain'); }, btn);
+}
+function formUnit(id) {
+  modal(`<h2>${id ? 'Ubah' : 'Tambah'} unit</h2><div class="stack mt">
+    <select id="unTipe" class="inp">${opsiTipe(null)}</select>
+    <div class="grid2"><input id="unWarna" class="inp" placeholder="Warna"><input id="unTahun" type="number" class="inp" value="${new Date().getFullYear()}"></div>
+    <input id="unRangka" class="inp" placeholder="Nomor rangka" style="text-transform:uppercase">
+    <input id="unMesin" class="inp" placeholder="Nomor mesin" style="text-transform:uppercase">
+    <button class="btn pri" onclick="simpanUnit(${id || 'null'},this)">Simpan</button><button class="btn" onclick="tutupModal()">Batal</button></div>`);
+  if (id) sb.from('unit_stok').select('*').eq('id', id).single().then(({ data: u }) => {
+    if (!u) return; $('#unTipe').value = u.tipe_motor_id; $('#unWarna').value = u.warna; $('#unTahun').value = u.tahun; $('#unRangka').value = u.no_rangka; $('#unMesin').value = u.no_mesin;
+  });
+}
+async function simpanUnit(id, btn) {
+  const isi = { tipe_motor_id: num('unTipe'), warna: val('unWarna'), tahun: num('unTahun'), no_rangka: val('unRangka'), no_mesin: val('unMesin') };
+  if (!isi.tipe_motor_id || !isi.warna || !isi.no_rangka || !isi.no_mesin) return toast('Lengkapi semua kolom', true);
+  await aman(async () => { if (id) await ubah('unit_stok', isi, 'id', id); else await q(sb.from('unit_stok').insert(isi)); tutupModal(); toast('Unit tersimpan'); buka('lain'); }, btn);
+}
+function formTipe(id) {
+  const t = S.tipe.find((x) => x.id === id) || { merek: '', model: '', varian: '', harga_otr: '', aktif: true };
+  modal(`<h2>${id ? 'Ubah' : 'Tambah'} tipe motor</h2><div class="stack mt">
+    <div class="grid2"><input id="tmMerek" class="inp" placeholder="Merek (Honda)" value="${esc(t.merek)}"><input id="tmModel" class="inp" placeholder="Model (BeAT)" value="${esc(t.model)}"></div>
+    <input id="tmVarian" class="inp" placeholder="Varian (CBS / Deluxe)" value="${esc(t.varian)}">
+    <div class="field"><label>Harga OTR (Rp)</label><input id="tmHarga" type="number" class="inp" value="${t.harga_otr}"></div>
+    <label class="chk"><input type="checkbox" id="tmAktif" ${t.aktif ? 'checked' : ''}> Aktif (bisa dipilih)</label>
+    <button class="btn pri" onclick="simpanTipe(${id || 'null'},this)">Simpan</button><button class="btn" onclick="tutupModal()">Batal</button></div>`);
+}
+async function simpanTipe(id, btn) {
+  const isi = { merek: val('tmMerek'), model: val('tmModel'), varian: val('tmVarian'), harga_otr: num('tmHarga'), aktif: val('tmAktif') };
+  if (!isi.merek || !isi.model || !isi.harga_otr) return toast('Merek, model, dan harga wajib', true);
+  await aman(async () => { if (id) await ubah('tipe_motor', isi, 'id', id); else await q(sb.from('tipe_motor').insert(isi)); tutupModal(); toast('Tipe motor tersimpan'); buka('lain'); }, btn);
+}
+function formLeasing(id) {
+  const x = S.leasing.find((y) => y.id === id) || { nama: '', aktif: true };
+  modal(`<h2>${id ? 'Ubah' : 'Tambah'} leasing</h2><div class="stack mt"><input id="lsNama" class="inp" value="${esc(x.nama)}" placeholder="Nama leasing">
+    <label class="chk"><input type="checkbox" id="lsAktif" ${x.aktif ? 'checked' : ''}> Aktif</label>
+    <button class="btn pri" onclick="simpanLeasing(${id || 'null'},this)">Simpan</button><button class="btn" onclick="tutupModal()">Batal</button></div>`);
+}
+async function simpanLeasing(id, btn) {
+  const isi = { nama: val('lsNama'), aktif: val('lsAktif') };
+  if (!isi.nama) return toast('Isi nama', true);
+  await aman(async () => { if (id) await ubah('leasing', isi, 'id', id); else await q(sb.from('leasing').insert(isi)); tutupModal(); toast('Leasing tersimpan'); buka('lain'); }, btn);
+}
+function formOrang(id) {
+  const p = S.orang.find((x) => x.id === id);
+  modal(`<h2>Ubah pengguna</h2><div class="stack mt">
+    <div class="field"><label>Nama</label><input id="ogNama" class="inp" value="${esc(p.nama)}"></div>
+    <div class="grid2"><div class="field"><label>Peran</label><select id="ogPeran" class="inp" ${id === S.me.id ? 'disabled' : ''}>${opsi({ SALES: 'Sales', ADMIN: 'Admin' }, p.peran)}</select></div>
+      <div class="field"><label>Status</label><select id="ogAktif" class="inp" ${id === S.me.id ? 'disabled' : ''}>${opsi({ true: 'Aktif', false: 'Nonaktif' }, String(p.aktif))}</select></div></div>
+    <div class="grid2"><div class="field"><label>Target lead/hari</label><input id="ogTl" type="number" class="inp" value="${p.target_lead_harian}"></div>
+      <div class="field"><label>Target unit/bulan</label><input id="ogTd" type="number" class="inp" value="${p.target_do_bulanan}"></div></div>
+    <button class="btn pri" onclick="simpanOrang('${id}',this)">Simpan</button><button class="btn" onclick="tutupModal()">Batal</button></div>`);
+}
+async function simpanOrang(id, btn) {
+  const isi = { nama: val('ogNama'), target_lead_harian: num('ogTl') || 0, target_do_bulanan: num('ogTd') || 0 };
+  if (id !== S.me.id) { isi.peran = val('ogPeran'); isi.aktif = val('ogAktif') === 'true'; }
+  await aman(async () => { await ubah('profiles', isi, 'id', id); tutupModal(); toast('Pengguna tersimpan'); buka('lain'); }, btn);
+}
+
+// =====================================================================
+// MULAI
+// =====================================================================
+(function () {
+  const cfg = bacaKonfig();
+  if (cfg) mulai(cfg); else layarKoneksi();
+})();
+
+</script>
+</body>
+</html>
