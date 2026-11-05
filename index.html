@@ -7,7 +7,7 @@
 <title>CRM Dealer Motor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <style>
 /* =====================================================================
@@ -202,6 +202,14 @@ button.lamp{cursor:pointer}
 .tl .ev:last-child{border-bottom:0}
 .tl .dot{width:32px;height:32px;flex:none;border-radius:10px;background:var(--navy-3);color:var(--navy);display:flex;align-items:center;justify-content:center}
 .tl .dot svg{width:17px;height:17px}
+.lok{display:inline-flex;align-items:center;gap:4px;color:var(--navy-2);font-weight:650}
+.lok svg{width:15px;height:15px}
+.note > svg{width:18px;height:18px;flex:none;margin-top:1px}
+.peta-wrap{display:grid;gap:12px}
+.peta{height:340px;border-radius:16px;overflow:hidden;background:#E3E8EF;border:1px solid var(--line);z-index:0}
+.peta-list{max-height:340px;overflow-y:auto}
+.pin-n{width:28px;height:28px;border-radius:50%;color:#fff;font:800 13px/28px var(--display);font-stretch:120%;text-align:center;border:2.5px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.leaflet-popup-content{font-family:var(--display);font-size:13.5px;line-height:1.45}
 .bar{height:8px;border-radius:99px;background:var(--line2);overflow:hidden}
 .bar i{display:block;height:100%;background:var(--navy);border-radius:99px}
 table.t{width:100%;border-collapse:collapse;font-size:14px}
@@ -256,114 +264,247 @@ table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 .lap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lap > .card{grid-column:1/-1}
 .mini-stat{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.baris-cd{flex-wrap:nowrap;align-items:center}.baris-cd > div{flex:1;min-width:0}.baris-cd .btn{flex:none;min-width:128px}
 
 /* =====================================================================
-   DESKTOP V3.9 — GLASSMORPHISM + BENTO GRID (hanya layar >= 920px)
+   DESKTOP V4.1 — GAYA "DASHBOARD LEADS JAMPANG" LAMA (hanya layar >= 920px)
+   Sidebar gelap, header putih, kartu putih, banner peringatan berwarna.
    ===================================================================== */
+.btn.biru{background:#2563eb;border-color:#2563eb;color:#fff}
+.btn.biru:hover{background:#1d4ed8}
+.btn.hijau{background:#16a34a;border-color:#16a34a;color:#fff}
+.btn.hijau:hover{background:#15803d}
 @media(min-width:920px){
-  :root{
-    --glass:rgba(255,255,255,.70); --glass-2:rgba(255,255,255,.52); --glass-line:rgba(255,255,255,.62);
-    --glass-dark:rgba(7,24,56,.42); --glass-shadow:0 18px 50px -18px rgba(3,14,38,.55);
-  }
-  body{
-    background:
-      radial-gradient(900px 620px at 8% -8%, rgba(86,140,235,.75) 0%, transparent 62%),
-      radial-gradient(760px 560px at 98% 4%, rgba(140,196,255,.55) 0%, transparent 60%),
-      radial-gradient(900px 700px at 70% 108%, rgba(39,94,196,.80) 0%, transparent 62%),
-      radial-gradient(600px 480px at 30% 70%, rgba(20,64,140,.55) 0%, transparent 70%),
-      linear-gradient(155deg,#08214B 0%,#0E3170 42%,#174A99 100%);
-    background-attachment:fixed;
-  }
+  :root{--kl-bg:#f3f4f6;--kl-line:#e5e7eb;--kl-line2:#f3f4f6;--kl-ink:#1f2937;--kl-muted:#6b7280;--kl-blue:#2563eb;
+        --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+  body{background:var(--kl-bg);font-family:var(--sans);color:var(--kl-ink);font-size:14px}
+  h1,h2,h3,.num,.stat b,.lamp b,.gauge b,.gear div b,.kv dd.big,.panel-h .t b,.item .nm,.brand,.fab,.pin-n{font-stretch:100%!important;letter-spacing:normal}
+  h1{font-size:22px;font-weight:700} h2{font-size:16px;font-weight:700} h3{font-size:14px;font-weight:700}
   .mob-only{display:none!important}
 
-  /* sidebar kaca gelap */
-  .side{background:rgba(5,19,46,.38);backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);border-right:1px solid rgba(255,255,255,.12)}
-  .side nav button.on{background:rgba(255,255,255,.92);color:var(--navy);box-shadow:0 8px 22px -10px rgba(0,0,0,.5)}
-  .side .ver{display:inline-block;margin-top:6px;font-size:11px;color:#9FB2D6;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px}
-  .top{background:transparent!important;border-bottom:1px solid rgba(255,255,255,.12)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-  .top .who-top{color:#C9D6EE}.top .who-top b{color:#fff}
-  .top .role{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);color:#fff}
+  /* ---- sidebar gelap ---- */
+  .side{width:256px;background:#0f172a;color:#cbd5e1;padding:0;box-shadow:4px 0 16px rgba(0,0,0,.12)}
+  .side-brand{display:flex;align-items:center;gap:12px;padding:20px;border-bottom:1px solid #1e293b}
+  .side-brand .rk{width:36px;height:36px;border-radius:9px;background:#3b82f6;color:#fff;display:flex;align-items:center;justify-content:center}
+  .side-brand .rk svg{width:19px;height:19px}
+  .side-brand b{display:block;color:#fff;font-size:15px;line-height:1.2}
+  .side-brand span{display:block;color:#60a5fa;font-size:12px;font-weight:400}
+  .side-menu{padding:12px;flex:1;overflow-y:auto}
+  .side-lbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin:8px 12px 8px}
+  .side nav{gap:4px}
+  .side nav button{color:#cbd5e1;padding:10px 12px;border-radius:8px;font-size:14px;font-weight:500;gap:12px}
+  .side nav button svg{width:18px;height:18px;opacity:1}
+  .side nav button:hover{background:#1e293b;color:#fff}
+  .side nav button.on{background:#2563eb;color:#fff;box-shadow:none}
+  .side-foot{padding:16px;border-top:1px solid #1e293b}
+  .who2{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .av2{width:34px;height:34px;border-radius:50%;background:#334155;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none}
+  .nm2{min-width:0}.nm2 b{display:block;color:#fff;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rb{display:inline-block;font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;margin-top:2px}
+  .rb.adm{background:#1e3a8a;color:#bfdbfe}.rb.sls{background:#14532d;color:#bbf7d0}
+  .keluar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;font-size:12.5px;font-weight:600;color:#f87171;background:none;border:1px solid rgba(127,29,29,.6);border-radius:8px;cursor:pointer}
+  .keluar svg{width:15px;height:15px}
+  .keluar:hover{background:#dc2626;border-color:#dc2626;color:#fff}
+  .side .ver{margin-top:10px;font-size:10.5px;color:#475569;text-align:center}
 
-  /* judul halaman di atas latar biru */
-  .main > .head h1,.main > .head h2{color:#fff}
-  .main > .head .sub{color:#B9C8E4}
+  /* ---- header putih ---- */
+  .top{margin-left:256px;height:62px;padding:0 24px;background:#fff!important;color:var(--kl-ink);border-bottom:1px solid var(--kl-line)!important;box-shadow:0 1px 2px rgba(0,0,0,.04);backdrop-filter:none}
+  .top .judul{font-size:20px;font-weight:700;color:var(--kl-ink);font-stretch:100%}
+  .top .btn{min-height:38px;padding:8px 16px;border-radius:8px;font-size:13.5px;font-weight:600}
+  .fab{display:none!important}
+  .main{margin-left:256px;padding:24px;max-width:none}
 
-  /* permukaan kaca */
-  .main .card,.main .stat,.main .tile,.main > .list,.main > .empty,.main .list.glass{
-    background:var(--glass);border:1px solid var(--glass-line);
-    backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
-    box-shadow:var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,.75);border-radius:24px}
-  .main .tile{padding:18px 18px 16px}
-  .main .tile .card,.main .tile .list,.main .tile .empty{background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:16px;padding:0!important}
-  .main .tile .empty{border:1.5px dashed rgba(11,42,91,.18);padding:22px 12px}
-  .main .tile .stat{background:var(--glass-2);box-shadow:none;border-radius:16px;backdrop-filter:none;-webkit-backdrop-filter:none}
-  .main .item{background:transparent}
-  .main .card .list{background:transparent;border:0;border-radius:0}
-  .main .tile .grid4{grid-template-columns:1fr 1fr}
-  .main .tile #daftarLead > p.sub:first-child{margin-top:0!important}
-  .stat-row .stat b{font-size:28px}
-  .main .list > .item{border-bottom-color:rgba(11,42,91,.08)}
-  .main .item:hover{background:rgba(255,255,255,.55)}
-  .main .tile .list > .item{padding-left:6px;padding-right:6px}
+  /* ---- permukaan umum ---- */
+  .main .card,.main .tile,.main > .list,.main .stat{background:#fff;border:1px solid var(--kl-line2);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .main .tile{padding:18px}
+  .main .tile .card,.main .tile .list,.main .tile .empty{border:0;box-shadow:none;border-radius:8px}
+  .main .tile .stat{background:#f9fafb;box-shadow:none}
+  .main .list{border-color:var(--kl-line);border-radius:10px}
+  .main .item{min-height:64px}
+  .main .item:hover{background:#f9fafb}
+  .main > .head{margin-bottom:18px}
+  .main > .head h1{font-size:20px;color:var(--kl-ink)}
   .tile-h{margin:0 2px 12px}
-  .tile-h h2{font-size:17px}
-  .main .inp{background:rgba(255,255,255,.75);border-color:rgba(11,42,91,.14)}
-  .main .chip{background:rgba(255,255,255,.62);border-color:rgba(11,42,91,.12)}
-  .main .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
-  .main > .chips .chip{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28);color:#fff}
-  .main > .chips .chip.on{background:#fff;color:var(--navy);border-color:#fff}
+  .tile-h h2{font-size:15px}
+  .main .inp{border-radius:8px;border-width:1px;border-color:#d1d5db;background:#fff;min-height:40px;padding:9px 12px;font-size:14px}
+  .main .inp:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+  .main .chip{border-radius:999px;border:0;background:#e5e7eb;color:#374151;font-size:12.5px;font-weight:600;min-height:32px;padding:6px 13px}
+  .main .chip.on{background:#2563eb;color:#fff;box-shadow:0 0 0 2px #fff,0 0 0 4px #3b82f6}
+  .btn{border-radius:8px;font-weight:600;min-height:38px}
+  .btn.pri{background:#2563eb;border-color:#2563eb}.btn.pri:hover{background:#1d4ed8}
+  .bar i{background:#3b82f6}
+  .stat b{font-size:24px;font-weight:700}
+  .num{font-weight:700}
 
-  /* hero kaca gelap */
-  .main .hero{background:var(--glass-dark);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);box-shadow:var(--glass-shadow);border-radius:26px;padding:24px 24px 20px}
-  .main .hero h1{font-size:34px}
-  .lamp{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.14);padding:14px 14px 12px;border-radius:16px}
-  .lamp b{font-size:34px}
-
-  /* grid bento */
-  .bento{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr);gap:18px;align-items:start}
-  .bento > .col{display:flex;flex-direction:column;gap:18px;min-width:0}
+  /* ---- susunan bento lama (dipakai halaman lain) ---- */
+  .bento{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+  .bento > .col{display:flex;flex-direction:column;gap:20px;min-width:0}
   .bento > .col > *{order:0!important}
   .bento .tile-h{margin-top:0}
-  .split{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+  .split{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
   .split > * + *{margin-top:0}
-  .split > .tile:first-child{position:sticky;top:76px}
   .split.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .split .chips{flex-wrap:wrap;overflow:visible}
-  .lap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;align-items:stretch}
+  .lap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;align-items:stretch}
   .lap > *{margin-top:0!important}
   .lap .s3{grid-column:span 3}.lap .s4{grid-column:span 4}.lap .s5{grid-column:span 5}.lap .s7{grid-column:span 7}.lap .s8{grid-column:span 8}.lap .s12{grid-column:span 12}
-  .lap .stat b{font-size:34px}
-  .lain-grid{columns:2;column-gap:18px}
-  .lain-grid > .card{break-inside:avoid;margin:0 0 18px!important;display:block}
+  .lap .stat b{font-size:28px}
+  .lain-grid{columns:2;column-gap:20px}
+  .lain-grid > .card{break-inside:avoid;margin:0 0 20px!important;display:block}
+  .peta-wrap{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+  .peta{height:420px}.peta-list{max-height:420px}
   .stat-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
-  .stat-row .stat{cursor:pointer;transition:transform .15s}
-  .stat-row .stat:hover{transform:translateY(-2px)}
-  .stat-row .stat.on{background:rgba(255,255,255,.94);outline:2px solid #fff}
+  .stat-row .stat{cursor:pointer;position:relative;overflow:hidden}
+  .stat-row .stat::after{content:'';position:absolute;right:0;top:0;bottom:0;width:5px;background:#93c5fd}
+  .stat-row .stat.on{outline:2px solid #3b82f6}
 
-  /* panel detail & modal kaca */
-  .sheet{background:rgba(5,19,46,.38);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-  .panel{background:rgba(236,241,248,.80);backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%);border-left:1px solid rgba(255,255,255,.5);box-shadow:-30px 0 60px -30px rgba(0,0,0,.5)}
-  .panel-h{background:rgba(11,42,91,.88);backdrop-filter:blur(16px)}
-  .panel-b > .blk{background:rgba(255,255,255,.78);border-color:rgba(255,255,255,.8);box-shadow:0 8px 24px -16px rgba(3,14,38,.4);border-radius:20px}
-  .modal{background:rgba(5,19,46,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-  .modal .box{background:rgba(255,255,255,.90);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.7);box-shadow:var(--glass-shadow)}
+  /* ---- RINGKASAN (gaya lama) ---- */
+  .kl{display:flex;flex-direction:column;gap:20px}
+  .kl-card{background:#fff;border:1px solid var(--kl-line2);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.05);padding:18px 20px}
+  .kl-card h3{font-size:15px;color:var(--kl-ink);margin-bottom:14px}
+  .kl-card-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
+  .kl-card-h h3{margin:0}
+  .kl-cap{font-size:12.5px!important;text-transform:uppercase;letter-spacing:.05em}
+  .kl-alerts{display:flex;flex-direction:column;gap:12px}
+  .bn{display:flex;gap:12px;align-items:flex-start;padding:13px 16px;border-left:4px solid;border-radius:0 8px 8px 0;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .bn h3{font-size:13.5px;margin:0 0 2px}
+  .bn p{font-size:12.5px;line-height:1.55}
+  .bn a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.2)}
+  .bn-ik svg{width:22px;height:22px}
+  .bn.merah{background:#fef2f2;border-color:#ef4444}.bn.merah h3{color:#991b1b}.bn.merah p{color:#b91c1c}.bn.merah .bn-ik{color:#ef4444}
+  .bn.oranye{background:#fff7ed;border-color:#f97316}.bn.oranye h3{color:#9a3412}.bn.oranye p{color:#c2410c}.bn.oranye .bn-ik{color:#f97316}
+  .bn.biru{background:#eff6ff;border-color:#3b82f6}.bn.biru h3{color:#1e40af}.bn.biru p{color:#1d4ed8}.bn.biru .bn-ik{color:#3b82f6}
+  .goyang{animation:goyang 1s infinite}
+  @keyframes goyang{0%,100%{transform:translateY(-12%)}50%{transform:none}}
+  .kedip{animation:kedip 2s infinite}
+  @keyframes kedip{50%{opacity:.6}}
+  .kl-filter{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 16px}
+  .kl-flbl{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--kl-muted)}
+  .kl-flbl svg{width:15px;height:15px}
+  .kl-sel{border:1px solid #d1d5db;border-radius:8px;background:#f9fafb;padding:8px 12px;font-size:13.5px;min-height:38px;color:var(--kl-ink)}
+  .kl-sel:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+  .kl-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .kl-bar{margin-bottom:14px}
+  .kl-bar:last-child{margin-bottom:0}
+  .kl-bar-h{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:6px}
+  .kl-bar-h span{font-weight:600;color:#374151}
+  .kl-bar-h b{color:var(--kl-muted)}
+  .t-biru{color:#2563eb!important}.t-hijau{color:#16a34a!important}
+  .kl-track{height:8px;border-radius:99px;background:#f3f4f6;overflow:hidden}
+  .kl-track.tebal{height:10px}
+  .kl-track i{display:block;height:100%;border-radius:99px;transition:width .5s}
+  .kl-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+  .kl-stat{background:#fff;border:1px solid var(--kl-line2);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.05);padding:16px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
+  .kl-stat:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+  .kl-stat::after{content:'';position:absolute;right:0;top:0;bottom:0;width:6px}
+  .kl-stat .ik{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+  .kl-stat .ik svg{width:22px;height:22px}
+  .kl-stat p{font-size:12px;font-weight:500;color:var(--kl-muted)}
+  .kl-stat b{display:block;font-size:22px;font-weight:700;line-height:1.2;color:var(--kl-ink)}
+  .kl-stat small{font-size:11px;color:var(--kl-muted)}
+  .kl-stat.biru .ik{background:#eff6ff;color:#2563eb}
+  .kl-stat.kuning .ik{background:#fefce8;color:#ca8a04}.kl-stat.kuning::after{background:#facc15}
+  .kl-stat.merah .ik{background:#fef2f2;color:#dc2626;animation:denyut 1.5s infinite}.kl-stat.merah::after{background:#ef4444}.kl-stat.merah b{color:#dc2626}
+  .kl-stat.hijau .ik{background:#f0fdf4;color:#16a34a}.kl-stat.hijau b{color:#16a34a}
+  .kl-stat.abu .ik{background:#f3f4f6;color:#4b5563}.kl-stat.abu::after{background:#9ca3af}
+  @keyframes denyut{0%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 7px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+  .kl-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
+  .kl-funnel{display:flex;flex-direction:column;gap:9px}
+  .kf{display:flex;align-items:center;gap:8px}
+  .kf-no{width:18px;text-align:center;font-size:12px;font-weight:700;color:#9ca3af}
+  .kf-bar{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:600;min-width:140px;
+          background:color-mix(in srgb,var(--w) 14%,#fff);border:1px solid color-mix(in srgb,var(--w) 32%,#fff);color:color-mix(in srgb,var(--w) 70%,#111)}
+  .kf-bar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kf-bar b{background:rgba(255,255,255,.75);padding:1px 7px;border-radius:5px;font-size:11.5px}
+  .kl-kosong{font-size:12.5px;color:var(--kl-muted);font-style:italic}
+  .kl-kerja{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+  .kl-kanan{display:flex;flex-direction:column;gap:20px;min-width:0}
+  .kl-kerja.penuh{grid-template-columns:minmax(0,1fr)}
+  .kl-kerja.penuh .kl-kanan{display:none}
+  .main > .head h1{display:none}   /* judul halaman sudah ada di header putih */
+  .main > .head:not(:has(.row,.btn,select,input)) {display:none}
+  .kl-kanan .grid4{grid-template-columns:1fr 1fr}
 
-  /* layar masuk */
-  .center{background:transparent}
-  .login.card{background:rgba(255,255,255,.80);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:var(--glass-shadow);border-radius:26px}
-  .fab{border:1px solid rgba(255,255,255,.35);box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+  /* ---- KELOLA LEADS: tabel gaya lama ---- */
+  .kl-leads{padding:0;overflow:hidden}
+  .kl-tool{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 16px;background:#f9fafb;border-bottom:1px solid var(--kl-line)}
+  .kl-cari{position:relative;width:280px}
+  .kl-cari svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:#9ca3af}
+  .kl-cari input{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:8px 12px 8px 34px;font-size:13.5px;min-height:38px;background:#fff}
+  .kl-cari input:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+  .kl-pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-left:auto}
+  .kl-tahap{margin:0;padding:10px 16px;border-bottom:1px solid var(--kl-line)}
+  .fp{border:0;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#e5e7eb;color:#374151}
+  .fp.abu{background:#e5e7eb;color:#374151}.fp.kuning{background:#fef9c3;color:#854d0e}.fp.merah{background:#fee2e2;color:#991b1b}.fp.biru{background:#dbeafe;color:#1e40af}
+  .fp.on{box-shadow:0 0 0 2px #fff,0 0 0 4px #3b82f6}
+  .kl-tahap .fp.on{background:#2563eb;color:#fff}
+  .kl-tabel{max-height:calc(100vh - 250px);overflow:auto}
+  .kl-jml{font-size:12px;color:var(--kl-muted);padding:10px 16px 0}
+  .kl-t{width:100%;border-collapse:collapse;font-size:13px}
+  .kl-t thead th{position:sticky;top:0;z-index:1;background:#f9fafb;text-align:left;padding:11px 20px;font-size:11.5px;font-weight:700;color:var(--kl-muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--kl-line);white-space:nowrap}
+  .kl-t td{padding:13px 20px;border-bottom:1px solid var(--kl-line);vertical-align:top}
+  .kl-t th.c,.kl-t td.c{text-align:center}.kl-t th.r,.kl-t td.r{text-align:right}
+  .kl-t tbody tr{cursor:pointer;transition:background .12s}
+  .kl-t tbody tr:hover{background:#f9fafb}
+  .kl-t tr.r-hot{background:rgba(254,242,242,.55)}
+  .kl-t tr.r-telat{background:rgba(255,247,237,.6)}
+  .kl-tgl{font-size:11.5px;color:var(--kl-muted);margin-bottom:2px}
+  .kl-tgl span{color:#2563eb;font-weight:600}
+  .kl-nm{font-size:14px;font-weight:700;color:#111827}
+  .kl-hp,.kl-al{display:flex;align-items:center;gap:5px;font-size:12px;color:#4b5563;margin-top:2px}
+  .kl-al{color:var(--kl-muted);max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kl-hp svg,.kl-al svg{width:12px;height:12px;flex:none}
+  .kl-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .kl-tags:empty{display:none}
+  .tg{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;border:1px solid}
+  .tg svg{width:11px;height:11px}
+  .tg.ungu{background:#faf5ff;color:#7e22ce;border-color:#f3e8ff}.tg.hijau{background:#ecfdf5;color:#047857;border-color:#d1fae5}
+  .kl-warn,.kl-jadwal{display:flex;align-items:center;gap:5px;font-size:11.5px;margin-top:7px}
+  .kl-warn{color:#ea580c;font-weight:700;animation:kedip 2s infinite}
+  .kl-jadwal{color:#2563eb;font-weight:500}
+  .kl-warn svg,.kl-jadwal svg{width:13px;height:13px}
+  .kl-sales{display:inline-block;font-size:12px;font-weight:600;color:#374151;background:#f3f4f6;border:1px solid var(--kl-line);border-radius:5px;padding:3px 8px;white-space:nowrap}
+  .bs{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap}
+  .bs svg{width:12px;height:12px}
+  .bs.hot{background:#fee2e2;color:#b91c1c;animation:kedip 2s infinite}.bs.warm{background:#fef9c3;color:#854d0e}
+  .bs.cold{background:#e0f2fe;color:#075985}.bs.deal{background:#dcfce7;color:#166534}.bs.lost{background:#f3f4f6;color:#374151}
+  .kl-th{margin-top:6px}
+  .kl-aksi{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .kl-aksi .btn{min-height:30px;width:110px;font-size:12px;padding:5px 10px}
+  .kl-kosong-besar{text-align:center;color:var(--kl-muted);padding:50px 16px}
+  .kl-kosong-besar svg{width:38px;height:38px;color:#d1d5db;margin-bottom:6px}
+
+  /* ---- panel detail & modal ---- */
+  .sheet{background:rgba(17,24,39,.55)}
+  .panel{background:#f9fafb;box-shadow:-20px 0 40px -20px rgba(0,0,0,.35)}
+  .panel-h{background:#fff;color:var(--kl-ink);border-bottom:1px solid var(--kl-line)}
+  .panel-h .x{background:#f3f4f6;color:#6b7280;border-radius:8px}
+  .panel-h .t .sub{color:var(--kl-muted)}
+  .panel-b > .blk{border-radius:12px;border-color:var(--kl-line2);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .modal{background:rgba(17,24,39,.6)}
+  .modal .box{border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,.35)}
+
+  /* ---- layar masuk ---- */
+  .center{background:linear-gradient(135deg,#1e3a8a 0%,#3730a3 100%)}
+  .login.card{border-radius:16px;box-shadow:0 25px 50px -12px rgba(0,0,0,.4);padding:32px!important;max-width:440px}
+  .login-kl{text-align:center;margin-bottom:6px}
+  .lk-ik{width:62px;height:62px;border-radius:50%;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:inset 0 2px 4px rgba(0,0,0,.06)}
+  .lk-ik svg{width:28px;height:28px}
+  .login-kl h1{font-size:24px;color:var(--kl-ink)}
+  .login-kl p{font-size:13.5px;color:var(--kl-muted);margin-top:4px}
+  .login .field label{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:#374151}
+  .login .inp{border-radius:8px;border-width:1px;border-color:#d1d5db;background:#fff}
+  .login .btn.pri{background:#2563eb;border-color:#2563eb;border-radius:8px;box-shadow:0 4px 8px -2px rgba(37,99,235,.4)}
 }
-
 @media(min-width:920px) and (max-width:1199px){
-  .bento,.split,.split.even{grid-template-columns:minmax(0,1fr)}
-  .split > .tile:first-child{position:static}
+  .bento,.split,.split.even,.kl-kerja{grid-template-columns:minmax(0,1fr)}
+  .kl-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .kl-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
   .lap .s7,.lap .s5{grid-column:span 12}
   .lap .s3{grid-column:span 6}
   .stat-row{grid-template-columns:repeat(3,minmax(0,1fr))}
   .lain-grid{columns:1}
-}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  @media(min-width:920px){ .main .card,.main .stat,.main .tile,.main > .list{background:rgba(255,255,255,.94)} .panel{background:#EEF2F7} }
+  .kl-cari{width:220px}
 }
 </style>
 </head>
@@ -389,7 +530,7 @@ table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 const L = {
   tahap: { BARU: 'Baru', DIHUBUNGI: 'Dihubungi', PROSPEK: 'Prospek', NEGOSIASI: 'Negosiasi', DEAL: 'Deal', LOST: 'Lost' },
   rencana: { MINGGU_INI: 'Minggu ini', BULAN_INI: 'Bulan ini', '1_3_BULAN': '1–3 bulan', BELUM_PASTI: 'Belum pasti' },
-  jenis: { TELEPON: 'Telepon', WHATSAPP: 'WhatsApp', KUNJUNGAN_DEALER: 'Datang ke dealer', KUNJUNGAN_RUMAH: 'Kunjungan rumah',
+  jenis: { TELEPON: 'Telepon', WHATSAPP: 'WhatsApp', KUNJUNGAN_DEALER: 'Datang ke dealer', KUNJUNGAN_RUMAH: 'Kunjungan rumah', CANVASING: 'Canvasing',
            TEST_RIDE: 'Test ride', PENAWARAN: 'Kirim penawaran', SIMULASI_KREDIT: 'Simulasi kredit', CATATAN: 'Catatan', SISTEM: 'Sistem' },
   ikon: { TELEPON: '📞', WHATSAPP: '💬', KUNJUNGAN_DEALER: '🏢', KUNJUNGAN_RUMAH: '🏠', TEST_RIDE: '🏍️', PENAWARAN: '📄',
           SIMULASI_KREDIT: '🧮', CATATAN: '📝', SISTEM: '⚙️' },
@@ -428,10 +569,23 @@ const IC = {
   check: '<path d="m5 12.5 4.5 4.5L19 7"/>',
   spark: '<path d="M12 3v5M12 16v5M3 12h5M16 12h5"/>',
   back: '<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/>',
+  pin: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
+  rocket: '<path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.1 2.1 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  fire: '<path d="M12 22c4 0 7-2.7 7-6.8 0-3.6-2.6-6.3-4.4-8.2-.3 2-1.3 3.4-2.6 4C12.5 7.5 10.8 4.4 8 2c.2 3.4-3 6.3-3 10.6C5 18.6 8 22 12 22z"/>',
+  alert: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>',
+  filter: '<path d="M3 4.5h18l-7 8.3V19l-4 2v-8.2z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  download: '<path d="M12 3v12M7 10l5 5 5-5M4 19.5h16"/>',
+  temp: '<path d="M14 14.8V4.5a2 2 0 0 0-4 0v10.3a4 4 0 1 0 4 0z"/><path d="M12 9v7"/>',
+  hand: '<path d="m11 17 2 2a1 1 0 1 0 3-3M14 14l2.5 2.5a1 1 0 1 0 3-3l-3.9-3.9a3 3 0 0 0-4.2 0l-.9.9a1 1 0 1 1-3-3l2.8-2.8a5 5 0 0 1 6.2-.7l.5.3a2 2 0 0 0 1.4.2L21 4M21 3l1 11h-2M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/>',
+  xcircle: '<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>',
+  cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',
   logo: '<path d="M4.5 16.5a7.5 7.5 0 1 1 15 0"/><path d="m12 16.5 4.2-4.6"/><circle cx="12" cy="16.5" r="1.4" fill="currentColor"/>',
 };
 const ico = (n, w = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n] || ''}</svg>`;
-const IKON_JENIS = { TELEPON: 'phone', WHATSAPP: 'chat', KUNJUNGAN_DEALER: 'store', KUNJUNGAN_RUMAH: 'home', TEST_RIDE: 'moto',
+const IKON_JENIS = { TELEPON: 'phone', WHATSAPP: 'chat', KUNJUNGAN_DEALER: 'store', KUNJUNGAN_RUMAH: 'home', CANVASING: 'pin', TEST_RIDE: 'moto',
   PENAWARAN: 'doc', SIMULASI_KREDIT: 'calc', CATATAN: 'note', SISTEM: 'gear' };
 const LABEL_SUHU = { HOT: 'Hot', WARM: 'Warm', COLD: 'Cold' };
 
@@ -495,7 +649,7 @@ function pesanError(e) {
   if (m.includes('Invalid login credentials')) return 'Email atau kata sandi salah.';
   if (m.includes('Failed to fetch') || m.includes('NetworkError')) return 'Tidak bisa terhubung ke server. Periksa internet Anda.';
   if (m.includes('JWT expired')) return 'Sesi habis, silakan masuk lagi.';
-  if (m.includes('Could not find the function')) return 'Fitur ini belum aktif di database. Jalankan file SQL terbaru (002_akun_dari_aplikasi.sql) di Supabase.';
+  if (m.includes('Could not find the function') || /Could not find the '.+' column/.test(m)) return 'Fitur ini belum aktif di database. Jalankan file SQL terbaru (002 / 003 / 004) di Supabase SQL Editor.';
   return m;
 }
 
@@ -598,9 +752,10 @@ async function mulai(cfg) {
 
 function layarLogin() {
   $('#root').innerHTML = `<div class="center"><div class="center-col">
-    <div class="login-hd"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer Motor</span></div>
+    <div class="login-hd mob-only"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer Motor</span></div>
       <h1>Masuk</h1><p>Gunakan email dan kata sandi dari admin dealer.</p></div>
     <form class="login card stack" style="padding:22px" onsubmit="event.preventDefault();masuk(this.querySelector('button'))">
+      <div class="login-kl desk-only"><div class="lk-ik">${ico('chart', 2.2)}</div><h1>Leads Management</h1><p>Sistem Kontrol &amp; Monitoring Jampang</p></div>
       <div class="field"><label>Email</label><input id="lgEmail" class="inp" type="email" autocomplete="username" required></div>
       <div class="field"><label>Kata sandi</label><input id="lgPass" class="inp" type="password" autocomplete="current-password" required></div>
       <button class="btn pri full" type="submit">Masuk</button>
@@ -648,19 +803,33 @@ const opsiTipe = (sel, kosong = 'Pilih tipe motor') => `<option value="">${koson
 // ---------------------------------------------------------------------
 // Kerangka & navigasi
 // ---------------------------------------------------------------------
+// [kunci, ikon, label HP, label PC (sama dengan dashboard lama), judul halaman PC]
 function menu() {
   return isAdmin()
-    ? [['hari', 'home', 'Hari Ini'], ['leads', 'users', 'Leads'], ['order', 'box', 'Order'], ['laporan', 'chart', 'Laporan'], ['lain', 'menu', 'Lainnya']]
-    : [['hari', 'home', 'Hari Ini'], ['leads', 'users', 'Leads'], ['order', 'box', 'Order'], ['tim', 'trophy', 'Tim'], ['lain', 'menu', 'Lainnya']];
+    ? [['hari', 'home', 'Hari Ini', 'Ringkasan', 'Ringkasan Kinerja'], ['leads', 'users', 'Leads', 'Kelola Leads', 'Kelola Data Leads'],
+       ['order', 'box', 'Order', 'Order', 'Order & Pengiriman'], ['laporan', 'chart', 'Laporan', 'Evaluasi Kinerja', 'Evaluasi & Papan Peringkat'],
+       ['lain', 'menu', 'Lainnya', 'Pengaturan', 'Pengaturan Sistem']]
+    : [['hari', 'home', 'Hari Ini', 'Ringkasan', 'Ringkasan Kinerja'], ['leads', 'users', 'Leads', 'Kelola Leads', 'Kelola Data Leads'],
+       ['order', 'box', 'Order', 'Order', 'Order Saya'], ['tim', 'trophy', 'Tim', 'Papan Peringkat', 'Papan Peringkat Tim'],
+       ['lain', 'menu', 'Lainnya', 'Pengaturan', 'Pengaturan']];
 }
 function gambarShell() {
-  const m = menu(), peran = isAdmin() ? 'Admin' : 'Sales';
+  const m = menu(), admin = isAdmin(), peran = admin ? 'Admin' : 'Sales';
   $('#root').innerHTML = `<div class="shell">
-    <aside class="side"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer</span></div>
-      <nav>${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')">${ico(i)}${t}</button>`).join('')}</nav>
-      <div class="who"><b>${esc(S.me.nama)}</b>${peran}<br><span class="ver">V3.9</span></div></aside>
-    <header class="top"><div class="brand"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer</span></div>
-      <div class="who-top"><b>${esc(S.me.nama)}</b><span class="role">${peran}</span></div></header>
+    <aside class="side">
+      <div class="side-brand"><div class="rk">${ico('rocket', 2)}</div><div><b>Jampang</b><span>Leads System</span></div></div>
+      <div class="side-menu"><div class="side-lbl">Menu Utama</div>
+        <nav>${m.map(([k, i, , t]) => `<button data-tab="${k}" onclick="buka('${k}')">${ico(k === 'lain' ? 'gear' : i)}${t}</button>`).join('')}</nav></div>
+      <div class="side-foot">
+        <div class="who2"><div class="av2">${esc((S.me.nama || '?').trim().charAt(0).toUpperCase())}</div>
+          <div class="nm2"><b>${esc(S.me.nama)}</b><span class="rb ${admin ? 'adm' : 'sls'}">${admin ? 'Administrator' : 'Tim Marketing'}</span></div></div>
+        <button class="keluar" onclick="keluar()">${ico('logout')}Keluar</button>
+        <div class="ver">CRM Dealer Motor V4.1</div>
+      </div></aside>
+    <header class="top"><div class="brand mob-only"><div class="logo">${ico('logo', 2.2)}</div><span>CRM Dealer</span></div>
+      <div class="who-top mob-only"><b>${esc(S.me.nama)}</b><span class="role">${peran}</span></div>
+      <h2 class="judul desk-only" id="judulHal"></h2>
+      <button class="btn biru desk-only" onclick="formLead()">${ico('plus', 2.4)}Lead Baru</button></header>
     <main class="main" id="view"></main>
     <nav class="bnav">${m.map(([k, i, t]) => `<button data-tab="${k}" onclick="buka('${k}')"><span class="ico">${ico(i)}</span>${t}</button>`).join('')}</nav>
   </div>`;
@@ -670,6 +839,7 @@ async function buka(tab) {
   if (!menu().some((m) => m[0] === tab)) tab = 'hari';
   S.tab = tab;
   document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === tab));
+  const judul = $('#judulHal'); if (judul) judul.textContent = (menu().find((m) => m[0] === tab) || [])[4] || '';
   const v = $('#view'); if (!v) return;
   v.innerHTML = '<div class="empty"><span class="spin"></span></div>';
   window.scrollTo(0, 0);
@@ -736,8 +906,161 @@ function kartuOrder(o) {
 // =====================================================================
 const layarLebar = () => window.matchMedia('(min-width:920px)').matches;
 const SEL_LEAD_KARTU = 'id,tahap,suhu,skor,followup_berikutnya,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)';
+async function htmlAntrianAdmin() {
+  let antrianHtml = '', basiHtml = '';
+  const batas = new Date(Date.now() - 30 * 864e5).toISOString();
+  const [spk, siap, reg, izin, basi] = await Promise.all([
+    q(sb.from('pesanan').select('id').eq('status', 'SPK')),
+    q(sb.from('pesanan').select('id').eq('status', 'SIAP_KIRIM')),
+    q(sb.from('registrasi').select('pesanan_id').or('stnk_status.neq.DISERAHKAN,tnkb_status.neq.DISERAHKAN,bpkb_status.neq.DISERAHKAN')),
+    q(sb.from('izin_sumber').select('id,setuju_pemilik').is('setuju_admin', null)),
+    q(sb.from('leads').select(SEL_LEAD_KARTU).in('tahap', AKTIF).lt('created_at', batas).or(`aktivitas_terakhir.is.null,aktivitas_terakhir.lt.${batas}`)),
+  ]);
+  const izinTunggu = izin.filter((i) => i.setuju_pemilik !== false).length;
+  antrianHtml = `<section class="tile o2"><div class="tile-h"><h2>Antrian admin</h2></div>
+    <div class="grid4">
+      <div class="stat" onclick="S.f.orderStatus='SPK';buka('order')" style="cursor:pointer"><b>${spk.length}</b><span>SPK menunggu bayar / unit</span></div>
+      <div class="stat" onclick="S.f.orderStatus='SIAP_KIRIM';buka('order')" style="cursor:pointer"><b>${siap.length}</b><span>Siap kirim</span></div>
+      <div class="stat" onclick="S.f.orderStatus='TERKIRIM';buka('order')" style="cursor:pointer"><b>${reg.length}</b><span>STNK/plat/BPKB belum tuntas</span></div>
+      <div class="stat" onclick="buka('lain')" style="cursor:pointer"><b>${izinTunggu}</b><span>Izin sumber menunggu</span></div>
+    </div></section>`;
+  if (basi.length) basiHtml = `<section class="tile o4"><div class="tile-h"><h2>Bisa dialihkan</h2><span class="sub">Tanpa aktivitas 30 hari</span></div>
+    <div class="list">${basi.map((l) => kartuLead(l)).join('')}</div></section>`;
+  return [antrianHtml, basiHtml];
+}
+
+// ---------------------------------------------------------------------
+// RINGKASAN gaya dashboard lama (khusus layar PC)
+// ---------------------------------------------------------------------
+function hariKerja(dari, sampai) {            // jumlah hari Senin–Sabtu (inklusif), tanggal YYYY-MM-DD
+  let n = 0;
+  const d = new Date(dari + 'T00:00:00Z'), akhir = new Date(sampai + 'T00:00:00Z');
+  for (; d <= akhir; d.setUTCDate(d.getUTCDate() + 1)) if (d.getUTCDay() !== 0) n++;
+  return n;
+}
+const akhirBulan = () => { const [y, m] = hariIni().split('-').map(Number); return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); };
+const wibAwal = (t) => new Date(t + 'T00:00:00+07:00').toISOString();
+const wibAkhir = (t) => new Date(new Date(t + 'T00:00:00+07:00').getTime() + 864e5).toISOString();
+const tglWib = (iso) => new Date(iso).toLocaleDateString('en-CA', TZ);
+function rentangRingkas() {
+  const f = S.f, hi = hariIni();
+  if (f.rkPeriode === 'HARI') return [hi, hi];
+  if (f.rkPeriode === 'SEMUA') return [null, null];
+  if (f.rkPeriode === 'PILIH' && /^\d{4}-\d{2}$/.test(f.rkBulan || '')) {
+    const [y, m] = f.rkBulan.split('-').map(Number);
+    return [f.rkBulan + '-01', new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10)];
+  }
+  return [awalBulan(), hi];
+}
+function barKl(label, isi, total, warna) {
+  return `<div class="kl-bar"><div class="kl-bar-h"><span>${esc(label)}</span><b>${isi}</b></div>
+    <div class="kl-track"><i style="width:${total ? Math.max(3, 100 * isi / total) : 0}%;background:${warna}"></i></div></div>`;
+}
+async function ringkasanKlasik(v) {
+  const f = S.f, admin = isAdmin();
+  f.rkPeriode = f.rkPeriode || 'BULAN';
+  const [dari, sampai] = rentangRingkas();
+  const filterSales = (qq) => (admin && f.rkSales ? qq.eq('sales_id', f.rkSales) : qq);
+  let qy = sb.from('leads').select('id,tahap,tahap_tertinggi,suhu,alasan_lost,sales_id,sumber:sumber_leads(nama)').limit(10000);
+  if (dari) qy = qy.gte('created_at', wibAwal(dari)).lt('created_at', wibAkhir(sampai));
+  const [data, bulan, hot, fuSemua, siapUlang] = await Promise.all([
+    q(filterSales(qy)),
+    q(filterSales(sb.from('leads').select('created_at,sales_id').gte('created_at', wibAwal(awalBulan())).limit(10000))),
+    q(filterSales(sb.from('leads').select('id,skor,sales_id,konsumen(nama)').in('tahap', AKTIF).eq('suhu', 'HOT').order('skor', { ascending: false }).limit(300))),
+    q(sb.from('v_followup').select('*').order('followup_berikutnya')),
+    q(sb.from('v_siap_prospek_ulang').select('*').order('jadwal_prospek_ulang')),
+  ]);
+  const fu = admin && f.rkSales ? fuSemua.filter((x) => x.sales_id === f.rkSales) : fuSemua;
+  const ids = fu.map((x) => x.lead_id);
+  const detail = ids.length ? await q(sb.from('leads').select(SEL_LEAD_KARTU).in('id', ids)) : [];
+  const urutFu = ids.map((id) => detail.find((d) => d.id === id)).filter(Boolean);
+  const [antrianHtml, basiHtml] = admin ? await htmlAntrianAdmin() : ['', ''];
+
+  // ---- angka ----
+  const aktif = data.filter((l) => AKTIF.includes(l.tahap));
+  const nHot = aktif.filter((l) => l.suhu === 'HOT').length, nWarm = aktif.filter((l) => l.suhu === 'WARM').length;
+  const nCold = aktif.filter((l) => l.suhu === 'COLD').length;
+  const nDeal = data.filter((l) => l.tahap === 'DEAL').length, nLost = data.filter((l) => l.tahap === 'LOST').length;
+  const URUT = { BARU: 1, DIHUBUNGI: 2, PROSPEK: 3, NEGOSIASI: 4, DEAL: 5 };
+  const capai = (t) => data.filter((l) => (URUT[l.tahap_tertinggi] || 1) >= URUT[t]).length;
+
+  // ---- target leads (Senin–Sabtu dihitung hari kerja, seperti aplikasi lama) ----
+  const reps = admin ? S.orang.filter((p) => p.aktif && p.peran === 'SALES' && (!f.rkSales || p.id === f.rkSales)) : [S.me];
+  const tHarian = reps.reduce((a, p) => a + (Number(p.target_lead_harian) || 0), 0);
+  const tBulanan = tHarian * hariKerja(awalBulan(), akhirBulan());
+  const nHariIni = bulan.filter((l) => tglWib(l.created_at) === hariIni()).length;
+  const nBulan = bulan.length;
+  const pct = (a, b) => (b ? Math.min(100, 100 * a / b) : 0);
+
+  // ---- banner peringatan ----
+  let banner = '';
+  if (hot.length) {
+    const nama = hot.slice(0, 10).map((l) => `<a href="#" onclick="event.preventDefault();bukaLead(${l.id})"><b>${esc(l.konsumen?.nama)}</b>${admin ? ` (${esc(namaOrang(l.sales_id))})` : ''}</a>`).join(', ');
+    banner += `<div class="bn merah"><div class="bn-ik goyang">${ico('fire', 2)}</div><div><h3>Perhatian! Ada Hot Leads</h3>
+      <p>${admin ? `Terdapat <b>${hot.length} Hot Leads</b> aktif. Detail prospek: ` : `Kamu memiliki <b>${hot.length} Hot Leads</b>. Prioritaskan closing untuk: `}${nama}${hot.length > 10 ? ` dan ${hot.length - 10} lainnya` : ''}.</p></div></div>`;
+  }
+  const telat = fu.filter((x) => x.terlambat);
+  if (telat.length) {
+    const per = {};
+    for (const x of telat) per[namaOrang(x.sales_id)] = (per[namaOrang(x.sales_id)] || 0) + 1;
+    banner += `<div class="bn oranye"><div class="bn-ik kedip">${ico('alert', 2)}</div><div><h3>Peringatan: Follow Up Terlewat!</h3>
+      <p>${admin ? `Terdapat total <b>${telat.length} lead</b> terlewat jadwal follow up (${Object.entries(per).map(([n, c]) => `${esc(n)}: ${c}`).join(', ')}).`
+        : `Terdapat <b>${telat.length} lead</b> yang melewatkan jadwal follow up. Segera tindak lanjuti di daftar Follow-up di bawah.`}</p></div></div>`;
+  }
+  if (!admin) {
+    const target = Number(S.me.target_lead_harian) || 0, lewat = hariKerja(awalBulan(), hariIni()), harus = lewat * target;
+    if (target && nBulan < harus) banner += `<div class="bn biru"><div class="bn-ik kedip">${ico('target', 2)}</div><div><h3>Status Target Leads</h3>
+      <p>Hingga hari ini (hari kerja ke-${lewat}), Anda seharusnya sudah memiliki <b>${harus} lead</b> (target ${target}/hari). Saat ini baru <b>${nBulan} lead</b>. Semangat kejar target!</p></div></div>`;
+  }
+
+  // ---- panel ----
+  const funnel = [['Total Leads Masuk', data.length, '#3b82f6'], ['Dihubungi', capai('DIHUBUNGI'), '#0ea5e9'], ['Prospek', capai('PROSPEK'), '#eab308'],
+    ['Negosiasi', capai('NEGOSIASI'), '#f97316'], ['Deal (Closing)', capai('DEAL'), '#22c55e'], ['Lost (Gagal)', nLost, '#9ca3af']];
+  const perSumber = {}; for (const l of data) { const n = l.sumber?.nama || '-'; perSumber[n] = (perSumber[n] || 0) + 1; }
+  const topSumber = Object.entries(perSumber).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const perLost = {}; for (const l of data) if (l.tahap === 'LOST' && l.alasan_lost) perLost[l.alasan_lost] = (perLost[l.alasan_lost] || 0) + 1;
+  const topLost = Object.entries(perLost).sort((a, b) => b[1] - a[1]);
+  const kartu = (cls, ik, label, n, ke, sub) => `<div class="kl-stat ${cls}" onclick="${ke}"><div class="ik">${ico(ik, 2)}</div>
+    <div><p>${label}</p><b>${n}</b>${sub ? `<small>${sub}</small>` : ''}</div></div>`;
+  const ke = (tahap, suhu) => `S.f.leadTahap='${tahap}';S.f.leadSuhu='${suhu}';buka('leads')`;
+
+  v.innerHTML = `<div class="kl">
+    ${banner ? `<div class="kl-alerts">${banner}</div>` : ''}
+    <div class="kl-card kl-filter"><span class="kl-flbl">${ico('filter')}Filter Data:</span>
+      ${admin ? `<select class="kl-sel" onchange="S.f.rkSales=this.value;buka('hari')"><option value="">Semua Marketing</option>${S.orang.filter((p) => p.peran === 'SALES').map((p) => `<option value="${p.id}"${f.rkSales === p.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>` : ''}
+      <select class="kl-sel" onchange="S.f.rkPeriode=this.value;if(this.value!=='PILIH'||S.f.rkBulan)buka('hari');else this.nextElementSibling.classList.remove('hidden')">
+        ${[['SEMUA', 'Semua Waktu'], ['HARI', 'Hari Ini'], ['BULAN', 'Bulan Ini (Berjalan)'], ['PILIH', 'Pilih Bulan & Tahun...']].map(([k, t]) => `<option value="${k}"${f.rkPeriode === k ? ' selected' : ''}>${t}</option>`).join('')}</select>
+      <input type="month" class="kl-sel${f.rkPeriode === 'PILIH' ? '' : ' hidden'}" value="${esc(f.rkBulan || hariIni().slice(0, 7))}" onchange="S.f.rkBulan=this.value;S.f.rkPeriode='PILIH';buka('hari')">
+    </div>
+    <div class="kl-card"><h3 class="kl-cap">Pencapaian Target Leads</h3>
+      <div class="kl-2">
+        <div><div class="kl-bar-h"><span>Target Harian</span><b class="t-biru">${nHariIni} / ${tHarian} Leads</b></div><div class="kl-track tebal"><i style="width:${pct(nHariIni, tHarian)}%;background:#3b82f6"></i></div></div>
+        <div><div class="kl-bar-h"><span>Target Bulanan (Hari Kerja)</span><b class="t-hijau">${nBulan} / ${tBulanan} Leads</b></div><div class="kl-track tebal"><i style="width:${pct(nBulan, tBulanan)}%;background:#22c55e"></i></div></div>
+      </div></div>
+    <div class="kl-stats">
+      ${kartu('biru', 'users', 'Total Leads', data.length, ke('', ''))}
+      ${kartu('kuning', 'temp', 'Warm Leads', nWarm, ke('AKTIF', 'WARM'), nCold ? `Cold: ${nCold}` : '')}
+      ${kartu('merah', 'fire', 'Hot Leads', nHot, ke('AKTIF', 'HOT'))}
+      ${kartu('hijau', 'hand', 'Closing', nDeal, ke('DEAL', ''))}
+      ${kartu('abu', 'xcircle', 'Lost / Gagal', nLost, ke('LOST', ''))}
+    </div>
+    <div class="kl-3">
+      <div class="kl-card"><h3>Funnel Penjualan</h3>${data.length ? `<div class="kl-funnel">${funnel.map(([t, n, w], i) => `<div class="kf"><span class="kf-no">${i + 1}</span>
+        <div class="kf-bar" style="width:${Math.max(30, 100 * n / data.length)}%;--w:${w}"><span>${t}</span><b>${n}</b></div></div>`).join('')}</div>` : '<p class="kl-kosong">Belum ada data untuk funnel.</p>'}</div>
+      <div class="kl-card"><h3>Performa Sumber Leads</h3>${topSumber.length ? topSumber.map(([n, c]) => barKl(n, c, topSumber[0][1], '#3b82f6')).join('') : '<p class="kl-kosong">Belum ada data.</p>'}</div>
+      <div class="kl-card"><h3>Analisis Alasan Lost</h3>${topLost.length ? topLost.map(([a, c]) => barKl(L.lost[a] || a, c, topLost[0][1], '#6b7280')).join('') : '<p class="kl-kosong">Belum ada data Lost.</p>'}</div>
+    </div>
+    <div class="kl-kerja${admin || siapUlang.length ? '' : ' penuh'}">
+      <section class="kl-card"><div class="kl-card-h"><h3>Follow-up hari ini</h3><span class="sub">${fu.length} lead${telat.length ? ` · ${telat.length} terlambat di atas` : ''}</span></div>
+        <div class="list">${urutFu.length ? urutFu.map((l) => kartuLead(l)).join('') : '<div class="empty">Semua follow-up hari ini sudah beres.</div>'}</div></section>
+      <div class="kl-kanan">${antrianHtml}${siapUlang.length ? `<section class="tile"><div class="tile-h"><h2>Siap prospek ulang</h2></div><div class="list">${siapUlang.map((l) => `<div class="item" onclick="bukaLead(${l.lead_id})"><div class="av">${ico('back')}</div><div class="mid"><div class="nm">${esc(l.nama)}</div><div class="meta">${esc(L.lost[l.alasan_lost])} — jadwal ${tgl(l.jadwal_prospek_ulang)}</div></div></div>`).join('')}</div></section>` : ''}${basiHtml}</div>
+    </div>
+  </div>`;
+}
+
 VIEWS.hari = async (v) => {
-  const lebar = layarLebar(), admin = isAdmin();
+  if (layarLebar()) return ringkasanKlasik(v);
+  const lebar = false, admin = isAdmin();
   const [fu, siapUlang, statLead] = await Promise.all([
     q(sb.from('v_followup').select('*').order('followup_berikutnya')),
     q(sb.from('v_siap_prospek_ulang').select('*').order('jadwal_prospek_ulang')),
@@ -749,27 +1072,7 @@ VIEWS.hari = async (v) => {
   const telat = fu.filter((f) => f.terlambat).length;
   const hot = statLead.filter((l) => l.suhu === 'HOT').length;
 
-  let antrianHtml = '', basiHtml = '';
-  if (admin) {
-    const batas = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [spk, siap, reg, izin, basi] = await Promise.all([
-      q(sb.from('pesanan').select('id').eq('status', 'SPK')),
-      q(sb.from('pesanan').select('id').eq('status', 'SIAP_KIRIM')),
-      q(sb.from('registrasi').select('pesanan_id').or('stnk_status.neq.DISERAHKAN,tnkb_status.neq.DISERAHKAN,bpkb_status.neq.DISERAHKAN')),
-      q(sb.from('izin_sumber').select('id,setuju_pemilik').is('setuju_admin', null)),
-      q(sb.from('leads').select(SEL_LEAD_KARTU).in('tahap', AKTIF).lt('created_at', batas).or(`aktivitas_terakhir.is.null,aktivitas_terakhir.lt.${batas}`)),
-    ]);
-    const izinTunggu = izin.filter((i) => i.setuju_pemilik !== false).length;
-    antrianHtml = `<section class="tile o2"><div class="tile-h"><h2>Antrian admin</h2></div>
-      <div class="grid4">
-        <div class="stat" onclick="S.f.orderStatus='SPK';buka('order')" style="cursor:pointer"><b>${spk.length}</b><span>SPK menunggu bayar / unit</span></div>
-        <div class="stat" onclick="S.f.orderStatus='SIAP_KIRIM';buka('order')" style="cursor:pointer"><b>${siap.length}</b><span>Siap kirim</span></div>
-        <div class="stat" onclick="S.f.orderStatus='TERKIRIM';buka('order')" style="cursor:pointer"><b>${reg.length}</b><span>STNK/plat/BPKB belum tuntas</span></div>
-        <div class="stat" onclick="buka('lain')" style="cursor:pointer"><b>${izinTunggu}</b><span>Izin sumber menunggu</span></div>
-      </div></section>`;
-    if (basi.length) basiHtml = `<section class="tile o4"><div class="tile-h"><h2>Bisa dialihkan</h2><span class="sub">Tanpa aktivitas 30 hari</span></div>
-      <div class="list">${basi.map((l) => kartuLead(l)).join('')}</div></section>`;
-  }
+  const [antrianHtml, basiHtml] = admin ? await htmlAntrianAdmin() : ['', ''];
 
   // ubin tambahan khusus layar lebar
   let hotHtml = '', papanHtml = '';
@@ -814,13 +1117,28 @@ VIEWS.hari = async (v) => {
 // =====================================================================
 VIEWS.leads = async (v) => {
   const f = S.f;
-  let qy = sb.from('leads').select('id,tahap,suhu,skor,followup_berikutnya,created_at,sales_id,konsumen(nama,hp),tipe_motor(merek,model,varian),sales:profiles(nama)')
-    .order('updated_at', { ascending: false }).limit(500);
+  let qy = sb.from('leads').select('id,tahap,suhu,skor,followup_berikutnya,created_at,sales_id,metode_bayar,konsumen(nama,hp,alamat),tipe_motor(merek,model,varian),sales:profiles(nama),sumber:sumber_leads(nama)')
+    .order('updated_at', { ascending: false }).limit(layarLebar() ? 2000 : 500);
   if (f.leadTahap === 'AKTIF') qy = qy.in('tahap', AKTIF); else if (f.leadTahap) qy = qy.eq('tahap', f.leadTahap);
   if (f.leadSuhu) qy = qy.eq('suhu', f.leadSuhu);
   if (f.leadSales) qy = qy.eq('sales_id', f.leadSales);
   const data = await q(qy);
   const chipT = [['AKTIF', 'Aktif'], ...Object.entries(L.tahap)];
+  if (layarLebar()) {   // PC: tabel seperti dashboard lama
+    const admin = isAdmin();
+    v.innerHTML = `<div class="kl-card kl-leads">
+      <div class="kl-tool">
+        <div class="kl-cari">${ico('search')}<input id="cari" placeholder="Cari nama / HP..." value="${esc(f.leadCari)}" oninput="S.f.leadCari=this.value;saringLeads()"></div>
+        ${admin ? `<select class="kl-sel" onchange="S.f.leadSales=this.value;buka('leads')"><option value="">Semua Marketing</option>${S.orang.map((p) => `<option value="${p.id}"${f.leadSales === p.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select>` : ''}
+        ${admin ? `<button class="btn hijau sm" onclick="formExport()" title="Export data ke Excel">${ico('download')}Export Excel</button>` : ''}
+        <div class="kl-pills">${[['', 'Semua', 'abu'], ['WARM', 'Warm', 'kuning'], ['HOT', 'Hot 🔥', 'merah'], ['COLD', 'Cold', 'biru']].map(([k, t, w]) => `<button class="fp ${w}${f.leadSuhu === k ? ' on' : ''}" onclick="S.f.leadSuhu='${k}';buka('leads')">${t}</button>`).join('')}</div>
+      </div>
+      <div class="kl-pills kl-tahap"><span class="kl-flbl">Tahap:</span>${[['', 'Semua'], ...chipT].map(([k, t]) => `<button class="fp${f.leadTahap === k ? ' on' : ''}" onclick="S.f.leadTahap='${k}';buka('leads')">${t}</button>`).join('')}</div>
+      <div id="daftarLead" class="kl-tabel"></div>
+    </div>`;
+    S._leads = data;
+    return saringLeads();
+  }
   v.innerHTML = `<div class="head"><div><h1>Leads</h1><p class="sub">${isAdmin() ? 'Semua lead tim' : 'Lead milik Anda'}</p></div>
       <button class="btn pri" onclick="formLead()">${ico('plus', 2.4)}Lead baru</button></div>
     <div class="split">
@@ -842,8 +1160,278 @@ function saringLeads() {
   const cDigit = c.replace(/\D/g, '').replace(/^0/, '62');
   const d = (S._leads || []).filter((l) => !c || (l.konsumen?.nama || '').toLowerCase().includes(c) || (cDigit.length >= 3 && (l.konsumen?.hp || '').includes(cDigit)));
   const el = $('#daftarLead'); if (!el) return;
+  S._leadsTampil = d;
+  if (el.classList.contains('kl-tabel')) { el.innerHTML = tabelLeadKlasik(d); return; }
   el.innerHTML = d.length ? `<p class="sub" style="margin:16px 4px 8px">${d.length} lead</p><div class="list">${d.map((l) => kartuLead(l)).join('')}</div>`
     : '<div class="empty mt">Tidak ada lead yang cocok. Ubah filter atau tambah lead baru.</div>';
+}
+
+// ---------- Tabel leads gaya lama (PC) ----------
+function badgeSkor(l) {
+  if (l.tahap === 'DEAL') return `<span class="bs deal">${ico('check', 2.6)}Deal</span>`;
+  if (l.tahap === 'LOST') return `<span class="bs lost">${ico('xcircle', 2.2)}Lost</span>`;
+  if (l.suhu === 'HOT') return `<span class="bs hot">${ico('fire', 2.2)}HOT (${l.skor})</span>`;
+  return `<span class="bs ${l.suhu === 'WARM' ? 'warm' : 'cold'}">${LABEL_SUHU[l.suhu] || l.suhu} (${l.skor})</span>`;
+}
+function tabelLeadKlasik(d) {
+  if (!d.length) return `<div class="kl-kosong-besar">${ico('users', 1.6)}<p>Belum ada data leads yang sesuai.</p></div>`;
+  const admin = isAdmin(), kini = new Date();
+  return `<p class="kl-jml">${d.length} lead</p><table class="kl-t"><thead><tr><th>Tanggal &amp; Info</th>${admin ? '<th>Marketing</th>' : ''}<th class="c">Tahap &amp; Skor</th><th class="r">Aksi</th></tr></thead><tbody>
+  ${d.map((l) => {
+    const k = l.konsumen || {}, aktif = AKTIF.includes(l.tahap);
+    const telat = aktif && l.followup_berikutnya && new Date(l.followup_berikutnya) < kini;
+    const kelas = aktif && l.suhu === 'HOT' ? 'r-hot' : (telat ? 'r-telat' : '');
+    return `<tr class="${kelas}" onclick="bukaLead(${l.id})">
+      <td><div class="kl-tgl">${tgl(l.created_at)} &bull; <span>${esc(l.sumber?.nama || '-')}</span></div>
+        <div class="kl-nm">${esc(k.nama)}</div>
+        <div class="kl-hp">${ico('phone')}${esc(hpTampil(k.hp))}</div>
+        ${k.alamat ? `<div class="kl-al" title="${esc(k.alamat)}">${ico('pin')}${esc(k.alamat)}</div>` : ''}
+        <div class="kl-tags">${l.tipe_motor ? `<span class="tg ungu">${ico('moto')}${esc(tipeNama(l.tipe_motor))}</span>` : ''}${l.metode_bayar ? `<span class="tg hijau">${l.metode_bayar === 'KREDIT' ? 'Kredit' : 'Cash'}</span>` : ''}</div>
+        ${aktif && l.followup_berikutnya ? (telat ? `<div class="kl-warn">${ico('alert', 2)}Terlewat: jadwal ${jam(l.followup_berikutnya)}</div>` : `<div class="kl-jadwal">${ico('cal')}Jadwal: ${jam(l.followup_berikutnya)}</div>`) : ''}
+      </td>
+      ${admin ? `<td><span class="kl-sales">${esc(l.sales?.nama || '-')}</span></td>` : ''}
+      <td class="c">${badgeSkor(l)}<div class="kl-th">${pTahap(l.tahap)}</div></td>
+      <td class="r"><div class="kl-aksi">
+        <button class="btn sm biru" onclick="event.stopPropagation();bukaLead(${l.id})">Detail</button>
+        ${aktif && k.hp ? `<a class="btn sm wa" href="${waLink(k.hp)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ico('chat', 2)}WhatsApp</a>` : ''}
+      </div></td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+// =====================================================================
+// DATA & CADANGAN (khusus admin): Export Excel, Backup, Pulihkan, Kosongkan
+// =====================================================================
+const TABEL_BACKUP = ['profiles', 'tipe_motor', 'leasing', 'sumber_leads', 'izin_sumber', 'konsumen', 'leads', 'aktivitas',
+  'unit_stok', 'pesanan', 'pembayaran', 'pengajuan_kredit', 'registrasi'];
+// Supabase membatasi 1000 baris per permintaan, jadi diambil bertahap
+async function ambilSemua(buat) {
+  const hasil = [], N = 1000;
+  for (let i = 0; ; i += N) {
+    const d = await q(buat().range(i, i + N - 1));
+    hasil.push(...d);
+    if (d.length < N) return hasil;
+  }
+}
+function unduhFile(nama, isi, tipe) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([isi], { type: tipe }));
+  a.download = nama; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+const stempelFile = () => new Date().toLocaleString('sv-SE', TZ).slice(0, 16).replace(/[-:]/g, '').replace(' ', '_');
+
+// ---------- Backup ----------
+async function buatBackup() {
+  const tabel = {};
+  for (const t of TABEL_BACKUP) tabel[t] = await ambilSemua(() => sb.from(t).select('*').order(t === 'registrasi' ? 'pesanan_id' : 'id'));
+  return { format: 'crm-dealer-backup', versi: 1, aplikasi: 'CRM Dealer Motor V4.2', dibuat: new Date().toISOString(),
+           oleh: S.me.nama, email: S.user.email, tabel };
+}
+async function unduhBackupFile(label) {
+  const d = await buatBackup();
+  unduhFile(`backup_crm_${stempelFile()}${label ? '_' + label : ''}.json`, JSON.stringify(d), 'application/json');
+  return d;
+}
+async function unduhBackup(btn) {
+  await aman(async () => {
+    const d = await unduhBackupFile('');
+    toast(`Backup diunduh: ${d.tabel.leads.length} lead, ${d.tabel.pesanan.length} order. Simpan di tempat aman.`);
+  }, btn);
+}
+
+// ---------- Pulihkan ----------
+function formPulihkan() {
+  S._backup = null;
+  modal(`<h2>Pulihkan dari backup</h2>
+    <p class="sub mt">Semua data saat ini akan <b>diganti</b> dengan isi file backup. Akun pengguna dan kata sandi tidak berubah. Data saat ini otomatis dibackup (diunduh) dulu.</p>
+    <div class="field mt"><label>File backup (.json)</label><input id="rsFile" type="file" accept=".json,application/json" class="inp" onchange="bacaFileBackup(this)"></div>
+    <div id="rsInfo" class="mt"></div>
+    <div class="field mt"><label>Ketik PULIHKAN untuk melanjutkan</label><input id="rsKonf" class="inp" autocomplete="off"></div>
+    <div class="stack mt"><button class="btn danger full" id="rsBtn" disabled onclick="jalankanPulihkan(this)">Pulihkan data</button>
+      <button class="btn full" onclick="tutupModal()">Batal</button></div>`);
+}
+async function bacaFileBackup(inp) {
+  S._backup = null; $('#rsBtn').disabled = true;
+  const f = inp.files[0]; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (d.format !== 'crm-dealer-backup' || !d.tabel || !Array.isArray(d.tabel.leads)) throw new Error('bukan backup');
+    S._backup = d;
+    const n = (t) => (d.tabel[t] || []).length;
+    $('#rsInfo').innerHTML = `<div class="note">Backup dibuat <b>${jam(d.dibuat)}</b> oleh ${esc(d.oleh || '-')}<br>
+      ${n('leads')} lead · ${n('konsumen')} konsumen · ${n('aktivitas')} aktivitas · ${n('pesanan')} order · ${n('pembayaran')} pembayaran · ${n('unit_stok')} unit stok · ${n('tipe_motor')} tipe motor</div>`;
+    $('#rsBtn').disabled = false;
+  } catch (e) { $('#rsInfo').innerHTML = '<div class="bad">File ini bukan file backup CRM Dealer.</div>'; }
+}
+async function jalankanPulihkan(btn) {
+  if (!S._backup) return toast('Pilih file backup dulu', true);
+  if (val('rsKonf') !== 'PULIHKAN') return toast('Ketik PULIHKAN (huruf besar) untuk melanjutkan', true);
+  await aman(async () => {
+    await unduhBackupFile('sebelum_pulihkan');
+    const h = await q(sb.rpc('admin_pulihkan', { p_data: S._backup }));
+    S._backup = null; tutupModal(); await muatMaster();
+    toast(`Data dipulihkan: ${h.leads} lead, ${h.konsumen} konsumen, ${h.pesanan} order` +
+      (h.lead_dialihkan_ke_admin ? `. ${h.lead_dialihkan_ke_admin} lead dialihkan ke admin (akun sales-nya tidak ada)` : ''));
+    buka('hari');
+  }, btn);
+}
+
+// ---------- Kosongkan ----------
+function formKosongkan() {
+  modal(`<h2 style="color:var(--hot)">Kosongkan data</h2>
+    <p class="sub mt">Menghapus <b>semua</b> konsumen, lead, aktivitas, lokasi kunjungan, order, pembayaran, pengajuan leasing, dan STNK/BPKB.
+      Akun pengguna tetap ada. Backup otomatis diunduh dulu.</p>
+    <label class="chk mt" style="align-items:flex-start"><input type="checkbox" id="ksMaster" style="flex:none;margin-top:2px"><span>Ikut hapus <b>data master</b>: tipe motor &amp; harga, leasing, sumber leads, stok unit, izin sumber</span></label>
+    <div class="field mt"><label>Ketik KOSONGKAN untuk melanjutkan</label><input id="ksKonf" class="inp" autocomplete="off"></div>
+    <div class="field mt"><label>Kata sandi Anda</label><input id="ksSandi" type="password" class="inp" autocomplete="current-password"></div>
+    <div class="stack mt"><button class="btn danger full" onclick="jalankanKosongkan(this)">Kosongkan data</button>
+      <button class="btn full" onclick="tutupModal()">Batal</button></div>`);
+}
+async function jalankanKosongkan(btn) {
+  if (val('ksKonf') !== 'KOSONGKAN') return toast('Ketik KOSONGKAN (huruf besar) untuk melanjutkan', true);
+  const sandi = $('#ksSandi').value;
+  if (!sandi) return toast('Masukkan kata sandi Anda', true);
+  const master = $('#ksMaster').checked;
+  await aman(async () => {
+    const { error } = await sb.auth.signInWithPassword({ email: S.user.email, password: sandi });
+    if (error) throw new Error('Kata sandi salah. Data tidak dikosongkan.');
+    await unduhBackupFile('sebelum_kosongkan');
+    const h = await q(sb.rpc('admin_kosongkan', { p_master: master }));
+    tutupModal(); await muatMaster();
+    toast(`Data dikosongkan: ${h.leads} lead, ${h.konsumen} konsumen, ${h.pesanan} order dihapus${master ? ', termasuk data master' : ''}.`);
+    buka('hari');
+  }, btn);
+}
+
+// ---------- Export Excel (.xlsx) ----------
+const URL_EXCELJS = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+function muatExcel() {
+  if (window.ExcelJS) return Promise.resolve(window.ExcelJS);
+  return new Promise((ok, gagalMuat) => {
+    const sc = document.createElement('script'); sc.src = URL_EXCELJS;
+    sc.onload = () => ok(window.ExcelJS);
+    sc.onerror = () => gagalMuat(new Error('Pustaka Excel gagal dimuat. Periksa internet lalu coba lagi.'));
+    document.head.appendChild(sc);
+  });
+}
+function formExport() {
+  const nFilter = S.tab === 'leads' ? (S._leadsTampil || []).length : 0;
+  modal(`<h2>Export Excel</h2><p class="sub mt">File .xlsx berisi sheet <b>Ringkasan</b> dan <b>Leads</b> (data lengkap per lead).</p>
+    <div class="field mt"><label>Data</label><select id="exCakup" class="inp">
+      ${nFilter ? `<option value="filter">Sesuai filter yang tampil (${nFilter} lead)</option>` : ''}<option value="semua">Semua lead</option></select></div>
+    <div class="grid2 mt"><div class="field"><label>Tanggal masuk dari</label><input id="exDari" type="date" class="inp"></div>
+      <div class="field"><label>Sampai</label><input id="exSampai" type="date" class="inp"></div></div>
+    <p class="sub" style="margin-top:6px">Kosongkan tanggal untuk semua waktu. Isinya data pribadi konsumen: simpan file dengan aman.</p>
+    <div class="stack mt"><button class="btn hijau full" onclick="eksporExcel(this)">${ico('download')}Unduh Excel</button>
+      <button class="btn full" onclick="tutupModal()">Batal</button></div>`);
+}
+const SEL_EKSPOR = 'id,created_at,tahap,tahap_tertinggi,skor,suhu,warna,metode_bayar,rencana_beli,dana_siap,dp_rencana,followup_berikutnya,' +
+  'aktivitas_terakhir,alasan_lost,catatan_lost,jadwal_prospek_ulang,ditutup_at,catatan,' +
+  'konsumen(nama,hp,hp_lain,alamat,kelurahan,kecamatan,kota,pekerjaan),tipe_motor(merek,model,varian),sales:profiles(nama),' +
+  'sumber:sumber_leads(nama),pesanan(no_spk,status),aktivitas(count)';
+async function eksporExcel(btn) {
+  const cakup = val('exCakup'), dari = val('exDari'), sampai = val('exSampai');
+  if (dari && sampai && dari > sampai) return toast('Tanggal "dari" harus sebelum tanggal "sampai"', true);
+  await aman(async () => {
+    const ExcelJS = await muatExcel();
+    const periode = (qq) => { if (dari) qq = qq.gte('created_at', wibAwal(dari)); if (sampai) qq = qq.lt('created_at', wibAkhir(sampai)); return qq; };
+    let data = [];
+    if (cakup === 'filter') {
+      const ids = (S._leadsTampil || []).map((l) => l.id);
+      for (let i = 0; i < ids.length; i += 200) data.push(...await q(periode(sb.from('leads').select(SEL_EKSPOR).in('id', ids.slice(i, i + 200)))));
+    } else data = await ambilSemua(() => periode(sb.from('leads').select(SEL_EKSPOR).order('id')));
+    if (!data.length) throw new Error('Tidak ada lead pada pilihan ini.');
+    data.sort((a, b) => b.created_at.localeCompare(a.created_at));
+    const wb = bukuExcel(ExcelJS, data, { cakup, dari, sampai });
+    unduhFile(`Data_Leads_${stempelFile()}.xlsx`, await wb.xlsx.writeBuffer(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    tutupModal(); toast(`Excel berisi ${data.length} lead berhasil diunduh`);
+  }, btn);
+}
+// ExcelJS menulis jam dalam UTC; digeser +7 jam agar Excel menampilkan jam WIB
+function tglExcel(v) {
+  if (!v) return null;
+  const d = new Date(v.length === 10 ? v + 'T00:00:00+07:00' : v);
+  return new Date(d.getTime() + 7 * 3600e3);
+}
+function bukuExcel(ExcelJS, data, opsi) {
+  const NAVY = 'FF0B2A5B', ABU = 'FFF3F4F6';
+  const wb = new ExcelJS.Workbook(); wb.creator = 'CRM Dealer Motor'; wb.created = new Date();
+  const judulKolom = (row) => { row.font = { bold: true, color: { argb: 'FFFFFFFF' } }; row.alignment = { vertical: 'middle', wrapText: true };
+    row.eachCell((c) => { c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } }; }); };
+
+  // ---- Sheet 1: Ringkasan ----
+  const r = wb.addWorksheet('Ringkasan');
+  r.columns = [{ width: 30 }, { width: 11 }, { width: 11 }, { width: 11 }, { width: 11 }, { width: 11 }, { width: 11 }];
+  r.addRow(['Data Leads — CRM Dealer Motor']).font = { bold: true, size: 15, color: { argb: NAVY } };
+  r.addRow([]);
+  const per = opsi.dari || opsi.sampai ? `${opsi.dari ? tgl(opsi.dari) : 'awal'} s/d ${opsi.sampai ? tgl(opsi.sampai) : 'sekarang'}` : 'Semua waktu';
+  [['Diekspor', new Date().toLocaleString('id-ID', { ...TZ, dateStyle: 'long', timeStyle: 'short' }) + ' WIB'], ['Oleh', S.me.nama],
+   ['Cakupan', opsi.cakup === 'filter' ? 'Sesuai filter di Kelola Leads' : 'Semua lead'], ['Tanggal masuk', per], ['Jumlah lead', data.length]]
+    .forEach(([k, v]) => { const row = r.addRow([k, v]); row.getCell(1).font = { bold: true }; });
+  const bagian = (judul, kepala, baris) => {
+    r.addRow([]); r.addRow([judul]).font = { bold: true, size: 12, color: { argb: NAVY } };
+    const kp = r.addRow(kepala); judulKolom(kp);
+    const kolPersen = kepala.indexOf('Konversi') + 1;
+    const rapikan = (row) => row.eachCell({ includeEmpty: true }, (c, n) => { if (n > 1 && n <= kepala.length) c.alignment = { horizontal: 'center', vertical: 'middle' }; });
+    rapikan(kp);
+    baris.forEach((b, i) => {
+      const row = r.addRow(b); rapikan(row);
+      if (kolPersen) row.getCell(kolPersen).numFmt = '0.0%';
+      if (i % 2) row.eachCell({ includeEmpty: true }, (c, n) => { if (n <= kepala.length) c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ABU } }; });
+    });
+  };
+  const hit = (f) => data.filter(f).length;
+  const aktif = (l) => AKTIF.includes(l.tahap);
+  bagian('Per tahap', ['Tahap', 'Jumlah'], Object.keys(L.tahap).map((t) => [L.tahap[t], hit((l) => l.tahap === t)]));
+  bagian('Lead aktif per suhu', ['Suhu', 'Jumlah'], ['HOT', 'WARM', 'COLD'].map((s) => [LABEL_SUHU[s], hit((l) => aktif(l) && l.suhu === s)]));
+  const kelompok = (kunci) => { const m = {}; for (const l of data) { const k = kunci(l) || '-'; (m[k] = m[k] || []).push(l); } return Object.entries(m).sort((a, b) => b[1].length - a[1].length); };
+  const persen = (a, b) => (b ? a / b : 0);
+  bagian('Per marketing', ['Marketing', 'Total', 'Aktif', 'Hot', 'Deal', 'Lost', 'Konversi'],
+    kelompok((l) => l.sales?.nama).map(([n, ls]) => [n, ls.length, ls.filter(aktif).length, ls.filter((l) => aktif(l) && l.suhu === 'HOT').length,
+      ls.filter((l) => l.tahap === 'DEAL').length, ls.filter((l) => l.tahap === 'LOST').length, persen(ls.filter((l) => l.tahap === 'DEAL').length, ls.length)]));
+  bagian('Per sumber leads', ['Sumber', 'Total', 'Aktif', 'Deal', 'Lost', 'Konversi'],
+    kelompok((l) => l.sumber?.nama).map(([n, ls]) => [n, ls.length, ls.filter(aktif).length, ls.filter((l) => l.tahap === 'DEAL').length,
+      ls.filter((l) => l.tahap === 'LOST').length, persen(ls.filter((l) => l.tahap === 'DEAL').length, ls.length)]));
+
+  // ---- Sheet 2: Leads ----
+  const ws = wb.addWorksheet('Leads', { views: [{ state: 'frozen', ySplit: 1, xSplit: 5 }] });
+  const W = 'dd/mm/yyyy hh:mm';
+  ws.columns = [
+    { header: 'No', key: 'no', width: 6 }, { header: 'Tanggal Masuk', key: 'masuk', width: 17, style: { numFmt: W } },
+    { header: 'Marketing', key: 'sales', width: 16 }, { header: 'Sumber Leads', key: 'sumber', width: 18 },
+    { header: 'Nama Konsumen', key: 'nama', width: 24 }, { header: 'No HP / WA', key: 'hp', width: 15 }, { header: 'HP Lain', key: 'hp2', width: 15 },
+    { header: 'Alamat', key: 'alamat', width: 30 }, { header: 'Kelurahan / Desa', key: 'kel', width: 16 }, { header: 'Kecamatan', key: 'kec', width: 16 },
+    { header: 'Kota / Kab.', key: 'kota', width: 16 }, { header: 'Pekerjaan', key: 'kerja', width: 16 },
+    { header: 'Tipe Motor', key: 'tipe', width: 26 }, { header: 'Warna', key: 'warna', width: 11 }, { header: 'Metode Bayar', key: 'bayar', width: 12 },
+    { header: 'Rencana Beli', key: 'rencana', width: 13 }, { header: 'Dana / DP Siap', key: 'dana', width: 11 },
+    { header: 'Rencana DP (Rp)', key: 'dp', width: 15, style: { numFmt: '#,##0' } },
+    { header: 'Tahap', key: 'tahap', width: 11 }, { header: 'Tahap Tertinggi', key: 'tt', width: 13 }, { header: 'Skor', key: 'skor', width: 7 },
+    { header: 'Suhu', key: 'suhu', width: 8 }, { header: 'Follow-up Berikutnya', key: 'fu', width: 18, style: { numFmt: W } },
+    { header: 'Aktivitas Terakhir', key: 'akt', width: 18, style: { numFmt: W } }, { header: 'Jumlah Aktivitas', key: 'nakt', width: 10 },
+    { header: 'Alasan Lost', key: 'lost', width: 22 }, { header: 'Catatan Lost', key: 'clost', width: 26 },
+    { header: 'Jadwal Prospek Ulang', key: 'ulang', width: 14, style: { numFmt: 'dd/mm/yyyy' } },
+    { header: 'Tanggal Ditutup', key: 'tutup', width: 17, style: { numFmt: W } },
+    { header: 'No SPK', key: 'spk', width: 18 }, { header: 'Status Order', key: 'order', width: 14 }, { header: 'Catatan', key: 'catatan', width: 45 },
+  ];
+  data.forEach((l, i) => {
+    const k = l.konsumen || {}, ord = l.pesanan || [];
+    ws.addRow({
+      no: i + 1, masuk: tglExcel(l.created_at), sales: l.sales?.nama || '', sumber: l.sumber?.nama || '', nama: k.nama || '',
+      hp: k.hp ? hpTampil(k.hp) : '', hp2: k.hp_lain ? hpTampil(k.hp_lain) : '', alamat: k.alamat || '', kel: k.kelurahan || '', kec: k.kecamatan || '',
+      kota: k.kota || '', kerja: k.pekerjaan || '', tipe: l.tipe_motor ? tipeNama(l.tipe_motor) : '', warna: l.warna || '',
+      bayar: l.metode_bayar === 'KREDIT' ? 'Kredit' : (l.metode_bayar === 'CASH' ? 'Cash' : ''), rencana: L.rencana[l.rencana_beli] || '',
+      dana: l.dana_siap ? 'Ya' : 'Tidak', dp: l.dp_rencana != null ? Number(l.dp_rencana) : null,
+      tahap: L.tahap[l.tahap] || l.tahap, tt: L.tahap[l.tahap_tertinggi] || l.tahap_tertinggi, skor: l.skor, suhu: LABEL_SUHU[l.suhu] || l.suhu,
+      fu: AKTIF.includes(l.tahap) ? tglExcel(l.followup_berikutnya) : null, akt: tglExcel(l.aktivitas_terakhir),
+      nakt: (l.aktivitas && l.aktivitas[0] && l.aktivitas[0].count) || 0, lost: l.alasan_lost ? L.lost[l.alasan_lost] : '', clost: l.catatan_lost || '',
+      ulang: tglExcel(l.jadwal_prospek_ulang), tutup: tglExcel(l.ditutup_at), spk: ord.map((o) => o.no_spk).join(', '),
+      order: ord.map((o) => L.order[o.status] || o.status).join(', '), catatan: l.catatan || '',
+    });
+  });
+  const kepala = ws.getRow(1); kepala.height = 32; judulKolom(kepala);
+  ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: ws.columns.length } };
+  ws.eachRow((row, n) => { if (n > 1) { row.alignment = { vertical: 'top' }; if (n % 2 === 1) row.eachCell({ includeEmpty: true }, (c) => { c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ABU } }; }); } });
+  ws.getColumn('catatan').alignment = { wrapText: true, vertical: 'top' };
+  return wb;
 }
 
 // ---------- Form tambah lead ----------
@@ -913,6 +1501,7 @@ async function bukaLead(id) {
 }
 function gambarLead(l, akt, ord) {
   const k = l.konsumen, aktif = AKTIF.includes(l.tahap);
+  const rumahPertama = akt.filter((a) => a.jenis === 'KUNJUNGAN_RUMAH' && a.lat != null).sort((a, b) => a.created_at.localeCompare(b.created_at))[0];
   const idx = Math.max(0, ['BARU', 'DIHUBUNGI', 'PROSPEK', 'NEGOSIASI', 'DEAL'].indexOf(l.tahap === 'LOST' ? l.tahap_tertinggi : l.tahap));
   const sapa = `Halo ${k.nama.split(' ')[0]}, saya ${S.me.nama} dari dealer.`;
   const lanjut = { BARU: null, DIHUBUNGI: 'PROSPEK', PROSPEK: 'NEGOSIASI', NEGOSIASI: null }[l.tahap];
@@ -941,9 +1530,10 @@ function gambarLead(l, akt, ord) {
     </div>
 
     ${l.tahap !== 'LOST' ? `<div class="blk sec"><h3>Catat aktivitas</h3>
-      <div class="chips" id="jenisAkt">${['TELEPON', 'WHATSAPP', 'KUNJUNGAN_DEALER', 'KUNJUNGAN_RUMAH', 'TEST_RIDE', 'PENAWARAN', 'SIMULASI_KREDIT', 'CATATAN']
+      <div class="chips" id="jenisAkt">${['TELEPON', 'WHATSAPP', 'KUNJUNGAN_DEALER', 'KUNJUNGAN_RUMAH', 'CANVASING', 'TEST_RIDE', 'PENAWARAN', 'SIMULASI_KREDIT', 'CATATAN']
         .map((j, i) => `<button class="chip${i === 0 ? ' on' : ''}" data-j="${j}" onclick="pilihJenis(this)">${ico(IKON_JENIS[j])}${L.jenis[j]}</button>`).join('')}</div>
       <div class="stack mt">
+        <div id="lokInfo" class="note hidden" style="display:flex;gap:9px;align-items:flex-start">${ico('pin')}<span>Lokasi Anda saat ini akan direkam sebagai bukti kunjungan. Pastikan GPS HP menyala.</span></div>
         <div class="row" id="hasilAkt"><label class="chk"><input type="radio" name="hasil" value="TERHUBUNG"> Terhubung</label>
           <label class="chk"><input type="radio" name="hasil" value="TIDAK_TERHUBUNG"> Tidak terhubung</label></div>
         <textarea id="aCatatan" class="inp" placeholder="Apa hasil pembicaraannya?"></textarea>
@@ -985,7 +1575,7 @@ function gambarLead(l, akt, ord) {
     <div class="blk sec"><h3>Riwayat</h3>
       <div class="tl">${akt.length ? akt.map((a) => `<div class="ev"><div class="dot">${ico(IKON_JENIS[a.jenis] || 'note')}</div><div style="flex:1">
         <b>${esc(L.jenis[a.jenis])}</b>${a.hasil ? ' · ' + (a.hasil === 'TERHUBUNG' ? '<span style="color:var(--ok);font-weight:650">terhubung</span>' : '<span style="color:var(--hot);font-weight:650">tidak terhubung</span>') : ''}
-        ${a.catatan ? `<div>${esc(a.catatan)}</div>` : ''}<div class="sub">${jam(a.created_at)}, ${esc(a.user?.nama || 'sistem')}</div></div></div>`).join('')
+        ${a.catatan ? `<div>${esc(a.catatan)}</div>` : ''}<div class="sub">${jam(a.created_at)}, ${esc(a.user?.nama || 'sistem')}</div>${infoLokasi(a, rumahPertama)}</div></div>`).join('')
         : '<div class="sub">Belum ada aktivitas.</div>'}
         <div class="ev"><div class="dot">${ico('spark')}</div><div><b>Lead masuk</b><div class="sub">${jam(l.created_at)}${l.prospek_ulang_dari ? ` · prospek ulang dari <a href="#" onclick="event.preventDefault();bukaLead(${l.prospek_ulang_dari})">lead #${l.prospek_ulang_dari}</a>` : ''}</div></div></div>
       </div></div>
@@ -1010,17 +1600,144 @@ function pilihJenis(b) {
   document.querySelectorAll('#jenisAkt .chip').forEach((c) => c.classList.toggle('on', c === b));
   const j = b.dataset.j;
   $('#hasilAkt').classList.toggle('hidden', !['TELEPON', 'WHATSAPP'].includes(j));
+  $('#lokInfo').classList.toggle('hidden', !WAJIB_LOKASI.includes(j));
 }
 function setFu(hari) { const d = new Date(); d.setDate(d.getDate() + hari); d.setHours(9, 0, 0, 0); $('#aFu').value = isoLokal(d); }
 async function simpanAktivitas(leadId, btn) {
   const jenis = $('#jenisAkt .chip.on').dataset.j;
   const hasil = (document.querySelector('input[name=hasil]:checked') || {}).value || null;
   if (['TELEPON', 'WHATSAPP'].includes(jenis) && !hasil) return toast('Pilih hasil: terhubung atau tidak', true);
+  const isi = { lead_id: leadId, jenis, hasil: ['TELEPON', 'WHATSAPP'].includes(jenis) ? hasil : null,
+    catatan: val('aCatatan') || null, followup_berikutnya: $('#aFu') ? localKeISO(val('aFu')) : null };
+  if (WAJIB_LOKASI.includes(jenis)) {
+    if (!S.me.setuju_lokasi_at) { const ok = await mintaPersetujuanLokasi(); if (!ok) return; }
+  }
   await aman(async () => {
-    await q(sb.from('aktivitas').insert({ lead_id: leadId, jenis, hasil: ['TELEPON', 'WHATSAPP'].includes(jenis) ? hasil : null,
-      catatan: val('aCatatan') || null, followup_berikutnya: $('#aFu') ? localKeISO(val('aFu')) : null }));
-    toast('Aktivitas tersimpan'); bukaLead(leadId); muatUlang();
+    if (WAJIB_LOKASI.includes(jenis)) {
+      btn.innerHTML = '<span class="spin"></span> Mengambil lokasi…';
+      const pos = await ambilLokasi();
+      Object.assign(isi, { lat: pos.coords.latitude, lng: pos.coords.longitude,
+        akurasi_m: Math.round(pos.coords.accuracy || 0), lokasi_at: new Date(pos.timestamp || Date.now()).toISOString() });
+    }
+    await q(sb.from('aktivitas').insert(isi));
+    toast(WAJIB_LOKASI.includes(jenis) ? 'Aktivitas & lokasi tersimpan' : 'Aktivitas tersimpan'); bukaLead(leadId); muatUlang();
   }, btn);
+}
+
+// ---------- Lokasi GPS (bukti kunjungan) ----------
+const WAJIB_LOKASI = ['KUNJUNGAN_RUMAH', 'CANVASING', 'TEST_RIDE'];
+function ambilLokasi() {
+  return new Promise((resolve, reject) => {
+    if (!window.isSecureContext || !navigator.geolocation) {
+      return reject(new Error('Lokasi hanya bisa direkam saat aplikasi dibuka dari alamat https (link aplikasi tim), bukan dari file di komputer.'));
+    }
+    navigator.geolocation.getCurrentPosition(resolve, (e) => {
+      reject(new Error(e.code === 1
+        ? 'Akses lokasi ditolak. Di Chrome, ketuk ikon di kiri alamat situs → Izin → Lokasi → Izinkan, lalu simpan lagi.'
+        : 'GPS belum mendapat posisi. Nyalakan Lokasi di HP, pindah ke tempat terbuka, lalu simpan lagi.'));
+    }, { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 });
+  });
+}
+function mintaPersetujuanLokasi() {
+  return new Promise((resolve) => {
+    S._setujuLokasi = resolve;
+    modal(`<div class="row" style="gap:10px"><span class="av">${ico('pin')}</span><h2>Perekaman lokasi kunjungan</h2></div>
+      <div class="stack mt" style="font-size:14.5px">
+        <p>Mulai sekarang, aplikasi merekam <b>lokasi GPS Anda</b> sebagai bukti kunjungan, <b>hanya saat Anda menyimpan</b> aktivitas Kunjungan rumah, Canvasing, atau Test ride.</p>
+        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:5px">
+          <li>Tidak ada pelacakan di luar saat menyimpan aktivitas tersebut.</li>
+          <li>Yang bisa melihat: Anda sendiri dan admin dealer.</li>
+          <li>Koordinat dihapus otomatis setelah <b>30 hari</b>.</li>
+          <li>Anda bisa melihat data lokasi Anda di menu Lainnya.</li>
+        </ul>
+        <button class="btn pri full" onclick="setujuLokasi(this)">Saya mengerti</button>
+        <button class="btn full" onclick="tutupModal();S._setujuLokasi&&S._setujuLokasi(false)">Nanti saja</button>
+      </div>`);
+  });
+}
+async function setujuLokasi(btn) {
+  await aman(async () => {
+    const t = await q(sb.rpc('setujui_lokasi'));
+    S.me.setuju_lokasi_at = t || new Date().toISOString();
+    tutupModal(); S._setujuLokasi && S._setujuLokasi(true);
+  }, btn);
+}
+let _leaflet;
+function muatLeaflet() {
+  if (window.leaflet && window.leaflet.map) return Promise.resolve(window.leaflet);
+  if (_leaflet) return _leaflet;
+  _leaflet = new Promise((resolve, reject) => {
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    const js = document.createElement('script'); js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    js.onload = () => resolve(window.leaflet || window.L);
+    js.onerror = () => { _leaflet = null; reject(new Error('Peta gagal dimuat. Periksa internet.')); };
+    document.head.appendChild(js);
+  });
+  return _leaflet;
+}
+const WARNA_SALES = ['#163F80', '#C77700', '#137A48', '#7A3DB8', '#D3342A', '#0E7C86'];
+async function gambarPeta(el, titik) {
+  const LF = await muatLeaflet();
+  if (el._peta) { el._peta.remove(); el._peta = null; }
+  const peta = LF.map(el, { scrollWheelZoom: false, attributionControl: true });
+  el._peta = peta;
+  LF.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(peta);
+  if (!titik.length) { peta.setView([-7.27, 106.63], 12); return; }
+  const perSales = {};
+  titik.forEach((t) => { (perSales[t.user_id] = perSales[t.user_id] || []).push(t); });
+  const batas = [];
+  Object.values(perSales).forEach((daftar, i) => {
+    const warna = WARNA_SALES[i % WARNA_SALES.length];
+    daftar.sort((a, b) => a.created_at.localeCompare(b.created_at));
+    if (daftar.length > 1) LF.polyline(daftar.map((t) => [t.lat, t.lng]), { color: warna, weight: 3, opacity: .55, dashArray: '6 6' }).addTo(peta);
+    daftar.forEach((t, n) => {
+      const ikon = LF.divIcon({ className: '', iconSize: [28, 28], iconAnchor: [14, 14],
+        html: `<div class="pin-n" style="background:${warna}">${n + 1}</div>` });
+      LF.marker([t.lat, t.lng], { icon: ikon }).addTo(peta)
+        .bindPopup(`<b>${esc(t.lead?.konsumen?.nama || '-')}</b><br>${esc(L.jenis[t.jenis])}, ${jam(t.created_at)}<br>${esc(t.user?.nama || '')} · akurasi ±${t.akurasi_m} m`);
+      batas.push([t.lat, t.lng]);
+      if (t.akurasi_m > 0) LF.circle([t.lat, t.lng], { radius: t.akurasi_m, color: warna, weight: 1, fillOpacity: .08 }).addTo(peta);
+    });
+  });
+  peta.fitBounds(batas, { padding: [30, 30], maxZoom: 16 });
+}
+async function muatPetaKunjungan() {
+  const el = $('#petaKunjungan'); if (!el) return;
+  const tgl = S.f.petaTgl || hariIni();
+  const dari = new Date(tgl + 'T00:00:00+07:00'), sampai = new Date(dari.getTime() + 864e5);
+  let qy = sb.from('aktivitas').select('id,jenis,lat,lng,akurasi_m,created_at,catatan,user_id,user:profiles(nama),lead:leads(id,konsumen(nama))')
+    .not('lat', 'is', null).gte('created_at', dari.toISOString()).lt('created_at', sampai.toISOString()).order('created_at');
+  if (S.f.petaSales) qy = qy.eq('user_id', S.f.petaSales);
+  try {
+    const titik = await q(qy);
+    const daftar = $('#petaDaftar');
+    if (daftar) daftar.innerHTML = titik.length ? titik.map((t) => `<div class="item" onclick="bukaLead(${t.lead?.id})" style="min-height:58px">
+        <div class="av" style="width:36px;height:36px">${ico(IKON_JENIS[t.jenis] || 'pin')}</div>
+        <div class="mid"><div class="nm" style="font-size:14.5px">${esc(t.lead?.konsumen?.nama || '-')}</div><div class="meta">${esc(L.jenis[t.jenis])} — ${esc(t.user?.nama || '')}</div></div>
+        <div class="right"><span class="when">${jam(t.created_at)}</span>${t.akurasi_m > 100 ? pill('Akurasi rendah', 'p-amber') : `<span class="sub">±${t.akurasi_m} m</span>`}</div></div>`).join('')
+      : '<div class="empty">Belum ada kunjungan berlokasi pada tanggal ini.</div>';
+    await gambarPeta(el, titik);
+  } catch (e) { el.innerHTML = `<div class="bad" style="margin:12px">${esc(pesanError(e))}</div>`; }
+}
+const linkPeta = (lat, lng) => `https://www.google.com/maps?q=${lat},${lng}`;
+function jarakM(a, b) { // haversine, meter
+  const R = 6371000, r = (x) => x * Math.PI / 180;
+  const d1 = r(b.lat - a.lat), d2 = r(b.lng - a.lng);
+  const h = Math.sin(d1 / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(d2 / 2) ** 2;
+  return Math.round(2 * R * Math.asin(Math.sqrt(h)));
+}
+function infoLokasi(a, rumahPertama) {
+  if (a.lokasi_dihapus) return `<div class="sub" style="margin-top:3px">Lokasi sudah dihapus (lebih dari 30 hari)</div>`;
+  if (a.lat == null) return '';
+  const tanda = [];
+  if (a.akurasi_m > 100) tanda.push(pill('Akurasi rendah', 'p-amber'));
+  if (a.jenis === 'KUNJUNGAN_RUMAH' && rumahPertama && rumahPertama.id !== a.id) {
+    const j = jarakM(rumahPertama, a);
+    if (j > 300) tanda.push(pill(`${j >= 1000 ? (j / 1000).toFixed(1) + ' km' : j + ' m'} dari kunjungan rumah pertama`, 'p-red'));
+  }
+  return `<div class="row" style="gap:6px;margin-top:5px;font-size:13px"><span class="lok">${ico('pin')}±${a.akurasi_m} m</span>
+    <a href="${linkPeta(a.lat, a.lng)}" target="_blank" rel="noopener">Lihat di peta</a>${tanda.join('')}</div>`;
 }
 async function simpanKebutuhan(id, btn) {
   await aman(async () => {
@@ -1304,7 +2021,7 @@ function htmlPapan(papan) {
     const pct = p.target_do_bulanan ? Math.min(100, Math.round(100 * p.unit_terkirim / p.target_do_bulanan)) : 0;
     const saya = p.sales_id === S.me.id;
     return `<div class="item" style="cursor:default;align-items:flex-start${saya ? ';background:#F4F7FC' : ''}">
-      <div class="num" style="font-size:30px;line-height:1;width:34px;color:${i === 0 ? 'var(--navy)' : 'var(--faint)'}">${i + 1}</div>
+      <div class="num" style="font-size:${i < 3 && p.unit_terkirim > 0 ? 26 : 30}px;line-height:1;width:34px;color:${i === 0 ? 'var(--navy)' : 'var(--faint)'}">${i < 3 && p.unit_terkirim > 0 ? ['🏆', '🥈', '🥉'][i] : i + 1}</div>
       <div class="mid">
         <div class="row between"><span class="nm">${esc(p.nama)}${saya ? ' (Anda)' : ''}</span><span><b class="num" style="font-size:18px">${p.unit_terkirim}</b><span class="sub"> / ${p.target_do_bulanan} unit</span></span></div>
         <div class="bar" style="margin-top:8px;height:7px"><i style="width:${pct}%"></i></div>
@@ -1358,8 +2075,13 @@ VIEWS.laporan = async (v) => {
           <div><b class="num" style="font-size:30px">${stok.filter((u) => u.status === 'DIALOKASIKAN').length}</b><div class="sub">Dialokasikan</div></div>
           <div><b class="num" style="font-size:30px">${stok.filter((u) => u.status === 'TERJUAL').length}</b><div class="sub">Terjual</div></div>
         </div></div>
+      <div class="card s12"><div class="row between"><div><h2>Peta kunjungan</h2><p class="sub">Kunjungan rumah, canvasing, dan test ride yang terekam lokasinya. Data disimpan 30 hari.</p></div>
+          <div class="row"><input type="date" class="inp" style="width:auto" value="${S.f.petaTgl || hariIni()}" min="${new Date(Date.now() - 30 * 864e5).toLocaleDateString('en-CA', TZ)}" max="${hariIni()}" onchange="S.f.petaTgl=this.value;muatPetaKunjungan()">
+          <select class="inp" style="width:auto" onchange="S.f.petaSales=this.value;muatPetaKunjungan()"><option value="">Semua sales</option>${S.orang.map((p) => `<option value="${p.id}"${S.f.petaSales === p.id ? ' selected' : ''}>${esc(p.nama)}</option>`).join('')}</select></div></div>
+        <div class="peta-wrap mt"><div id="petaKunjungan" class="peta"></div><div id="petaDaftar" class="list peta-list"></div></div></div>
       <div class="card s12"><h2>Papan tim</h2><div class="mt">${htmlPapan(papan)}</div></div>
     </div>`;
+  muatPetaKunjungan();
 };
 
 // =====================================================================
@@ -1372,6 +2094,12 @@ VIEWS.lain = async (v) => {
     q(sb.from('izin_sumber').select('*, sumber:sumber_leads(nama,pemilik_id), peminta:profiles(nama)').order('created_at', { ascending: false })),
     q(sb.from('unit_stok').select('*, tipe:tipe_motor(merek,model,varian)').order('status').order('tgl_masuk')),
   ]);
+  let lokasiSaya = null;
+  if (!admin) {
+    const { data: lk, error: lkErr } = await sb.from('aktivitas').select('id,jenis,lat,lng,akurasi_m,created_at,lead:leads(konsumen(nama))')
+      .eq('user_id', S.me.id).not('lat', 'is', null).order('created_at', { ascending: false }).limit(20);
+    if (!lkErr) lokasiSaya = lk;
+  }
   S.emailOrang = {}; S.fitur002 = false;
   if (admin) {
     const { data: em, error: emErr } = await sb.rpc('admin_email_pengguna');
@@ -1385,6 +2113,21 @@ VIEWS.lain = async (v) => {
     <div class="lain-grid">
     <div class="card"><div class="row between"><div><b>${esc(S.me.nama)}</b><div class="sub">${esc(S.user.email)} · ${admin ? 'Admin' : 'Sales'}</div></div>
       <div class="row"><button class="btn sm" onclick="formSandi()">Ganti sandi</button><button class="btn sm danger" onclick="keluar()">Keluar</button></div></div></div>
+
+    ${admin ? `<div class="card mt" id="kartuCadangan"><h2>Data &amp; Cadangan</h2>
+      <p class="sub">Khusus admin. Simpan file backup di tempat aman (flashdisk / Google Drive); isinya data pribadi konsumen.</p>
+      <div class="stack mt">
+        <div class="row between baris-cd"><div><b>Export Excel</b><div class="sub">Ringkasan + data lengkap semua lead (.xlsx)</div></div><button class="btn sm hijau" onclick="formExport()">${ico('download')}Export Excel</button></div>
+        <div class="row between baris-cd"><div><b>Backup</b><div class="sub">Unduh semua data ke satu file (.json)</div></div><button class="btn sm pri" onclick="unduhBackup(this)">${ico('download')}Backup</button></div>
+        <div class="row between baris-cd"><div><b>Pulihkan</b><div class="sub">Ganti semua data dengan isi file backup</div></div><button class="btn sm" onclick="formPulihkan()">${ico('back')}Pulihkan</button></div>
+        <div class="row between baris-cd"><div><b style="color:var(--hot)">Kosongkan data</b><div class="sub">Hapus semua transaksi; data master bisa dipilih</div></div><button class="btn sm danger" onclick="formKosongkan()">${ico('xcircle')}Kosongkan</button></div>
+      </div></div>` : ''}
+
+    ${lokasiSaya ? `<div class="card mt"><div class="row" style="gap:10px"><span class="av" style="width:38px;height:38px">${ico('pin')}</span><div><h2>Lokasi kunjungan saya</h2>
+        <p class="sub">${S.me.setuju_lokasi_at ? 'Pemberitahuan disetujui ' + tgl(S.me.setuju_lokasi_at) + '. ' : ''}Terekam hanya saat menyimpan kunjungan rumah, canvasing, atau test ride. Dihapus otomatis setelah 30 hari.</p></div></div>
+      <div class="${lokasiSaya.length ? 'list' : ''} mt">${lokasiSaya.length ? lokasiSaya.map((a) => `<div class="item" style="min-height:56px;cursor:default"><div class="mid"><div class="nm" style="font-size:14.5px">${esc(a.lead?.konsumen?.nama || '-')}</div>
+        <div class="meta">${esc(L.jenis[a.jenis])} — ${jam(a.created_at)}</div></div><div class="right"><a href="${linkPeta(a.lat, a.lng)}" target="_blank" rel="noopener">Lihat di peta</a><span class="sub">±${a.akurasi_m} m</span></div></div>`).join('')
+        : '<div class="empty">Belum ada lokasi terekam dalam 30 hari terakhir.</div>'}</div></div>` : ''}
 
     ${perluSaya.length ? `<div class="card mt"><h2>Permintaan izin sumber</h2><div class="stack mt">${perluSaya.map((i) => `<div class="warn"><b>${esc(i.peminta.nama)}</b> minta izin memakai <b>${esc(i.sumber.nama)}</b>
       <div class="sub" style="margin-top:4px">Pemilik ${i.setuju_pemilik ? 'sudah setuju' : 'belum menjawab'}, admin ${i.setuju_admin ? 'sudah setuju' : 'belum menjawab'}</div>
